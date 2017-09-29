@@ -6,6 +6,8 @@
 #import sys; sys.path.append('../_external_templates/conf')
 #from std_conf import *
 
+import os
+on_rtd = os.environ.get('READTHEDOCS') == 'True'
 
 # General information about the project.
 #======================================
