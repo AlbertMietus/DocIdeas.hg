@@ -3,22 +3,21 @@
 
 # read STD config ...
 #==========================================
-#import sys; sys.path.append('../_external_templates/conf')
-#from std_conf import *
-
-import os
-on_rtd = os.environ.get('READTHEDOCS') == 'True'
+import sys; sys.path.append('_external_templates/conf')
+from std_conf import *
 
 # General information about the project.
 #======================================
-project = 'MESS'
+project = 'MESS-DocIdeas'
 copyright = "ALbert Mietus, 2017"
-version = "None"
+
+from datetime import datetime
+release = datetime.now().strftime("%Y%m%d.%H")
+version = release
 
 # Overrule std_conf, where needed
 #================================
 
-release = version
 html_title = project + " | " + release # DEFAULT: '<project> v<revision> documentation' -- Strip "documentation"
 
 
