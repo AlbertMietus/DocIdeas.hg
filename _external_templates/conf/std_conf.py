@@ -38,17 +38,17 @@ rst_prolog = """
 html_theme = 'classic'
 html_style = 'SwBMnl-sphinx.css'
 
-# HTML-Slides (using Hieroglyph)
-#-------------------------------
-extensions.append('hieroglyph')
-
-slide_theme = 'slides'
-slide_levels = 2
-
-slide_theme_options = {'custom_css': 'SwBMnl-hieroglyph_slides=article.css'}
-
-slide_link_to_html=False
-slide_link_html_to_slides=False
+# # HTML-Slides (using Hieroglyph)
+# #-------------------------------
+# extensions.append('hieroglyph')
+#
+# slide_theme = 'slides'
+# slide_levels = 2
+#
+# slide_theme_options = {'custom_css': 'SwBMnl-hieroglyph_slides=article.css'}
+#
+# slide_link_to_html=False
+# slide_link_html_to_slides=False
 
 
 # sphinx.ext.todo
