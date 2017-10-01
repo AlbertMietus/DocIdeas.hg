@@ -15,7 +15,7 @@ Copyright
 
 All files and ideas are (C) Albert Mietus. You may:
 
-* read & study them
+* Read & study them
 * Use the ideas to improve your skills
 
 
