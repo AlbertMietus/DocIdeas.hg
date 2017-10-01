@@ -26,9 +26,9 @@ Please **do not**:
 * Create (public) link(s) to the repository and/or RTfD-doc
 
   - https://bitbucket.org/ALbert_Mietus/mess_docideas/
-  - https://readthedocs.org/projects/somedocs-ideas-of-albertmietus/
+  - http://somedocs-ideas-of-albertmietus.readthedocs.io/en/latest/
 
-  Unless you inform mee about this
+  Unless you inform me about this
 
 Status
 ======
