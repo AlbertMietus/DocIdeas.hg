@@ -18,7 +18,7 @@ dPID articles
 *************
 
 .. toctree::
-
+   :maxdepth: 3
 
    class
    exercise
