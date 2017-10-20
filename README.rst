@@ -41,5 +41,6 @@ separate environment. Then, typical, it becomes “really” public and publishe
 
 --Albert Mietus
 
-.. image:: /_static/Needle_Tower_doorzichtig.png
+.. image:: /_external_templates/static/Needle_Tower_doorzichtig.png
+
 

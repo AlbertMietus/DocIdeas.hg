@@ -6,6 +6,12 @@
 import sys; sys.path.append('_external_templates/conf')
 from std_conf import *
 
+
+extensions.append('sphinx.ext.autodoc')                                 # Move to std_conf?
+autodoc_member_order='bysource'
+import os.path
+sys.path.append(os.path.join('BureauLade','dPID'))
+
 # General information about the project.
 #======================================
 project = 'MESS-DocIdeas'
@@ -26,3 +32,6 @@ html_title = project + " | " + release # DEFAULT: '<project> v<revision> documen
 if not on_rtd:
     extensions.append('sphinxcontrib.plantuml')
     plantuml = 'java -jar /Users/albert/Apps/PlantUML/libexec/plantuml.jar -nogui'
+
+
+

@@ -2,3 +2,4 @@ __result
 tmp
 __pycache__
 .*\.pyc
+.cache
