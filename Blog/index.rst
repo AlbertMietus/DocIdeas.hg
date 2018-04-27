@@ -1,5 +1,5 @@
-Blog/index.rst
-==============
+Blog
+====
 
 .. toctree::
    :glob:
