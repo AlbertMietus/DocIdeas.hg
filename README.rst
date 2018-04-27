@@ -1,5 +1,5 @@
-ReadMe (MESS-DocIdeas)
-**********************
+ReadMe (DocIdeas)
+*****************
 
 .. sidebar:: Engels & Dutch
 

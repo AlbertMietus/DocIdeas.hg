@@ -1,0 +1,10 @@
+{#
+    BASED ON: sphinx/basic/localtoc.html
+    #}
+<hr/>
+<div id="localtoc">
+{%- if display_toc %}
+<h3><a href="{{ pathto(master_doc) }}">(Pagina) Inhoud</a></h3>
+  {{ toc }}
+{%- endif %}
+</div>

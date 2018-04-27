@@ -6,6 +6,32 @@
 import sys; sys.path.append('_external_templates/conf')
 from std_conf import *
 
+## ABlog
+#-------
+extensions.append('ablog')
+
+templates_path.append('./_templates')
+import ablog; templates_path.append(ablog.get_html_templates_path())
+print('XXXX', templates_path)
+
+blog_path="Blog"
+fontawesome_link_cdn = "https://use.fontawesome.com/releases/v5.0.10/css/all.css"
+
+post_date_format = '%Y/%m/%d'
+post_date_format_short = '%Y/%m'
+
+blog_authors = {'GAM' : ('ALbert Mietus', 'http://albert.mietus.nl') }
+blog_default_author = 'GAM'
+blog_languages = {
+    'nl'  : ('Nederlands', None),
+    'en'  : ('English', None) }
+blog_default_language = 'nl'
+post_always_section = True
+
+html_sidebars = {'**': ['recentposts.html',
+                        'categories.html', 'tagcloud.html',
+                        'searchbox.html', 'localtoc.html'] }
+print('XXX', html_sidebars)
 
 extensions.append('sphinx.ext.autodoc')                                 # Move to std_conf?
 autodoc_member_order='bysource'
