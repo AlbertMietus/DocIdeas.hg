@@ -1,4 +1,4 @@
-# Copyright (C) ALbert Mietus, SoftwareBeterMaken.nl; 2017. Part of mess
+# Copyright (C) ALbert Mietus, SoftwareBeterMaken.nl; 2017, 2018
 # -*- coding: utf-8 -*-
 
 # read STD config ...
@@ -14,8 +14,8 @@ sys.path.append(os.path.join('BureauLade','dPID'))
 
 # General information about the project.
 #======================================
-project = 'MESS-DocIdeas'
-copyright = "ALbert Mietus, 2017"
+project = 'DocIdeas'
+copyright = "ALbert Mietus, 2018"
 
 from datetime import datetime
 release = datetime.now().strftime("%Y%m%d.%H")
