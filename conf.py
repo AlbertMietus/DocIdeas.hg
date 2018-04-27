@@ -12,7 +12,6 @@ extensions.append('ablog')
 
 templates_path.append('./_templates')
 import ablog; templates_path.append(ablog.get_html_templates_path())
-print('XXXX', templates_path)
 
 blog_path="Blog"
 fontawesome_link_cdn = "https://use.fontawesome.com/releases/v5.0.10/css/all.css"
@@ -31,12 +30,9 @@ post_always_section = True
 html_sidebars = {'**': ['recentposts.html',
                         'categories.html', 'tagcloud.html',
                         'searchbox.html', 'localtoc.html'] }
-print('XXX', html_sidebars)
 
 extensions.append('sphinx.ext.autodoc')                                 # Move to std_conf?
 autodoc_member_order='bysource'
-import os.path
-sys.path.append(os.path.join('BureauLade','dPID'))
 
 # General information about the project.
 #======================================
@@ -55,8 +51,8 @@ html_title = project + " | " + release # DEFAULT: '<project> v<revision> documen
 
 # plantUML
 #---------
+extensions.append('sphinxcontrib.plantuml')
 if not on_rtd:
-    extensions.append('sphinxcontrib.plantuml')
     plantuml = 'java -jar /Users/albert/Apps/PlantUML/libexec/plantuml.jar -nogui'
 
 
