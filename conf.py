@@ -31,6 +31,11 @@ html_sidebars = {'**': ['recentposts.html',
                         'categories.html', 'tagcloud.html',
                         'searchbox.html', 'localtoc.html'] }
 
+blog_baseurl = "/" # XXX
+
+
+# Autodoc
+#---------
 extensions.append('sphinx.ext.autodoc')                                 # Move to std_conf?
 autodoc_member_order='bysource'
 
