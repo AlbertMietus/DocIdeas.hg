@@ -16,6 +16,7 @@ div.sphinxsidebar li.toctree-l1 {list-style-type: square;}
 div.sphinxsidebar li.toctree-l2 {list-style-type: disc;}
 div.sphinxsidebar li.toctree-l3 {list-style-type: cirle;}
 
+div#postcardHeader {width: 100%;}
 
 
 /*
