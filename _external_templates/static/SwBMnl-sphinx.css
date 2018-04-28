@@ -16,8 +16,6 @@ div.sphinxsidebar li.toctree-l1 {list-style-type: square;}
 div.sphinxsidebar li.toctree-l2 {list-style-type: disc;}
 div.sphinxsidebar li.toctree-l3 {list-style-type: cirle;}
 
-div#postcardHeader {width: 100%;}
-
 
 /*
  * Admonitions
@@ -67,7 +65,7 @@ blockquote { margin-left: 15px; border-left: 5px solid #00C; padding-left: 10px;
            }
 
 /* Blog/Post postcardHeader */
-div#postcardHeader     { font-size: 80%; float: right;}
+div#postcardHeader     { width: 100%; font-size: 80%; float: right;}
 div#postcardHeader li  { float: left; list-style-type: none;}
 div#postcardHeader+div { clear:both;}
 
