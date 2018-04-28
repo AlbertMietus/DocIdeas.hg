@@ -4,7 +4,7 @@ WebSlides
 .. post:: 2018/4/27
    :category: WebSlides
 
-`Sphinx <http:\\Sphinx-doc.org>`_ and `reStructuredText (RST) <http://docutils.sourceforge.net/rst.html>`_ are great to
+`Sphinx <http:\\Sphinx-doc.org>` and `reStructuredText (RST) <http://docutils.sourceforge.net/rst.html>` are great to
 build *and maintain* documentation. However, the ability for “slide deck” is limited. In practice, most of my presentation
 are made by `PowerPoint` or `Keynote` -- and so, are hard to maintain.
 

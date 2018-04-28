@@ -1,3 +1,4 @@
 ablog
 sphinxcontrib-plantuml
+sphinxcontrib-fulltoc
 

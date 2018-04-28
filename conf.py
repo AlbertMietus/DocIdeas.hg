@@ -6,6 +6,16 @@
 import sys; sys.path.append('_external_templates/conf')
 from std_conf import *
 
+
+
+extensions.append('sphinxcontrib.fulltoc') # see ``toc.html`` below
+
+html_sidebars = {'**': [ 'postcardHeader.html', # empty when no blog!
+                         'toc.html',
+                         'recentposts.html',
+                         'categories.html', 'tagcloud.html',
+                         'searchbox.html',]}
+
 ## ABlog
 #-------
 extensions.append('ablog')
@@ -27,11 +37,9 @@ blog_languages = {
 blog_default_language = 'nl'
 post_always_section = True
 
-html_sidebars = {'**': ['recentposts.html',
-                        'categories.html', 'tagcloud.html',
-                        'searchbox.html', 'localtoc.html'] }
 
 blog_baseurl = "/" # XXX
+
 
 
 # Autodoc
