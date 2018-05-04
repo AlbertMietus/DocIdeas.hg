@@ -6,21 +6,29 @@
 import sys; sys.path.append('_external_templates/conf')
 from std_conf import *
 
+# General information about the project.
+#======================================
+project = 'DocIdeas'
+copyright = "ALbert Mietus, 2018"
 
+from datetime import datetime
+release = datetime.now().strftime("%Y%m%d.%H")
+version = release
 
-extensions.append('sphinxcontrib.fulltoc') # see ``toc.html`` below
+# Overrule std_conf, where needed
+#================================
+
+html_title = project + " | " + release # DEFAULT: '<project> v<revision> documentation' -- Strip "documentation"
 
 html_sidebars = {'**': [ 'postcardHeader.html', # empty when no blog!
-                         'toc.html',
                          'recentposts.html',
-                         'categories.html', 'tagcloud.html',
-                         'searchbox.html',]}
+                         'categories.html',
+                         'tagcloud.html']}
 
 ## ABlog
 #-------
 extensions.append('ablog')
 
-templates_path.append('./_templates')
 import ablog; templates_path.append(ablog.get_html_templates_path())
 
 blog_path="Blog"
@@ -47,19 +55,6 @@ blog_baseurl = "/" # XXX
 extensions.append('sphinx.ext.autodoc')                                 # Move to std_conf?
 autodoc_member_order='bysource'
 
-# General information about the project.
-#======================================
-project = 'DocIdeas'
-copyright = "ALbert Mietus, 2018"
-
-from datetime import datetime
-release = datetime.now().strftime("%Y%m%d.%H")
-version = release
-
-# Overrule std_conf, where needed
-#================================
-
-html_title = project + " | " + release # DEFAULT: '<project> v<revision> documentation' -- Strip "documentation"
 
 
 # plantUML
@@ -69,4 +64,8 @@ if not on_rtd:
     plantuml = 'java -jar /Users/albert/Apps/PlantUML/libexec/plantuml.jar -nogui'
 
 
+
+
+def setup(app):
+    app.add_stylesheet('../_static/SwBMnl+rtfd.css')
 
