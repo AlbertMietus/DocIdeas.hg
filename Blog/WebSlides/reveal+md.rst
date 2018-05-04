@@ -13,12 +13,12 @@ Revealjs + Markdown
    (MIT-Licensed) HTML-Framework for easily creating beautiful presentations using HTML ---according to there
    website. It has a nice `live demo <http://revealjs.com>`_ too.
 
-   I’m going to use it with markdown however.
+   I’m going to use it with markdown however...
 
-Revealjs and it documentation assumes you speak fluently html, javascript, and are willing to read the code to
+Revealjs and its documentation assumes you speak fluently html, javascript, and are willing to read the code to
 understand the features. Or, use the (non open-source) online editor. That does not fit to my wishes ...
 
-However there is an option to use markdown! It comes standard with a plugin to handle several dialects [#dialects]_ of
+However there is an option to use *markdown*! It comes standard with a plugin to handle several dialects [#dialects]_ of
 markdown [#marked]_. And although *md* [#dialects]_ is not *rst*, it is text-based. And so easy to maintain. Apparently,
 one can even put in *html-comments* into the *md*-text, to set the “features”.
 
