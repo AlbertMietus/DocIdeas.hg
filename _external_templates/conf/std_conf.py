@@ -15,7 +15,7 @@ master_doc = 'index'
 source_suffix = '.rst'
 exclude_patterns = ['**/.#*', '**/_*']
 html_static_path = ['_external_templates/static/']
-templates_path = ['templates']
+templates_path = ['_templates']
 
 ###
 ### Kick off
@@ -35,8 +35,14 @@ rst_prolog = """
 ### Normal HTML output
 ###
 
-html_theme = 'classic'
-html_style = 'SwBMnl-sphinx.css'
+html_theme = 'sphinx_rtd_theme'
+html_theme_options = {
+    'collapse_navigation': True,
+    'display_version': True,
+    #    'style_external_links': False, # available in next release
+    'prev_next_buttons_location': 'both',
+}
+html_style = 'SwBMnl+rtfd.css'
 
 # # HTML-Slides (using Hieroglyph)
 # #-------------------------------

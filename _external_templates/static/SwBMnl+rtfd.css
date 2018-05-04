@@ -1,0 +1,66 @@
+/*SwBMnl style on top of 'sphinx_rtd_theme'*/
+
+@import url("css/theme.css"); /* The sphinx_rtd_theme */
+
+.wy-nav-top, .wy-nav-side {
+    background-color: #000066;
+}
+
+div.wy-side-nav-search {
+    background-color: #000066; color: #808080;
+    border-bottom: 2px solid #c0c0c0;
+}
+
+h1,h2,h3 {
+    background-color: #808080; color: #eeeeff;
+    margin: 1ex -1em 1ex -1em;
+    padding : 0 1em;
+}
+div.wy-nav-content {
+    padding: 1em;
+    padding-top: 0;
+    max-width: 100%;
+}
+
+div.breadcrumbs {
+    background-color: #000066; color: #808080;
+    margin: 0 -1em 1ex -1em;
+    padding-top: 0.5ex;
+}
+
+@media screen and (max-width: 768px) {
+    .wy-nav-content-wrap .wy-nav-content {padding:1.618em; padding-top:0; }
+    div.breadcrumbs { margin: 0 -1.618em 1ex -1.618em;}
+}
+
+
+
+
+div.GAM-extra #postcardHeader .blogdate {
+    color: #000066; background: #c0c0c0;
+    text-align: right;
+}
+
+div.GAM-extra #postcardHeader .blogdate published.fa {color: #000066; }
+div.GAM-extra #postcardHeader .draft  {color: #cc3333; }
+div.GAM-extra #postcardHeader { color: #cc3333; } /* The fa logo's */
+div.GAM-extra #postcardHeader li a { display: inline; }
+
+div.GAM-extra h3 {
+    font-size: 100%;
+    margin: 0;
+    color: #000066; background: #c0c0c0;
+}
+div.GAM-extra h3 a {
+    font-size: 100%;
+    margin: 0;
+    color: #000066; background: #c0c0c0;
+}
+
+
+div.GAM-extra ul.ablog-cloud { background-color: #808080;}
+div.GAM-extra li.ablog-cloud {
+    color: #808080;    background-color: #000066;
+    border: 1px solid #c0c0c0;
+    border-radius: 33%;
+}

@@ -1,0 +1,33 @@
+{%- extends "!layout.html" %}
+
+
+{% block menu %}
+  <div class="rtd-menu-block"> {# GAM: this div is extra; the content was in 'sphinx_rtd_theme/layout.html' #}
+    {#
+    The singlehtml builder doesn't handle this toctree call when the
+    toctree is empty. Skip building this for now.
+    #}
+    {% if 'singlehtml' not in builder %}
+      {% set global_toc = toctree(maxdepth=theme_navigation_depth|int, collapse=theme_collapse_navigation, includehidden=True) %}
+    {% endif %}
+    {% if global_toc %}
+      {{ global_toc }}
+    {% else %}
+      <!-- Local TOC -->
+      <div class="local-toc">{{ toc }}</div>
+    {% endif %}
+  </div class="rtd-menu"> {#GAM end rtd-menu-block #}
+  <div class="GAM-extra"> {#GAM: This is extra #}
+    {%- if sidebars != None %}
+      {#- new style sidebar: explicitly include/exclude templates #}
+      {%- for sidebartemplate in sidebars %}
+        {%- include sidebartemplate %}
+      {%- endfor %}
+    {%- else %}
+      <hr/>{#GAM No extra sidebars#}
+    {%- endif %}
+  </div> {#GAM: end GAM-extra #}
+{% endblock %}
+
+
+
