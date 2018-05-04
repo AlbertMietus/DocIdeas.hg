@@ -24,6 +24,8 @@ html_sidebars = {'**': [ 'postcardHeader.html', # empty when no blog!
                          'recentposts.html',
                          'categories.html',
                          'tagcloud.html']}
+def setup(app):
+    app.add_stylesheet('../_static/SwBMnl+rtfd.css')
 
 ## ABlog
 #-------
@@ -66,6 +68,4 @@ if not on_rtd:
 
 
 
-def setup(app):
-    app.add_stylesheet('../_static/SwBMnl+rtfd.css')
 
