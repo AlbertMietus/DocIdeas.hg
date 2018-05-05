@@ -48,8 +48,10 @@ blog_default_language = 'nl'
 post_always_section = True
 
 
-blog_baseurl = "/" # XXX
-
+blog_baseurl = "http:/DocIdeas.mietus.nl"
+disqus_shortname = 'DocIdeas'
+disqus_pages = True                                                 # All pages have a disqus-section
+disqus_drafts = False                                               # .. but the draft (blog) pages (.. post:: without date )
 
 
 # Autodoc
