@@ -33,7 +33,7 @@ extensions.append('ablog')
 
 import ablog; templates_path.append(ablog.get_html_templates_path())
 
-blog_path="Blog"
+blog_path="ABlog"
 fontawesome_link_cdn = "https://use.fontawesome.com/releases/v5.0.10/css/all.css"
 
 post_date_format = '%Y/%m/%d'
