@@ -6,6 +6,7 @@ This side contain many more-or-less independent *“documentation ideas”*. Ord
 don’t fit on any of my :ref:`other-sites`, like the start of a new project. Or pages that aren’t
 come to maturity; typically this are `blog pages <blog.html>`_.
 
+.. _toctree:
 
 .. toctree::
    :titlesonly:

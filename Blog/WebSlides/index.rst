@@ -1,3 +1,5 @@
+.. _webslides:
+
 WebSlides
 =========
 .. Copyright (C) ALbert Mietus, 2018
@@ -9,7 +11,7 @@ WebSlides
    tools to build *and maintain* documentation. However, the ability for “slide decks” is limited. In practice, most of
    my presentation are made by `PowerPoint` or `Keynote` -- and so, are hard to maintain.
 
-   This has to be changed ..
+   This has to be changed...
 
 Out of the box, there are several options, both with and without Sphinx. `Hieroglyph <http://docs.hieroglyph.io>`_ by
 example, adds a *builder* to Sphinx, for HTML-based presentation. Whereas `reveal.js <https://revealjs.com>`_ uses
@@ -20,9 +22,11 @@ In this chapter, several articles (or blogs: :ref:`category-webslides`) give an 
 existing options. And describe my search to combination to a useful combination.
 
 .. toctree::
+   :maxdepth: 2
+   :titlesonly:
 
    reveal+md
    html-template
    md-content
    design-options
-
+   remote-md.rst
