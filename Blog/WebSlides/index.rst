@@ -29,4 +29,4 @@ existing options. And describe my search to combination to a useful combination.
    html-template
    md-content
    design-options
-   remote-md.rst
+   remote-md
