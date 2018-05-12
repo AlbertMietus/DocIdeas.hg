@@ -44,7 +44,7 @@ blog_default_author = 'GAM'
 blog_languages = {
     'nl'  : ('Nederlands', None),
     'en'  : ('English', None) }
-blog_default_language = 'nl'
+blog_default_language = 'en'
 post_always_section = True
 
 
