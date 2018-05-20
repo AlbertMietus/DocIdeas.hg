@@ -35,7 +35,7 @@ can add directives... Still, we can come close, by scanning more documentation-p
 The same script can scan several (documentation) projects; by summing the resulting ``DirectiveCounter``\s together, the
 big-table below is produced.
 
-Currently, I scan some of my personal projects, and a few open-source once:
+Currently, I scan some of my personal projects, and a few open-source ones:
 
 * `cPython      	 <https://github.com/python/cpython.git>`_
 * `Needs (sphinxcontrib) <https://github.com/useblocks/sphinxcontrib-needs.git>`_
@@ -46,9 +46,9 @@ Currently, I scan some of my personal projects, and a few open-source once:
 * `Scipy                 <https://github.com/scipy/scipy.git>`_
 * `Sphinx-doc		 <https://github.com/sphinx-doc/sphinx.git>`_
 
+.. include:: totalCounts.rst.inc
+
 .. note:: Are you missing a directive?
 
    Find a project using it and let me know! And I will rerun the scripts. And simular when a major documentation-project
-   should be included to get better stats. 
-
-.. include:: totalCounts.rst.inc
+   should be included to get better stats.
