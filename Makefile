@@ -33,7 +33,7 @@ endif
 SPHINX_OPTS = ${build_opts} -d ${SPHINX_CACHE}
 
 ${docs_TARGETS}:
-	${PYTHONPATH} $(SPHINXBUILD) -q -c ${DOCd} -b $@ ${SPHINX_OPTS}  ${DOCd} ${OUTd}$@
+	${PYTHONPATH} $(SPHINXBUILD) -q -c . -b $@ ${SPHINX_OPTS}  ${DOCd} ${OUTd}$@
 	@echo "Build finished, See: ${OUTd}$@"
 
 clean:
