@@ -4,3 +4,4 @@ __pycache__
 .*\.pyc
 .cache
 RTD-settings.mk
+VENV

@@ -25,13 +25,11 @@ html_sidebars = {'**': [ 'postcardHeader.html', # empty when no blog!
                          'categories.html',
                          'tagcloud.html']}
 def setup(app):
-    app.add_stylesheet('../_static/SwBMnl+rtfd.css')
+    app.add_css_file('../_static/SwBMnl+rtfd.css')
 
 ## ABlog
 #-------
 extensions.append('ablog')
-
-import ablog; templates_path.append(ablog.get_html_templates_path())
 
 blog_path="ABlog"
 fontawesome_link_cdn = "https://use.fontawesome.com/releases/v5.0.10/css/all.css"
@@ -43,8 +41,10 @@ blog_authors = {'GAM' : ('ALbert Mietus', 'http://albert.mietus.nl') }
 blog_default_author = 'GAM'
 blog_languages = {
     'nl'  : ('Nederlands', None),
-    'en'  : ('English', None) }
+    'en'  : ('English', None)
+}
 blog_default_language = 'en'
+language='en' # As workaround for ABlog.post.generate_atom_feeds -- see: https://github.com/sunpy/ablog/issues/137
 post_always_section = True
 
 
