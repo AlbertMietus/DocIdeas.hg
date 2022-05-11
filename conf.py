@@ -9,7 +9,7 @@ from std_conf import *
 # General information about the project.
 #======================================
 project = 'DocIdeas'
-copyright = "ALbert Mietus, 2018"
+copyright = "ALbert Mietus, 2018 - 2022"
 
 from datetime import datetime
 release = datetime.now().strftime("%Y%m%d.%H")
