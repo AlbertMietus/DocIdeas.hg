@@ -6,13 +6,14 @@ CCastle Doc Notes
 
 My ambition:
 
-   Castle: 'The best Real-Time/Embedded/Technical/System language, EVER'.**
+   Castle: '*The best Real-Time/Embedded/Technical/System language*, **EVER**'
 
    --ALbert Mietus
 
 It’s also the first programming-language that support **CC**: Connected Components. Where `CC` is kind of of the
-successor of OO: active ‘things’ that communicate (solely) by input *and* output ports ... 
-   
+successor of OO: active ‘things’ that communicate (solely) by input *and* output ports ...
+|BR|
+*(Yes, I know, ambition and reality are not always aligned...)*
 
 Castle2
 =======
