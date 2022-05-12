@@ -14,9 +14,10 @@ come to maturity; typically this are `blog pages <blog.html>`_.
    :glob:
 
    README
-   
+
    Blog/index
    BureauLade/index
+   CCastle/index
 
 .. _other-sites:
 
