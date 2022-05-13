@@ -4,8 +4,8 @@
 Compiler Compiler
 =================
 
-.. post:: 2022/05/13
-   :category: Castle, rough
+.. post:: 2022/05/20
+   :category: Castle
    :tags: Castle
 
    In Castle you can define a *grammar* directly in your code. The compiler will *translate* them into functions, using
@@ -17,13 +17,16 @@ Grammars, a short intro
 =======================
 
 A grammar is a collection of (parsing)-**rules** and optionally some *settings*.  Rules are written in a mixture of EBNF
-and PEG meta-syntax.  Let’s start with an simple example::
+and PEG meta-syntax.  Let’s start with an simple example:
+
+.. code-block:: PEG
 
   castle_file  <- ( import_line | interface | implementation )* ;
   import_line  <- IMPORT_stmt ( STRING_literal | qualID ) ';' ;
   qualID       <-  '.'? nameID  ('.' nameID )*   ;
   IMPORT_stmt  =   "import" ;
   ...
+
 
 This basically defines that a ``castle_file`` is either an ``import_line``, an ``interface``, an ``implementation``, or
 sequence of them. Where an ``import_line`` starts with the ``IMPORT_stmt`` *(which is set to the string ‘import’, on
