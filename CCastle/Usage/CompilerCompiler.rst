@@ -4,9 +4,9 @@
 Compiler Compiler
 =================
 
-.. post:: 2022/05/20
-   :category: Castle
-   :tags: Castle
+.. post:: 2022/05/7
+   :category: Castle, Usage
+   :tags: Castle, grammar
 
    In Castle you can define a *grammar* directly in your code. The compiler will *translate* them into functions, using
    the build-in (PEG) **compiler-compiler** -- at least that was it called back in the days of *YACC*.
@@ -21,11 +21,11 @@ and PEG meta-syntax.  Let’s start with an simple example:
 
 .. code-block:: PEG
 
-  castle_file  <- ( import_line | interface | implementation )* ;
-  import_line  <- IMPORT_stmt ( STRING_literal | qualID ) ';' ;
-  qualID       <-  '.'? nameID  ('.' nameID )*   ;
-  IMPORT_stmt  =   "import" ;
-  ...
+   castle_file  <- ( import_line | interface | implementation )* ;
+   import_line  <- IMPORT_stmt ( STRING_literal | qualID ) ';' ;
+   qualID       <-  '.'? nameID  ('.' nameID )*   ;
+   IMPORT_stmt  =   "import" ;
+   ...
 
 
 This basically defines that a ``castle_file`` is either an ``import_line``, an ``interface``, an ``implementation``, or
@@ -62,16 +62,20 @@ need a bit of parsing. The text “42”  is not the number :math:`42.0` -- you 
 
 There a many ways to *parse*. You do not need a full-fledged grammer to translate “42” into :math:`42` or
 :math:`42.0` --a stdlib functions as ``atoi()`` or ``atof()``  will do. But how about handling complex numbers
-(:math:`4+j2`), fractions (:math:`\frac{17}{42}`)?
+(:math:`4+j2`) or fractions (:math:`\frac{17}{42}`)?
 
 Non-parsing
 -----------
 
 As proper passing used to hard, other similar (but simpler) techniques do exist, like `globing
-<https://en.wikipedia.org/wiki/Glob_(programming)>`__ (\*.Castle on the bash-prompt will result in all
+<https://en.wikipedia.org/wiki/Glob_(programming)>`__ (``\*.Castle`` on the bash-prompt will result in all
 Castle-files). Using `regular-expressions <https://en.wikipedia.org/wiki/Regular_expression>`__ is more powerfull, and
-other used to highlight code; a pattern as `//.*$` can be used to highlight (single-line) comment. It often works, but
+often used to highlight code; a pattern as ``//.*$`` can be used to highlight (single-line) comment. It often works, but
 this simple pattern might match a piece of text *inside* a multi-line-(doc)string -- which wrong.
+|BR|
+To parse a input-text its not a sound solution; although I have seen cunning regular-expressions, that almost always
+work. But *reg-exps* have not the same power as a grammar-- That is already proven halve a century ago and will not be
+repeated here.
 
 Grammars are more powerfull
 ===========================
@@ -117,4 +121,4 @@ When you simple like to verify the syntax is correct: use the tree as a boolean:
 But typically you proces/use that tree: like you do in many situations. Read the configuration values, walk over the
 tree, of traverse it as-if it is a DOM. You can even use Castle’s :ref:`matching-statements` to simply that.
 
-Grammars makes reading text easy. Define the structure, call the “main rule” and use the values. Castle make it simple.
+Grammars makes reading text easy. Define the structure, call the “main rule” and use the values. Castle makes that simple!
