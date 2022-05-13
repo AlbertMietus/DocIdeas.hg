@@ -34,7 +34,9 @@ div.breadcrumbs {
 }
 
 
-
+a.footnote-reference {
+    margin-left: -0.8ex;
+}
 
 div.GAM-extra #postcardHeader .blogdate {
     color: #000066; background: #c0c0c0;
