@@ -1,0 +1,218 @@
+.. _grammmar-code:
+
+===============
+Grammar is code
+===============
+
+.. post:: 2022/05/14
+   :category: Castle, DesignStudy
+   :tags: Castle, grammar, PEG
+
+   In :ref:`Castle-CompilerCompiler` we have seen that we can define a grammar within a Castle-program. And we have
+   argued that each grammars-rule can be considered as a function.
+
+   In this post, we look into de details of how this works. And will confirm grammars is code ...
+
+Let’s start with an example. The grammer below is a simplified description of how a (PEG) parsing-rule looks like. The
+syntax in Castle is a bit more complicated, by having more details and options; but very simular. Most of the
+Caste-grammers can be parsed by the grammer below!
+
+.. code-block:: PEG
+
+   PEG_rule        <-  rule_name '<-' expression ';' ;
+   expression      <-  ordered_choice+ ;
+   ordered_choice  <-  sequence ( '|' sequence)* ;
+   sequence        <-  group | atom ;
+   group           <-  '(' expression ')' ;
+   atom            <-  rule_xref | str_lit | regexp ;
+   str_lit         <-  '"'  /[^"]*  '"' ;
+   regexp          <-  '/'  /[^/]*  '/' ;
+   rule_name       <-  ID ;
+   rule_xref       <-  ID ;
+
+With this grammer we can read and check whether an a string is a valid rule by simply calling:
+:math:`ast:=PEG\_rule(single\_line)`. When not, ``ast`` is :math:`False`, else ``ast`` has 4 children (or fields).
+Where :data:`ast[0]` represent the ``rule_name``, :data:`ast[2]` is an ``expression``; which is a sequence of
+``ordered_choice``\(s).
+|BR|
+As the rule has two constants :data:`ast[1]` and :data:`ast[3]` will always match the strings *‘<-’* and *‘;’*.
+
+
+Grammar to code
+===============
+
+Before we study how Castle *expands* a grammar to code, let examine how to do that by manually crafted code, or using a
+external compiler-compiler. In both cases, we will focus on the “validation” part only. And we skip a lot of details;
+assuming you know a bit of theory of (PEG) parser. When not, read Guido van Rossum’s excellent blog-series `PEG Parsing
+Series Overview <https://medium.com/@gvanrossum_83706/peg-parsing-series-de5d41b2ed60>`__
+
+
+Hand written code
+-----------------
+
+Again, let’s suppost we like to verify a string contains a *peg-rule*. Then we need some functions [#func]_, which signature
+are something like:
+
+.. tabs::
+
+   .. code-tab:: python
+
+      def PEG_rule(text: str) -> ast : ...
+      def expression(text: str) -> ast : ...
+      def ordered_choice(text: str) -> ast : ...
+      def sequence(text: str) -> ast : ...
+      ...
+
+   .. code-tab:: c
+
+      ast PEG_rule(char* txt);
+      ast expression(char* txt);
+      ast ordered_choice(char* txt);
+      ast sequence(char* txt);
+      ...
+
+Where we assume the type ``ast`` is defined in the chosen language and will be Null/None/Empty to signal :math:`False`:
+not valid.
+
+The implementation of ``PEG_rule()`` checks thats the input-string starts with a ``rule_name``, followed by the literal
+string **“<-”**, then has an ``expression`` and finally the literal string **“;”**. When one of those (four) steps fail,
+we return :math:`False`.
+|BR|
+We follow this pattern for all rules.
+
+This concept is easy to implement: each rule-function calls other rule-functions as defined by the grammar. When we
+need to check for a literal string we use :func:`expect(txt: str, literal: str) -> bool`. Also, we need a function to find
+an ID; again easy. Sometimes we need to implement a loop --to handle ``*`` and ``+``. Or we need an :math:`or`, to
+implement alternatives (``|``). None of that is rocket science.
+
+A real implementation is a bit harder, as we have to strip spaces (and comments), handle newlines, and need to keep
+track of where we are. Typically that is (nowadays) done by embedding those functions in a class; then the “input text” can be
+stored in the instance (instead of passing them constantly). That instance also has a ‘cursor’ to the current
+location.
+
+More details
+~~~~~~~~~~~~
+
+There are a lot of details that make writing a grammer complex. We mention a few, and what it effect is on the (manually
+written) code.
+
+When using alternatives (the ``|`` operator in the grammar), a PEG-parser will always try the first alternative first,
+Only when that fails, it back-ups an try the next alternative. Sometimes means (almost) start again, and parse the same file almost
+completely again. Therefore the *packrat* algorithm is usually used; using memoization.
+|BR|
+This is not hard: just add a few lines of boilerplate before and after each call. To store intermediate partial-ast(s) in a
+cache.
+
+Sometimes, we like to use another parser-strategy, like LALR_ (used by Yacc_), GLR_ (e.g Bison, the successor of Yacc_)
+or `LL(k)`_ (introduced by ANTLR, which was popular for a while); each one has it pros and cons.  Still, all (or almost)
+start with the same grammar (although smarter strategies may result is shorter, easier to maintain [#maintain]_
+grammars) [#notation]_.
+
+For a long time PEG-parsers where not able to handle left recursive rules [#leftStack]_. Until somebody discovered that is not
+correct. Grammars in Castle can be left recursive! Both direct and indirect recursion is allowed.  It is possible to
+rewrite a grammar to remove the recursion. It makes the grammar however, more complex to maintain *(and for that reason
+Castle will support recursion!)*
+|BR|
+By example, an simple calculation as :math:`7-5-3` should result in :math:`((7-5)-3)` but that needs left
+recursion. When rewriting it, you must be carefull not to get :math:`(7-(5-3))`!
+|BR|
+This can be fixes, by adding an extra step. But it is better to use the update PEG-strategy: Just add more boilerplate code!
+
+.. tabs::
+
+   .. code-tab:: PEG Direct recursion
+
+      expr <- expr '-' term | term
+
+   .. code-tab:: PEG Indirect recursion
+
+      A <- B "a" | "a"
+      B <- A "b" | "b"
+
+   .. code-tab:: PEG A rewritten grammar
+
+      expr <- term ( '-' term )*
+
+
+
+Generating the code
+===================
+
+You might recognise the pattern: To make the grammer more useful, the algorithms become more complex and adds more
+code. This “extra” code, however is not hard; you just need the same (or almost the same) lines at many places.
+|BR|
+This begs for automation. And that is exactly what most compiler-compilers do.
+
+A compiler-compilers read the grammar and generates the code. As shown above it will generate (C, C++, C#, Java,
+Python, or ...) functions [#OrTables]_ that call each-other. It will also detect left-recursion, and might compensate for
+that. The result: more boilerplate-code; but as it is automatically generated this is easy.
+
+Classic tools
+-------------
+There are many tools, that we can use for inspiration. A short overview, and how it influences Castle.
+
+Possible the most famous compiler-compilers is Yacc_. It was developed in 197X and generates C-code that can be compiled
+and linked to your code. To parse a string, you had to call ``yyparse())``.  It would however be relatively simple to
+generate functions with the name of each rule, using the same machinery. In that decade however, the goal was
+differently. Memory was limited, what we can also see in the used grammar: one had to craft it carefully as the was no
+back-tracking an only a single token look-ahead.
+
+Bison_ is Gnu reimplementation of Yacc_, but can use several parsing-algorithms.cLike Yacc_, it used a separate Lexer_:
+*flex* (whereas Yacc uses *lex*).  A lexer_ splits the input-string into a stream of *Tokens* using another (simpler,
+but faster) algorithm. In that time that was relevant.
+|BR|
+As a lexer_ can be implemented with a parsing-algorithm (but not the other-way around), and as the need for speed doesn't
+demand a separate lexer_ anymore; modern parsings are often “scannerless”. This removes the need to use two meta-syntaxes
+(for the lexer/scanner and the parser) and so is simpler to use.
+|BR|
+Also Castle use a scannerless approach.
+
+Castle
+------
+Also in Castle you can use grammars; but now directly in your program, using the Castle-syntax. And Castle will generate
+“code”, Castle-functions that is. But now without an extra tool.
+|BR|
+Actually, it probably will not generate code; nor ‘code as text’. Why should we generate code, to read & parse it back
+and compile it directly? It easier to generate the AST, that would be the result of parsing the generated-code directly.
+
+But the effect is the same. You create a set of function with this generic “text to tree” signature, by writing some
+simle rule. Castle does the rest for you. Easy!
+
+
+----------
+
+.. rubric:: Footnotes
+
+.. [#func]
+   Instead of a **function**, it can also be a *method, or any *callable*. We use ‘function’ a generic term, in the
+   mathematical meaning: some input (parameters) and an output (return value).
+
+.. [#maintain]
+   This is not specially for grammers; all it valid for all programming-languages. New languages may introduce new
+   concepts (like --once-- OO). When the compiler becomes smarter, the programmer can focus in the important bits!
+
+.. [#notation]
+   Aside of multiple parser-algorithms, there are also several notation to write the grammar itself; like `EBNF
+   <https://en.wikipedia.org/wiki/Extended_Backus–Naur_form>`__  `ABNF
+   <https://en.wikipedia.org/wiki/Augmented_Backus–Naur_form>`__, and `YACC`_
+   Most implementations of a given algorithm, use a dialect of a standard one, to enable :ref:`G2C-actions`, or ..
+
+   Also Caste does this: We use the Caste-grammer, which is based on both EBNF and PEG; but using the classic ‘|’
+   instead of the ‘\’ for ordered-choice.
+
+.. [#leftStack]
+   Without going into details left-recursion is hard for many parsing-algorithms. In the shown approach, a
+   rule-function (for a rule that is direct left-recurse) will call itself as first step. In this way no progress is
+   made, and the stack will quickly overrun.
+
+.. [#OrTables]
+   Some tools, like Yacc by example, use another approach. Instead of many functions it has a generic (run-time) library
+   that used code-tables; which are generated by the tool. Still, that is just a implementation detail.
+
+.. _LALR:  https://en.wikipedia.org/wiki/LALR_parser
+.. _LALR(1): LALR_
+.. _GLR:   https://en.wikipedia.org/wiki/GLR_parser
+.. _LL(k): https://en.wikipedia.org/wiki/LL_parser
+.. _YACC:  https://en.wikipedia.org/wiki/Yacc
+.. _Bison: https://en.wikipedia.org/wiki/GNU_Bison
+.. _Lexer: https://en.wikipedia.org/wiki/Lexical_analysis
