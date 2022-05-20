@@ -11,7 +11,7 @@ Compiler Compiler
    In Castle you can define a *grammar* directly in your code. The compiler will *translate* them into functions, using
    the build-in (PEG) **compiler-compiler** -- at least that was it called back in the days of *YACC*.
 
-   How do one use that? And why should you?
+   How does one *use* that? And *why* should you?
 
 Grammars, a short intro
 =======================
@@ -24,55 +24,68 @@ and PEG meta-syntax.  Let’s start with an simple example:
    castle_file  <- ( import_line | interface | implementation )* ;
    import_line  <- IMPORT_stmt ( STRING_literal | qualID ) ';' ;
    qualID       <-  '.'? nameID  ('.' nameID )*   ;
-   IMPORT_stmt  =   "import" ;
+   IMPORT_stmt  =   'import' ;
    ...
 
 
-This basically defines that a ``castle_file`` is either an ``import_line``, an ``interface``, an ``implementation``, or
-sequence of them. Where an ``import_line`` starts with the ``IMPORT_stmt`` *(which is set to the string ‘import’, on
-line 4)*, then comes either a ``STRING_literal`` (indeed a literal-string) or a ``qualID``, and ends with a semicolon
-(`;`). Likewise, a ``qualID`` is a ``nameID`` *(a name that is used as ID, like in any programming language)*,
+This basically defines that a ``castle_file`` is a sequence of ``import_line``\(s), ``interface``\(s), or
+``implementation``\(s); which are all “non-terminal(s)” -- see below. Each of those non-terminals are defined by more
+rules. By example, an ``import_line`` starts with the ``IMPORT_stmt`` then comes either a ``STRING_literal`` or a
+``qualID``, and it ends with a semicolon (`';'`). Likewise, the ``IMPORT_stmt`` is set to ‘import’ (literally).
+
+As we see, a grammar contains non-terminals and terminals. Non-terminals are abstract and defined by grammar-rules,
+containing both (other) non-terminals and terminals. Terminals are concrete: it are the things (tokens) you type when
+programming. Some terminals are like constants like the semicolon at the end of ``import_line``, therefore they are
+quoted in the grammar (Notice, the is also a non quoted semicolon on each line, that is part of the syntax of grammar.)
+|BR|
+Other terminals are more like valuables, they have a value. The ``STRING_literal`` is a good example. It’s value is the
+string itself. Similar for numbers and variable-names.
+
+In this example grammar, a ``qualID`` is a ``nameID`` *(a name that is used as ID, like in any programming language)*,
 optionally followed by sub-names *(again like most languages: a dotted name, specifying a field (in a field, in
 ...)*. In Castle, that name may start with a dot --which is a shorthand notation for “in the current namespace”. You can
 ignore that for know.
 
-The grammer defines how one should read the input --a text--, or more formally: how to parse it. The result of this
-parsing is twofold. It will check whether input conforms to the grammer; resulting a in boolean, for the mathematics
-under us. And it will translate a sequential (flat) text into a tree-structure; which typically much more useful for a
-software-engineer.
+Basically, grammers defines how one should read the input --a text--, or more formally: how to parse it. The result of
+this parsing is twofold. It will check whether input conforms to the grammer; resulting a in boolean, for the
+mathematics under us. And it will translate a sequential (flat) text into a tree-structure; which typically much more
+useful for a software-engineer.
 |BR|
-A well known example is this HTML-file. On disk it’s nothing but text, which is easy to store and to transfer. But
-when send to your brouwer, it’s *parsed* and to create the `DOM
-<https://nl.wikipedia.org/wiki/Document_Object_Model>`__; a tree of the document, with sections, paragraphs,
-hyper-links, etc. By regarding it as a tree, it easy to describe (e.g. with CSS) how all parts, should be shown: all
-headers have a background, the first row in a table is highlighed, etc.
+A well known example is this HTML-file. On disk it’s nothing but text, which is easy to store and to transfer. But when
+send to your brouwer, it’s *parsed* to create the `DOM <https://nl.wikipedia.org/wiki/Document_Object_Model>`__; a
+tree of the document, with sections, paragraphs, hyper-links, etc. By regarding it as a tree, it easy to describe
+(e.g. with CSS) how arts should be shown: all headers have a background, the first row in a table is highlighed,
+etc.
 
 
 Parsing
 =======
-Another well-known example is (the source of a) programm. As code, it is just text. But the compiler will parse it into
+Another well-known example is (the source of a) program. As code, it is just text. But the compiler will parse it into
 a parse-tree and/or an abstract-syntax-tree; which is build out of classes, methods, statements etc.
 |BR|
 But also your favorite IDE will *parse* it; to highlight the code, give tooltips, enable you to quickly navigate and
-refactor it, and all those conviant features that make it your favorite editor.
+refactor it and all those conviant features that make it your favorite editor.
 
 And even you are probably parsing text as part of your daily job. When you un-serialise data, you are (often) parsing
 text; when you read the configuration, you are (or should be ) parsing that text. Even a simple input of the user might
 need a bit of parsing. The text “42”  is not the number :math:`42.0` -- you need to convert it; parse it.
 
 There a many ways to *parse*. You do not need a full-fledged grammer to translate “42” into :math:`42` or
-:math:`42.0` --a stdlib functions as ``atoi()`` or ``atof()``  will do. But how about handling complex numbers
+:math:`42.0`; a stdlib-function as ``atoi()`` or ``atof()`` will do. But how about handling complex numbers
 (:math:`4+j2`) or fractions (:math:`\frac{17}{42}`)?
 
 Non-parsing
 -----------
 
-As proper passing used to hard, other similar (but simpler) techniques do exist, like `globing
-<https://en.wikipedia.org/wiki/Glob_(programming)>`__ (``\*.Castle`` on the bash-prompt will result in all
-Castle-files). Using `regular-expressions <https://en.wikipedia.org/wiki/Regular_expression>`__ is more powerfull, and
-often used to highlight code; a pattern as ``//.*$`` can be used to highlight (single-line) comment. It often works, but
-this simple pattern might match a piece of text *inside* a multi-line-(doc)string -- which wrong.
+As writing a proper-passer used to be (too) hard, other similar (but simpler) techniques are often used, like `globing
+<https://en.wikipedia.org/wiki/Glob_(programming)>`__ *(``\*.Castle`` on the bash-prompt will result in all
+Castle-files)*. This is simple, and will is very simple cases.
 |BR|
+Other try to use `regular-expressions <https://en.wikipedia.org/wiki/Regular_expression>`__ for parsing. RegExps are
+indeed more powerfull then globing, and often used to highlight code.  A pattern as ``//.*$`` can be used to highlight
+(single-line) comment. It often works, but this simple pattern might match a piece of text *inside* a
+multi-line-(doc)string -- which wrong.
+
 To parse a input-text its not a sound solution; although I have seen cunning regular-expressions, that almost always
 work. But *reg-exps* have not the same power as a grammar-- That is already proven halve a century ago and will not be
 repeated here.

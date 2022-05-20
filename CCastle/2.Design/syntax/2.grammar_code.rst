@@ -109,14 +109,7 @@ start with the same grammar (although smarter strategies may result is shorter, 
 grammars) [#notation]_.
 
 For a long time PEG-parsers where not able to handle left recursive rules [#leftStack]_. Until somebody discovered that is not
-correct. Grammars in Castle can be left recursive! Both direct and indirect recursion is allowed.  It is possible to
-rewrite a grammar to remove the recursion. It makes the grammar however, more complex to maintain *(and for that reason
-Castle will support recursion!)*
-|BR|
-By example, an simple calculation as :math:`7-5-3` should result in :math:`((7-5)-3)` but that needs left
-recursion. When rewriting it, you must be carefull not to get :math:`(7-(5-3))`!
-|BR|
-This can be fixes, by adding an extra step. But it is better to use the update PEG-strategy: Just add more boilerplate code!
+correct. Grammars in Castle can be left recursive! Both direct and indirect recursion is allowed.
 
 .. tabs::
 
@@ -133,6 +126,18 @@ This can be fixes, by adding an extra step. But it is better to use the update P
 
       expr <- term ( '-' term )*
 
+.. note::
+
+   It is always possible to rewrite a lef-recursief grammar to one that isn’t. However, that make the grammar harder to
+   read & maintain (for humans). It does also influence the outcome; the tree will differ.
+
+   By example, an simple calculation as :math:`7-5-3` should result in :math:`((7-5)-3)` but that needs left
+   recursion. When rewriting it, you must be carefull not to get :math:`(7-(5-3))`!
+   |BR|
+   This can be fixes, by adding an extra step. But it is better to use the update PEG-strategy: Just add more boilerplate code!
+
+   For that reason Castle will support recursion! You can write the grammar as you need, as we are generating that extra
+   boilerplate anyhow.
 
 
 Generating the code
@@ -170,9 +175,9 @@ Also Castle use a scannerless approach.
 Castle
 ------
 Also in Castle you can use grammars; but now directly in your program, using the Castle-syntax. And Castle will generate
-“code”, Castle-functions that is. But now without an extra tool.
+“code” --Castle-functions that is. But now without an extra tool.
 |BR|
-Actually, it probably will not generate code; nor ‘code as text’. Why should we generate code, to read & parse it back
+Actually, it probably will not generate code; not ‘code as text’. Why should we generate code, to read & parse it back
 and compile it directly? It easier to generate the AST, that would be the result of parsing the generated-code directly.
 
 But the effect is the same. You create a set of function with this generic “text to tree” signature, by writing some
