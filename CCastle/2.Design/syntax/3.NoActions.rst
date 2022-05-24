@@ -6,11 +6,9 @@
 
 .. _G2C-actions:
 
-==========================
-No *inline* actions (BUSY)
-==========================
-
-
+===================
+No *inline* actions
+===================
 
 .. post:: 2022/05/21
    :category: Castle, DesignStudy
