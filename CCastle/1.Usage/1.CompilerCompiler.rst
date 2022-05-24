@@ -1,8 +1,15 @@
+.. sidebar:: On this page
+
+   .. contents::
+      :local:
+      :backlinks: none
+
 .. _Castle-CompilerCompiler:
 
 =================
 Compiler Compiler
 =================
+
 
 .. post:: 2022/05/7
    :category: Castle, Usage
@@ -12,6 +19,7 @@ Compiler Compiler
    the build-in (PEG) **compiler-compiler** -- at least that was it called back in the days of *YACC*.
 
    How does one *use* that? And *why* should you?
+
 
 Grammars, a short intro
 =======================
@@ -47,7 +55,7 @@ optionally followed by sub-names *(again like most languages: a dotted name, spe
 ignore that for know.
 
 Basically, grammers defines how one should read the input --a text--, or more formally: how to parse it. The result of
-this parsing is twofold. It will check whether input conforms to the grammer; resulting a in boolean, for the
+this parsing is twofold. It will check whether input conforms to the grammer; resulting in boolean, for the
 mathematics under us. And it will translate a sequential (flat) text into a tree-structure; which typically much more
 useful for a software-engineer.
 |BR|
@@ -86,7 +94,7 @@ indeed more powerfull then globing, and often used to highlight code.  A pattern
 (single-line) comment. It often works, but this simple pattern might match a piece of text *inside* a
 multi-line-(doc)string -- which wrong.
 
-To parse a input-text its not a sound solution; although I have seen cunning regular-expressions, that almost always
+To parse an input-text its not a sound solution; although I have seen cunning regular-expressions, that almost always
 work. But *reg-exps* have not the same power as a grammar-- That is already proven halve a century ago and will not be
 repeated here.
 
@@ -116,15 +124,35 @@ With those better parsing-algorithms, faster computers with a lot more memory an
 has become more peaceful. Except that you still need an extra step, another sytax, as you still need to use an external
 tool. That sometimes isn’t maintained after a couple of years ...
 |BR|
-The effect is, most developers don’t use grammars; the write parser-like code manually, the settle for less optimal
-result. Or are utterly not aware that grammer can provide a other (better, easier) solution.
+The effect is, most developers don’t use grammars; they write parser-like code manually, or the settle for less optimal
+result. Or are utterly not aware that grammer can provide another, better, easier solution.
 
-Castle has build-in support for grammers, and is hiding the nasty details of parsing-strategies. There is no need to
-generating, compiling, and use that code, with external tools. All that clutter is gone.
+With a few lines, you can define the structure of the input. Each rule is like a function: it has a name (the
+left-hand-side of the rule, so the part before the arrow), and an implementation; the part after the arrow. That
+implementation “calls” other rules, like normal code.
 |BR|
-With a few lines, you define the structure of the input. Each rule is like a function: it has a name (the left-hand-side
-of the rule, so the part before the arrow), and a implementation; the part after the arrow. That implementation “calls”
-other rules, like normal code.
+When you call the “main rule function”, with the input-stream as input, that *file* is parsed, and the complete input is
+ready to use; not more manual scanning and parsing. And when the file-structure is slightly updated, you just add a few
+details to the grammer.
+
+Castle, has it build-in
+=======================
+
+.. use:: Castle has build-in grammers support
+   :ID: U_Grammers
+
+   In Castle one can define a grammer, directly into the source-code; the syntax supports that. As shown above.
+
+   And, like many other details, the language is hiding the nasty details of parsing-strategies. There is no need to
+   generating, compiling, and use that code, with external tools. All that clutter is gone.
+
+   .. tip:: The standard parsing-algorithm is PEG; but that is not an requirement.
+
+      The syntax of grammers is quite generic, it’s the implementation of the Castle-compiler that implements the
+      parsing-strategy; it should supports PEG. But it is free to support others as well (with user-selectable
+      compiler-plugins).
+      |BR|
+      This is not unlike other compiler-options.
 
 To use the grammar you simply call one of those rules as a function: pass the input (string) and it will return a
 (generic) tree-structure.
@@ -135,3 +163,4 @@ But typically you proces/use that tree: like you do in many situations. Read the
 tree, of traverse it as-if it is a DOM. You can even use Castle’s :ref:`matching-statements` to simply that.
 
 Grammars makes reading text easy. Define the structure, call the “main rule” and use the values. Castle makes that simple!
+

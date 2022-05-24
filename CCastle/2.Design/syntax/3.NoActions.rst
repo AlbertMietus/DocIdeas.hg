@@ -1,0 +1,155 @@
+.. sidebar:: On this page
+
+   .. contents::
+      :local:
+      :backlinks: none
+
+.. _G2C-actions:
+
+==========================
+No *inline* actions (BUSY)
+==========================
+
+
+
+.. post:: 2022/05/21
+   :category: Castle, DesignStudy
+   :tags: Castle, grammar
+
+   In :ref:`grammmar-code` we have mentioned that many compiler-compilers reuse the Yacc invention “actions”. And we
+   hinted already that Castle prefers an alternative.
+
+   Let’s see why the old concept is outdated ... And what is easier to use.
+
+Actions, in retrospect
+======================
+
+When parsing an input with the aspiration to verify the input does matches the grammar only; a result as :math:`True` or
+:math:`False` will do. Commonly this is *not* our goal; we want to act on the input. Or at least *read* the content.
+|BR|
+`Yacc`_ invented *actions*: embedded (C-) code-fragments that are copied into the generated parser. When the parser
+reached that point the code as executed. You could anything you like: Build a parse-tree, or directly act on the
+(partially) parsed input [#SAXDOM]_.
+
+It was great (back then). Many, also the more modern, parser-generators use inline-actions -- with the drawback that it
+makes the grammer harder to read.  In spite of the popularity of actions, I think we can do better, as lot has happend
+since then. Most important: parsing-algorithms become a lot smarter. Yacc_ used a simple `LALR(1)`_ pattern; with only 1
+token lookahead. That allowed us to execute an action as soon a the input was read upto that point. Without backtracking
+and other “considere alternatives”, that execution is always deterministic.
+
+Ambiguity
+---------
+
+With *“backtracking”* (and other *smartness*) this has chanced. Both the compiler-compiler and the resulting parsers
+have to consider multiple ways on how to read the input. And may reconsider many tokens and lines later on how to parse
+a (earlier) line. When execution actions “in-line”, the can become executed many times -- which probably isn’t what was
+ment when specifying the grammer.
+
+Many strategies exist to solve this ambiguity.  Some tools demand that each action have no side-effects. When a
+pure-functions (as the are called) many times, the deliver exactly the same result, every time. So the issue is gone;
+albeit it limits you in what your actions can do -- strictly speaking even printing a debug message is not allowed.
+Others use this effect and cache the first result and reuse the next time(s). Again it works, but it limits on what
+actions can do!
+|BR|
+A tools may also postpone all actions until the parser is confident on how to read (parse) the input -- often when all
+input is read. Again it works, unless you expected (debug) output on the fly.
+
+In short: inline-actions have become more restricted and less useful when parser become smarter. Without solving the
+need for maintainable grammers.
+
+Memory
+------
+
+Once memory was very restricted; a compiler-compiler that only needed a single token-lookahead was using not more memory
+then needed. When needed, the programmer could use inline-actions to build the “parse-tree” on the fly. This has become the
+standard. During parsing one builds a tree: a parse-tree. And often we postproces it afterwards [#SAXDOM]_.
+
+As modern tools need to (be able to) read the whole input anyhow to be able parse it, and the memory-issues is solved
+[#fun]_, the need to process “actions” *inline* is gone. But we need a design to act in the input!
+
+
+Visitors
+========
+
+The de-facto solution is **vistitors**. Remember, back-them the `Visitor Pattern`_ wasn't invented yet! But now
+visitors_ are very popular to separates algorithms and data. We like to build the “parse-tree” in one component first
+and, act on it with visitors_ (and friend) later; possible in another component.
+
+.. hint:: Visitors & friends
+
+   There are many kinds of visitors; most (sub)patterns are very interwoven with the language that is used -- although
+   many programming-language do no have “build in” support for this pattern. It the developer who has to write all.
+
+   In classic OO-languages, one write specially named methods in a class. That are called using single (or double)
+   dispatch; to handle the data-object ‘D’ the method `visit_D()` is called “automagically”. And for a subclass ‘S’ one
+   has to implement `visit_S()` -- even when it should do exactly the same as `visit_D()`; no inheritance here.
+
+   Other languages, like CSS, use visitors_ slightly differently. Here `“selectors”
+   <https://en.wikipedia.org/wiki/CSS#Selector>`__ are use to *select* a part of a tree on which a scripts-alike
+   “declaration” will act. One can even select multiple parts; the system will interate over them automatically.
+   |BR|
+   Also `XLST <https://en.wikipedia.org/wiki/XSLT>`_ used this approach; here `XPATH
+   <https://en.wikipedia.org/wiki/XPath>`__ expressions are used to select the data.
+   |BR|
+   This kind of visitor needs language-support: to be able to separate which data is to be pick and which actions has to
+   be performed on all found parts.
+
+
+   Most likely there are even more variants of this pattern (and even within the OO-languages, various version
+   exist). For me, and for now, it are all “**visitors** (or *friends*)”.
+   |BR|
+   Castle will have a more advanced version; as it should be easy for developer (and hard to make mistakes).
+
+
+Castle Has build-in visitors
+============================
+
+.. resolution::  Castle Grammers should not need “inline-actions”
+   :ID: RG_NoInlineActions
+
+   The traditional inline actions, as one invented by Yacc_, are outdated as the complicate the grammer, modern
+   parser-strategies need to read all input anyhow and we aren’t that restricted in memory anymore. So, an alternative
+   that make the code better maintainable is to be preferred.
+
+   .. tip:: It does not imply Castle (or a future version) is not allowed to support inline-actions
+
+      Grammer-tules are just functions; so why not allow pseudo-rules, that act as inline-actions, but are just regular
+      functions (with the same signature)
+
+.. Use::  Castle Grammers can use Visitors
+   :ID: UG_GrammerVisitors
+
+   To act on data, and to separate the data and the action, Castle will support Visitors that can act on Grammers; or
+   more accurate: on the trees that result from a parser-invocation.
+
+   .. tip:: To enable this, Castle has a (generic, abstract) data-type ``Tree``; see :ref:`tree-type`.
+
+   With (parser)visitors, it should be possible to “select” a (set of) tree-part(s), and “call” an some code that will
+   act on that data. Typically, that “code” will be a function (or other callable), but it can also be a lambda, or a
+   “code block”.
+
+----------------------------
+
+.. rubric:: Footnotes
+
+.. [#SAXDOM]
+   With hindsight we can compare this how we handled and are handling XML (and/or HTML) now.
+
+   It started with `SAX`_: “events” that act as small *actions* as soon that part was read/parsed (remember: pasting XML
+   is simple as the tags denote the tree). Nowadays, everybody is using the `DOM`_: the whole input is converted to a
+   tree first (the `DOM`_) and *visitor-alike* “scripts” will process this `DOM`_ afterwards.
+
+.. [#fun]
+   Just for fun: Guess, what is bigger: All source-code of the complete Linux-kernel, or one (high definition) movie?
+
+   
+.. _YACC:  https://en.wikipedia.org/wiki/Yacc
+.. _SAX:   https://en.wikipedia.org/wiki/Simple_API_for_XML
+.. _DOM:   https://en.wikipedia.org/wiki/Document_Object_Model
+
+
+.. _LALR:     https://en.wikipedia.org/wiki/LALR_parser
+.. _LALR(1):  LALR_
+
+.. _Visitor Pattern:   https://en.wikipedia.org/wiki/Visitor_pattern
+.. _Visitors:          `Visitor Pattern`_

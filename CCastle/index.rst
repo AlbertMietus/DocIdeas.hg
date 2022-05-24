@@ -1,8 +1,8 @@
 .. _CCastle2-top:
 
-=================
-CCastle Doc Notes
-=================
+=============
+CCastle Notes
+=============
 
 My ambition:
 
