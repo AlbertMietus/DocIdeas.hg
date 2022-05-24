@@ -26,6 +26,7 @@ html_sidebars = {'**': [ 'postcardHeader.html', # empty when no blog!
                          'tagcloud.html']}
 def setup(app):
     app.add_css_file('../_static/SwBMnl+rtfd.css')
+    app.add_css_file('../_static/std_needs.css')
 
 ## ABlog
 #-------

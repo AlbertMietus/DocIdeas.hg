@@ -3,3 +3,4 @@ sphinxcontrib-plantuml
 sphinxcontrib-fulltoc
 sphinx-rtd-theme
 sphinx-tabs
+sphinxcontrib-needs
