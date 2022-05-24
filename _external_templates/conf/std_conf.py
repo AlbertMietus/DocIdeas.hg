@@ -44,20 +44,20 @@ html_theme_options = {
 }
 html_style = 'SwBMnl+rtfd.css'
 
-# # HTML-Slides (using Hieroglyph)
-# #-------------------------------
-# extensions.append('hieroglyph')
-#
-# slide_theme = 'slides'
-# slide_levels = 2
-#
-# slide_theme_options = {'custom_css': 'SwBMnl-hieroglyph_slides=article.css'}
-#
-# slide_link_to_html=False
-# slide_link_html_to_slides=False
-
 
 # sphinx.ext.todo
 #-----------------
 extensions.append('sphinx.ext.todo')
 todo_include_todos=True
+
+
+# Needs
+#------
+extensions.append('sphinxcontrib.needs')
+needs_include_needs = True
+needs_id_required = True
+needs_id_regex = r'^[A-Z][A-Za-z]*_[A-Za-z0-9-]{2,}'
+
+
+from std_needs import needs_types, needs_layouts
+needs_default_layout = 'clean_collapsed'

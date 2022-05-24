@@ -1,0 +1,49 @@
+/* -*- coding: utf-8-unix -*-
+* By ALbert Mietus, 2022. No (C) Copyright.
+*/
+
+/*
+ * Needs
+ */
+
+
+/* Requirements are body text. Don't make it smaller,lighter, denser 'table-text' */
+.rst-content  table.docutils.need tr *:not(.admonition) p  {font-size: 1rem; margin-bottom: 0.2rem; color: black; }
+.rst-content  table.docutils.need div.admonition,
+.rst-content  table.docutils.need ul.simple { margin-bottom: 0.4rem;}
+
+/* Need head(er) en meta (links, labels, ect) can be less prominent */
+.rst-content  table.need tr.head td,
+.rst-content  table.need tr.meta td {padding: 2px 16px;}
+.rst-content  table.need tr.meta .line-block {line-height: normal;}
+
+/* Make clear boxes around a requirements ... */
+.rst-content  table.need tr  {border: 2px solid #000066;}
+
+/* .. and color them to type (keep in sync with (std) conf.py::needs_types */
+.rst-content table.need.needs_type_resolution:not(.field-list) tbody tr:not(.meta) td {background-color: #9DC5BB;}
+.rst-content table.need.needs_type_use:not(.field-list) tbody tr:not(.meta) td {background-color: #C5EBC3;}
+.rst-content table.need.needs_type_spec:not(.field-list) tbody tr:not(.meta) td {background-color: #FEDCD2;}
+.rst-content table.need.needs_type_impl:not(.field-list) tbody tr:not(.meta) td {background-color: #DF744A;}
+.rst-content table.need.needs_type_verify:not(.field-list) tbody tr:not(.meta) td {background-color: #F6E27F;}
+.rst-content table.need.needs_type_risk:not(.field-list) tbody tr:not(.meta) td {background-color: #AA1234; color:white;}
+.rst-content table.need.needs_type_risk:not(.field-list) tbody tr:not(.meta) td p { color:white;}
+
+/* Fancy, icon-style need-type-name */
+table.need tr.head td .needs_type_name  {
+    color: #000066;
+    text-decoration: underline overline;
+    -webkit-text-decoration-color: #000066;
+    text-decoration-color: #000066;
+}
+
+/*HACK*/
+table.rtm-rotated-head th {height: 20em;} /*Magic Number*/
+table.rtm-rotated-head th:not(:first-child)>p {
+    transform: translate(0px, 30px) /* Magic Numbers */
+                        rotate(-90deg);
+    width: 20px;
+}
+
+.rst-content table.need dl.simple {margin-top: 1ex; margin-bottom: 1ex;}
+.rst-content table.need dl.simple dt {margin-top: 1ex; margin-bottom: 0.2ex;}
