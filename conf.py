@@ -73,4 +73,5 @@ if not on_rtd:
 
 # tabs (There are many versions, we use this one
 #-----------------------------------------------
-extensions.append ('sphinx_tabs.tabs')
+extensions.append('sphinx_tabs.tabs')
+

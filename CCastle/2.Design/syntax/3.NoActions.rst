@@ -1,6 +1,7 @@
 .. sidebar:: On this page
 
    .. contents::
+      :depth: 3
       :local:
       :backlinks: none
 
@@ -140,7 +141,7 @@ Castle Has build-in visitors
 .. [#fun]
    Just for fun: Guess, what is bigger: All source-code of the complete Linux-kernel, or one (high definition) movie?
 
-   
+
 .. _YACC:  https://en.wikipedia.org/wiki/Yacc
 .. _SAX:   https://en.wikipedia.org/wiki/Simple_API_for_XML
 .. _DOM:   https://en.wikipedia.org/wiki/Document_Object_Model
