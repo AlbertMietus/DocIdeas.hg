@@ -1,0 +1,218 @@
+.. include:: /std/localtoc.irst
+
+.. _FSMs-are-needed:
+
+=======================
+FSMs are needed (DRAFT)
+=======================
+
+.. post:: 2022/05/28
+   :category: Castle, Usage
+   :tags: Castle, FSM
+
+   **Finit State Machines** (*FSMs*) are great to model behaviour and control flow. Probably it is one of the most used
+   design patterns; some developers are not even aware they are using it (when using the *State pattern*). And non of
+   the well-known system-programming-languages does support it directly -- it’s a shame;-)
+
+   This leads to sub-optimal, often hard to maintain code. In Castle, you can use define a FSM directly. Let’s see why
+   that is essential.
+
+FSMs, an intro
+**************
+
+
+.. include:: FSM-sidebar-code.irst
+
+The well known `State pattern`_ is basically an FSM_. It has a *finit* (**!**) number of ``states``, ``inputs`` (often
+called events) and ``rules``; the latter define the *next* state, which only depend on the *current* state and the
+*current* input. Optionally, but typically for software: there are also ``actions``: code that is executed on a
+state-transition or the entry/exit of a state.
+
+With a FSM_ one can model simple `“automata” <https://en.wikipedia.org/wiki/Automata_theory>`_. It does not have real
+memory *--it does not remember how it gets in a state--* but does act depending on this internal state. Therefore a FSM
+can act differently on a second button-push: With the first push it goes to a state as :const:`<pressed-once>`, and with the
+second one to :const:`<pressed-twice>`. And we can even define a states as :const:`<pressed-three-times`,
+:const:`<pressed-four-times`, etc; but (a given) FSM has always a limited number of states.
+|BR|
+As soon we add variable (eg :samp:`{counter}`) to the code; it’s no longer a FSM!
+
+
+Conceptually coding a FSM is simple; but in practise it is troublesome to make it *solid* and maintainable. And,... it
+typically results in lots of code. Even a trivial FSM_ with only 3 ``states``, 3 ``events``, and a simple function-call on
+all possible `transactions` (but no entry/leave actions). See the UML-diagram and (python) code examples in the
+side-bar, for a first impression.
+|BR|
+The straightforward implementation used a nested switch: for every :math:`S` ``states`` we divert for every :math:`E`
+``events``; where we need 2 lines: one to update the state and one function-call. This leads to :math:`2*S*E` lines. Or
+bit less when using a compact notation (although the lines become longer).
+|BR|
+When one event is added, we have to update at :math:`E` distinct locations.
+
+Some use a revered approach: fist switch on the ``event``, then on the ``state``. This helps when need to add one event;
+as we only have to add :math:`2*S` lines in 1 place -- but fails when we need to add a state.
+|BR|
+Some languages support a “table” approach. Mathematical, the FSM-rules can be given in a table with ``state`` and
+``input`` on the axes. The next state and the transition-action is filled-in in the cell. This results in compact (and
+easy to maintain) data-structure; but needs some generic code -- which is hardly ever generic, as there many variants.
+|BR|
+Last & least, there are many “OO” templates [#notshown]_; where inheritance is used to distribute code over many subclasses and files. It
+helps at bit, but only limited -- as the many available alternatives already show.
+
+
+Kinds of FSMs
+=============
+
+The theory of FSMs is *old*: it predates modernd computers. With a few memory-cells and some relays (or other
+combinational logic) one can build an “electronic FSM”. Even there is lot of theory available it is often assuming you
+are using such electronic-one -- or even only mathematical model.
+|BR|
+This post will not repeat all that; we give a short overview, focusing on what we need for a SW-FSM and with many
+(wikipedia) links for more theory.
+
+
+More vs Mealy
+-------------
+
+Most FSM-theory is already developed in the 1950ties, by Moore_ and Mealy_; both have a machine_ named to
+them. Conceptually, the have equal power --meaning a Moore_ machine can’t do more as a Mealy_ machine, nor the
+other-way around. But the Mealy_ typically has less states -- which can be relevant for SW-Developers.
+|BR|
+Hardware-developers typically prefers the Moore_ machine, as it is *safer* -- for SW this advantage does not exist.
+
+The big distinction is **actions**. They can  depend both on the (current) *state* and the *input* -- at least in a
+Mealy_ machine. In a Moore_ machine the action may depend only on the state.
+|BR|
+In the diagram (and in code) the difference is where the ``actions`` are located. When they are “on” the arrows --that
+is: a combi of the current-state and the input-- then it is a Mealy_; when they are “in” the state (only) it’s a Moore_
+machine. (as the input does not directly influence the action).
+
+For SW-FSMs we can also differentiate (Moore_ machines) between *Entry* and *Leave* actions; this does not apply in
+electronics, nor in the old concept -- they are not event-driveren (but level-active: there is an output as long as the
+state is active).
+|BR|
+And often, SW-FSMs use both Moore_ and Mealy_ kind of actions; which is fine.
+
+.. include:: FSM-sidebar-NFA.irst
+
+FSM vs NFA
+----------
+
+Most developers ony know the **deterministic** FSM: it has **only one** *next* ``state`` for a given *current* ``state``
+and ``input`` and can’t switch to another ``state`` without an ``input``. There are also **non-deterministic**
+FSMs (NFA_), however.  When a (at least one) *input-sequence* can lead to more-as-one ``states``, the FSM is a NFA_!
+|BR|
+Despite that a NFA_ can’t be realised directly and is mathematically equivalent to a FSM_, they have more
+expressions-power: the table to describe them can be shorter! They are also used to implement regular-expressions
+
+In the NFA_\-theory the input-sequence is valid as there is *a path* (of internal states) that is valid; the options
+others are ignored. It kind of magic: we just assume the NFA_ gambles correctly which path to follow. For mathematics
+that will do; the practical issues we as engineers have is not there concern.
+
+Transformations
+~~~~~~~~~~~~~~~
+
+We could be tempted to implement a NFA_ by using lookahead; but there easier ways as the same theory gives us. It is
+possible to “transform” (rebuild) a FSM_ into another kind. We can transform a Mealy_ into a Moore_ machine, or
+back. That is easy: just a bit of mathematics ...
+
+The same for a NFA_. To implement a NFA_, we can transform it into a deterministic FSM_ first. Again, this used a well-know
+(old, 1959) algorithm, that calculates super-sets and constructs a new FSM. That, newly constructed (deterministic) FSM_
+can have up-to :math:`S**2` states and lot of ``rules``. It might sound complicated, But, with a lot of patience
+everybody can do this (manually) by following some simple steps.
+|BR|
+Would’t it be great when those transformations can be applied automatical? Then we can describe the FSM in the most conviant
+way. And the computer will convert it into one that is deterministic and easy to execute [#converted_actions]_ ...
+
+Epsilon transitions
+~~~~~~~~~~~~~~~~~~~
+Another interesting concept are the :math:`\epsilon`\-transitions --even less known by programmers. Then we allow rules
+with state-transition without input.  This makes the FSM_ always a NFA_; as we can’t predict when this `None` input
+happens.
+|BR|
+Again, it’s main use is to make the “FSM-table” shorter -- albeit one has to add those :math:`\epsilon`\-rules into the
+table!
+
+More energetic FSMs
+*******************
+
+As described above, a non-deterministic NFA_ has more expression-power then a deterministic FSM_ and can be converted
+into a deterministic FSM autom statechart automatically . There are more *new* concepts that help developers to model a
+FSM_ and make there live easier.
+|BR|
+Again, we mention a few and link to more theory.
+
+Statecharts
+===========
+
+Classically, a FSM has atomic ``states`` only.  In 198X a OO-variant of was invented, called `“statechart diagram”
+<https://en.wikipedia.org/wiki/State_diagram#Harel_statechart>`_, by `David Harel`_. This is also know as UML-FSM_, or
+“UML statechart”. Aside of being “OO” it has a few smart concepts, that makes defining a FSM easier. We give you the
+most relevant two.
+
+
+Hierarchically superstates
+--------------------------
+
+When we study (or define) a system we typically start with a few “main statuses”: the system can be  ‘off’, ‘working’
+‘halted’ or ‘in-error’, by example. And we change mode with a few event as *TurnOn* *TurnOff*, and *InteralError*. The
+‘off’-state is quite clear, but how about ‘on’? And perhaps the are a few steps between ‘off’ and ‘on’ ..
+
+
+
+Concurent states (Orthogonal regions)
+--------------------------------------
+
+XXXX
+
+Castle:
+*********
+
+XXX
+
+----------
+
+.. rubric:: Footnotes
+
+.. [#notshown]
+   The OO-variants are not shown, as even this 3 by 3 FSM will result is many classes, files an even more lines-of code
+   than the trivial one. When the FSM_ becomes bigger, the OO variants have some advantages; as it scales a bit
+   better. But scatters the FSM-behaviour over many files, and so does hardly solves the problem of understandability.
+   
+.. [#converted_actions]
+   There is still a “small” practical issue we have to consider: **converted-actions**. When converting we got more and
+   other states and transition. Most algorithm kind-of ignore the actions; but we can’t. We have to convert them to;
+   which is conceptually simple (just move them along with the arrows), but more work (but as we will automatte this
+   anyhow, we can ignore that.
+   |BR|
+   When converting a non-deterministic NFA_ to a deterministic FSM_, we kind of “know” which arrow had to be selected
+   only a bit *later*, when more inputs become available. Remember, the NFA_ “gambles” always correctly, but we can’t! A
+   practical machine has wait until enough input is available, before selecting.  This implies, worst case, all actions
+   are executed after the final input is processed.
+
+   This may be an options, but when (e.g.) real-time behaviour is needed [#elevator]_ this is not acceptable. Then, the
+   developers has no other options the to converting (partially) by hand (an head).
+
+.. [#elevator]
+   As a typical example: an elevator. Probably we can really optimise the movement of the elevator when we know whether
+   next passengier needs to up or down. With a NFA_ that is easy: define an up and a down and decide later, on that next
+   button. This will not be practical, at least not for that first passengier (and especially not for the last one that
+   day).
+   |BR|
+   There is no way, we can automatically convert that “optimised” NFA_ into a practical one. Therefore we need
+   human-creativity. 
+
+
+   
+
+
+
+
+.. _FSM:		https://en.wikipedia.org/wiki/Finite-state_machine
+.. _machine:		FSM_
+.. _State pattern: 	https://en.wikipedia.org/wiki/State_pattern
+.. _Moore:		https://en.wikipedia.org/wiki/Moore_machine
+.. _Mealy:		https://en.wikipedia.org/wiki/Mealy_machine
+
+.. _UML-FSM:		https://en.wikipedia.org/wiki/UML_state_machine
+.. _David Harel:	https://en.wikipedia.org/wiki/David_Harel
+.. _NFA:		https://en.wikipedia.org/wiki/Nondeterministic_finite_automaton
