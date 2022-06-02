@@ -67,6 +67,9 @@ div.GAM-extra li.ablog-cloud {
     border: 1px solid #c0c0c0;
     border-radius: 33%;
 }
+.rst-content .sidebar { clear: both; }
 .rst-content .sidebar p.sidebar-title {margin-bottom: 0;}
 .rst-content .sidebar div.local li p  {margin: 0;}
-
+.rst-content .localtoc.sidebar {
+    max-width:40%; width: auto;
+}
