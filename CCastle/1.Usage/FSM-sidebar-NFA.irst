@@ -11,7 +11,7 @@
 
            @startuml
            hide empty description
-           !theme blueprint
+           '’!theme blueprint
 
            state A
            state B
@@ -41,7 +41,7 @@
 
            @startuml
            hide empty description
-           !theme crt-green
+           ''!theme crt-green
 
            state A
            state B_or_C #green
@@ -79,7 +79,8 @@
 
            @startuml
            hide empty description
-           !theme vibrant
+           ''!theme vibrant
+
            [*]  -down-> up_1 : A
            dwn1 -up-> [*]    : B
 
@@ -89,11 +90,11 @@
            up_4 -->  up_5   : A
            up_5 -->  up_6   : A
 
-           dwn1 <-up- dwn2 : B
-           dwn2 <-- dwn3 : B
-           dwn3 <-- dwn4 : B
-           dwn4 <-- dwn5 : B
-           dwn5 <-- dwn6 : B
+           dwn2 -up-> dwn1 : B
+           dwn3 -up-> dwn2 : B
+           dwn4 -up-> dwn3 : B
+           dwn5 -up-> dwn4 : B
+           dwn6 -up-> dwn5 : B
 
            up_2 -> dwn2   : ϵ
            up_3 -> dwn3   : ϵ
@@ -130,10 +131,10 @@
            up_5 -> dwn4   : B
            up_6 -> dwn5   : B
 
-           dwn1 <-- dwn2 : B
-           dwn2 <-- dwn3 : B
-           dwn3 <-- dwn4 : B
-           dwn4 <-- dwn5 : B
+           dwn2 -up-> dwn1 : B
+           dwn3 -up-> dwn2 : B
+           dwn4 -up-> dwn3 : B
+           dwn5 -up-> dwn4 : B
 
            note left of up_1
              Its the same the

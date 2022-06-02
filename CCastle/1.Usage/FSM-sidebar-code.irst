@@ -11,7 +11,7 @@
 
            @startuml
            hide empty description
-           !theme crt-amber
+           ''!theme crt-amber
 
            [*]  --> S1
 
