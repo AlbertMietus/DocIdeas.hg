@@ -70,6 +70,9 @@ if on_rtd:
 else:
     plantuml = 'java  -Djava.awt.headless=true  -jar /Users/albert/Apps/PlantUML/libexec/plantuml.jar'
 
+import subprocess
+result = subprocess.run(plantuml.split() +['-version'], stdout=subprocess.PIPE)
+print(f"Using plantuml -version: {result.stdout}")
 
 
 
