@@ -52,8 +52,8 @@
            A      --> B_or_C : Ea
            B_or_C --> B : Eb /\n act_1()
            B_or_C --> C : Ec /\n act_2()
-           B      --> D : ~~directly~~ /\n act_3()
-           C      --> D : ~~directly~~ /\n act_4()
+           B      --> D : ~~instantly~~ /\n act_3()
+           C      --> D : ~~instantly~~ /\n act_4()
 
            note left of B_or_C  #green
               Input **Ea** always results
@@ -66,7 +66,7 @@
               the second input
            end note
            note left of D
-             ~~directly~~ is kind of
+             ~~instantly~~ is kind of
              an epsilon transition,
              but easy to implement
            end note

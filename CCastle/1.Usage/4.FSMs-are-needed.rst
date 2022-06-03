@@ -2,11 +2,11 @@
 
 .. _FSMs-are-needed:
 
-=======================
-FSMs are needed (DRAFT)
-=======================
+===============
+FSMs are needed
+===============
 
-.. post:: 2022/05/28
+.. post:: 2022/06/04
    :category: Castle, Usage
    :tags: Castle, FSM
 
@@ -132,14 +132,17 @@ happens.
 Again, it’s main use is to make the “FSM-table” shorter -- albeit one has to add those :math:`\epsilon`\-rules into the
 table!
 
+A curious transition is the “`instantly` :math:`\epsilon`\-transition”; its needs no input -- and so (when used) the FSM_
+becomes a NFA_. But when this is the only ``rule`` for a ``state``; it does not make a FSM_ non-deterministic and is easy
+to implement in software: :code:`when state==C: { state:=N; act_appropriate(); }`. This is often easier then removing
+that state and combining the actions (one step back in all paths).
+
 More energetic FSMs
 *******************
 
-As described above, a non-deterministic NFA_ has more expression-power then a deterministic FSM_ and can be converted
-into a deterministic FSM autom statechart automatically . There are more *new* concepts that help developers to model a
-FSM_ and make there live easier.
-|BR|
-Again, we mention a few and link to more theory.
+As described above a non-deterministic NFA_ has more expression-power then a deterministic FSM_ and can be converted
+into a deterministic FSM  automatically. This makes designing a FSM more easy. Likewise, there are more relative *new*
+know-how to make the job of the (SW) developers easy. We mention a few and link to more theory.
 
 Statecharts
 ===========
@@ -153,21 +156,98 @@ most relevant two.
 Hierarchically superstates
 --------------------------
 
-When we study (or define) a system we typically start with a few “main statuses”: the system can be  ‘off’, ‘working’
-‘halted’ or ‘in-error’, by example. And we change mode with a few event as *TurnOn* *TurnOff*, and *InteralError*. The
-‘off’-state is quite clear, but how about ‘on’? And perhaps the are a few steps between ‘off’ and ‘on’ ..
+When we study (or define) a system we typically start with a few “main statuses”: the system can be :const:`off`,
+:const:`working` :const:`halted` or :const:`in-error`, by example. And we change mode with a few event as *TurnOn*
+*TurnOff*, and *InteralError*. The ‘off’-state is quite clear, but how about ‘on’? And perhaps the are a few steps
+between :const:`off` and :const:`on`.
+|BR|
+We can solve this by adding more ``states`` In almost all of those of those ``states``, an event as *TurnOff* can be
+expected, and in those cases it should result in :const:`off` --as before.
 
+This does nog make the FSM_ easier to design nor maintain! Wouldn't it be great to a kind generic “on-state” with one
+generic *TurnOff* event? And have kind of sub-state of “on-state” that can implement the details?
+|BR|
+With hierarchically superstates this is possible. One groups a set of states together and call that group a
+superstate. One even repeat that process, and add higher-level group -- or most developers prefer: zoom in and create
+“sub” states within a state.
+
+So the :const:`on` state is kind of split in to :const:`booting`, :const:`warming-up`  and :const:`operational`. And
+:const:`operational` contains :const:`do-prog_1`, :const:`do-prog_2`, :const:`do-prog_3`, ect. And in all cases the
+event *TurnOff* will turn-off the system -- but you only need to add one rule!
 
 
 Concurent states (Orthogonal regions)
 --------------------------------------
 
-XXXX
+Concurent states are more complex as super/subs-states. It are kind of local states are active
+*simultaneously*. `Wikipedia <https://en.wikipedia.org/wiki/UML_state_machine#Orthogonal_regions>`__ has a nice example
+with the num-lock and caps-lock key: both change state -- one to select capital on/of, and one to prefer arrow over
+number -- but the are independent and concurent.
 
-Castle:
-*********
+All kind of actions
+-------------------
 
-XXX
+For a SW-designer the main difference between a Moore_ and a Mealy_ is where to put actions, as described above. But why
+choose? In software it possible to use both Mealy_ actions (‘on’ the transition) as well as Moore_ actions (‘in’ a
+state). And we can even use ‘Entry’ and ‘Leave’ (or *exit* -- but that has the same 1-character abbreviation).
+
+When using nested-stated we can define all of those kind-of actions on all levels. `David Harel`_ was so kind to define
+the sematics. Such that we now agree on the order in which the ``rules`` and ``actions`` should be executed, when many
+are valid. The result is quite simple: see UML-FSM_ for the “transition execution sequence”.
+
+
+Castle: Build-in FSM syntax
+***************************
+
+.. use:: Castle has generic FSM syntax build-in
+   :ID: U_FSM_Syntax
+
+   In Castle one can defines FSM directly in code.
+
+   As argued above FSMs and the state (design) pattern are wildly used and there a no excuses to not support that in a
+   modern programming-language. Castle will have syntax this
+
+   For the same reason, there is no need to restrict the syntax to one kind of FSM_ (including the NFA), or prefer one
+   kind of actions above others. Castle will have syntax support for “all” options (unless this conflicts with other
+   language-rules).
+
+   .. tip:: non deterministic rules are not excluded
+
+      Having syntax support for non-deterministic NFA_ rules does not imply the “compiler” will resolves all conflicts
+      (see e.g. [#converted_actions]). But those potential conflicts will not restrict the Castle syntax.
+
+      Compare this by “devision by zero”. Everybody know that isn’t possible, but no language (syntax) will disallow
+      it. But a compiler may warn for it.
+      |BR|
+      Castle has the same approach: the language/syntax allow “the generic case”. The SW-developers are responsible to
+      define a sound FSM. And Castle will support her/him by doing trivial transformations, and giving errors/warnings
+      when they cant’ be resolved
+
+.. use:: Castle supports NFA_ and UML-FSM_ extensions
+   :ID: U_FSM_extensions
+   :links: U_FSM_Syntax
+
+   To clarify :need:`U_FSM_Syntax` even more.
+
+   Castle will support:
+
+   #. non-deterministic rules
+   #. Epsilon transitions
+   #. Instantly (:math:`/epsilon/`) transitions
+   #. Hierarchically superstates (or sub-states)
+   #. Concurent states (Orthogonal ones)
+   #. Moore_ and Mealy_ transitions
+   #. Entry and Leave transitions
+
+   This list is not restrictive, and may be extended
+
+.. tip:: Once ...
+
+   Having syntax-support is meaningless without the proper compile/run-time support. That however is *not* demand is
+   thise needs. One may expect that early implementations of the Castle-compiler can “parse” all syntax, but ony really
+   compiler (and/or optimise) the easier parts of NFA_.
+   |BR|
+   Once, all will be fully supported!
 
 ----------
 
@@ -177,7 +257,7 @@ XXX
    The OO-variants are not shown, as even this 3 by 3 FSM will result is many classes, files an even more lines-of code
    than the trivial one. When the FSM_ becomes bigger, the OO variants have some advantages; as it scales a bit
    better. But scatters the FSM-behaviour over many files, and so does hardly solves the problem of understandability.
-   
+
 .. [#converted_actions]
    There is still a “small” practical issue we have to consider: **converted-actions**. When converting we got more and
    other states and transition. Most algorithm kind-of ignore the actions; but we can’t. We have to convert them to;
@@ -199,12 +279,7 @@ XXX
    day).
    |BR|
    There is no way, we can automatically convert that “optimised” NFA_ into a practical one. Therefore we need
-   human-creativity. 
-
-
-   
-
-
+   human-creativity.
 
 
 .. _FSM:		https://en.wikipedia.org/wiki/Finite-state_machine
