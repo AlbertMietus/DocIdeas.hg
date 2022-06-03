@@ -39,3 +39,12 @@ This section contains a set of pages & blog-post on this topic. Some a design-st
    *
    */index
 
+
+.. note:: Old plantUML-version on RTD
+
+   Some UML-diagrams are shown in this section, which are defied by `plantUML
+   <https://en.wikipedia.org/wiki/PlantUML>`__. However, `ReadTheDocs
+   <http://docideas.mietus.nl/en/ccastle-busy/CCastle/index.html>`__ currently support only an old version (*1.2017.15*;
+   **2017**). which has no theme and other support to make it more nice-looking. Therefore all that “lines” are comment
+   out (or rewritten)
+  
