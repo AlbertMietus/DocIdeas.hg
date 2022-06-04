@@ -1,0 +1,149 @@
+.. -*- rst -*-
+   included in  `4.FSMs-are-needed.rst`
+
+.. sidebar::
+
+   .. tabs::
+
+     .. tab:: UML
+        :selected:
+
+        .. uml::
+
+           @startuml
+           hide empty description
+           ''!theme crt-amber
+
+           [*]  --> S1
+
+           state S1
+           state S2
+           state S3
+
+
+           S1 -> S2 :  E_a /\naction_s1s2
+           S1 ---> S3 :  E_b /\naction_s1s3
+           S1 -> S1 :  E_c /\naction_s1s1
+
+           S2 -> S3 :  E_a /\naction_s2s3
+           S2 --> S1 :  E_b /\naction_s3s2
+           S2 ---> S2 :  E_c /\naction_s3s2
+
+           S3 -> S1 : E_a /\naction_s3s1
+           S3 --> S2 : E_b /\naction_s3s2
+           S3 ---> S3 : E_c /\naction_s3s3
+           @enduml
+
+
+     .. code-tab:: python nested
+
+        if state == 'S1':
+            if event == 'E_a':
+                state='S2'
+                action_s1s2()
+            elif event == 'E_b':
+                state='S3'
+                action_s1s3()
+            elif event == 'E_c':
+                # Don't change state
+                action_s1s1()
+        elif state == 'S2':
+            if event == 'E_a':
+                state='S3'
+                action_s2s3()
+            elif event == 'E_b':
+                state='S1'
+                action_s2s1()
+            elif event == 'E_c':
+                # Don't change state
+                action_s2s2()
+        elif state == 'S3':
+            if event == 'E_a':
+                state='S1'
+                action_s3s1()
+            elif event == 'E_b':
+                state='S2'
+                action_s2s2()
+            elif event == 'E_c':
+                # Don't change state
+                action_s3s3()
+
+     .. code-tab:: python compact
+
+        if state == 'S1':
+            if event == 'E_a':
+                state='S2'; action_s1s2()
+            elif event == 'E_b':
+                state='S3'; action_s1s3()
+            elif event == 'E_c':
+                action_s1s1()
+        elif state == 'S2':
+            if event == 'E_a':
+                state='S3'; action_s2s3()
+            elif event == 'E_b':
+                state='S1'; action_s2s1()
+            elif event == 'E_c':
+                action_s2s2()
+        elif state == 'S3':
+            if event == 'E_a':
+                state='S1'; action_s3s1()
+            elif event == 'E_b':
+                state='S2'; action_s2s2()
+            elif event == 'E_c':
+                action_s3s3()
+
+     .. code-tab:: python revered
+
+        if event == 'E_a':
+            if state == 'S1':
+                state='S2'
+                action_s1s2()
+            elif state == 'S2':
+                state='S3';
+                action_s3s3()
+            elif state == 'S3':
+                state='S1';
+                action_s3s1()
+        elif event == 'E_b':
+            if state == 'S1':
+                state='S3'
+                action_s1s3()
+            elif state == 'S2':
+                state='S1';
+                action_s3s1()
+            elif state == 'S3':
+                state='S2';
+                action_s3s2()
+        elif event == 'E_c':
+            # No state changes
+            if state == 'S1':
+                action_s1s1()
+            elif state == 'S2':
+                action_s2s2()
+            elif state == 'S3':
+                action_s3s3()
+
+     .. code-tab:: python table
+
+        from FSM.dict_table import FSM
+
+        table = {
+            'S1' : {
+                'E_a' : ('S2', action_s1s2),
+                'E_b' : ('S3', action_s1s3),
+                'E_c' : (None, action_s1s1),
+                },
+            'S2' : {
+                'E_a' : ('S3', action_s2s3),
+                'E_b' : ('S1', action_s2s1),
+                'E_c' : (None, action_s2s2),
+                },
+            'S3' : {
+                'E_a' : ('S1', action_s3s1),
+                'E_b' : ('S2', action_s3s2),
+                'E_c' : (None, action_s3s3),
+                }
+            }
+
+        FSM.step(table, state, event)
+

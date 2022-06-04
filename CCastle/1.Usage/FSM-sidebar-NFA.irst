@@ -1,0 +1,149 @@
+.. -*- rst -*-
+   included in  `4.FSMs-are-needed.rst`
+
+.. sidebar::
+
+   .. tabs::
+
+     .. tab:: NFA
+        :selected:
+
+        .. uml::
+
+           @startuml
+           hide empty description
+           '’!theme blueprint
+
+           state A
+           state B
+           state C
+           state D
+
+           A --> B : Ea /\n act_1()
+           A --> C : Ea /\n act_2()
+           B --> D : Eb /\n act_3()
+           C --> D : Ec /\n act_4()
+
+           note right of A #red
+              Input **Ea** in state //A//\n
+              can lead to //B// or //C//.
+           end note
+           note right of D #red
+              Only after receiving  the next\n
+              event (Eb or Ec) the NFA knowns\n
+              which path was to be chosen .
+           end note
+
+           @enduml
+
+     .. tab:: Transformed1
+
+        .. uml::
+
+           @startuml
+           hide empty description
+           ''!theme crt-green
+
+           state A
+           state B_or_C #green
+           state B
+           state C
+           state D
+
+           A      --> B_or_C : Ea
+           B_or_C --> B : Eb /\n act_1()
+           B_or_C --> C : Ec /\n act_2()
+           B      --> D : ~~instantly~~ /\n act_3()
+           C      --> D : ~~instantly~~ /\n act_4()
+
+           note left of B_or_C  #green
+              Input **Ea** always results
+              in state //B_or_C//, without
+              an action
+           end note
+           note left of B
+              The 1st action
+              comes **after**
+              the second input
+           end note
+           note left of D
+             ~~instantly~~ is kind of
+             an epsilon transition,
+             but easy to implement
+           end note
+
+           @enduml
+
+     .. tab:: Epsilon
+
+        .. uml::
+
+           @startuml
+           hide empty description
+           ''!theme vibrant
+
+           [*]  -down-> up_1 : A
+           dwn1 -up-> [*]    : B
+
+           up_1 -->  up_2   : A
+           up_2 -->  up_3   : A
+           up_3 -->  up_4   : A
+           up_4 -->  up_5   : A
+           up_5 -->  up_6   : A
+
+           dwn2 -up-> dwn1 : B
+           dwn3 -up-> dwn2 : B
+           dwn4 -up-> dwn3 : B
+           dwn5 -up-> dwn4 : B
+           dwn6 -up-> dwn5 : B
+
+           up_2 -> dwn2   : ϵ
+           up_3 -> dwn3   : ϵ
+           up_4 -> dwn4   : ϵ
+           up_5 -> dwn5   : ϵ
+           up_6 -> dwn6   : ϵ
+
+           note right of dwn2
+              By using **ϵ-transitions**
+              the diagram becomes quit regulair
+           end note
+           @enduml
+
+     .. tab:: Transformed2
+
+        .. uml::
+
+           @startuml
+           hide empty description
+           scale 2/3
+
+           [*]  -down-> up_1 :A
+           dwn1 -up-> [*]    :B
+
+           up_1 -->  up_2   : A
+           up_2 -->  up_3   : A
+           up_3 -->  up_4   : A
+           up_4 -->  up_5   : A
+           up_5 -->  up_6   : A
+
+           up_2 -> dwn1   : B
+           up_3 -> dwn2   : B
+           up_4 -> dwn3   : B
+           up_5 -> dwn4   : B
+           up_6 -> dwn5   : B
+
+           dwn2 -up-> dwn1 : B
+           dwn3 -up-> dwn2 : B
+           dwn4 -up-> dwn3 : B
+           dwn5 -up-> dwn4 : B
+
+           note left of up_1
+             Its the same the
+             Epsilon version
+           end note
+           note left of up_2
+             The up/down levels
+             are no longer aligned
+           end note
+
+           @enduml

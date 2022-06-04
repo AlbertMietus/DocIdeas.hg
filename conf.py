@@ -65,9 +65,15 @@ autodoc_member_order='bysource'
 # plantUML
 #---------
 extensions.append('sphinxcontrib.plantuml')
-if not on_rtd:
-    plantuml = 'java -jar /Users/albert/Apps/PlantUML/libexec/plantuml.jar -nogui'
+if on_rtd:
+    plantuml = 'java  -Djava.awt.headless=true  -jar /usr/share/plantuml/plantuml.jar'
+else:
+    #plantuml = 'java  -Djava.awt.headless=true  -jar /Users/albert/Apps/PlantUML/libexec/plantuml.jar'
+    plantuml = 'java  -Djava.awt.headless=true  -jar /Users/albert/Apps/PlantUML/libexec/plantuml-RTfD.jar'
 
+import subprocess
+result = subprocess.run(plantuml.split() +['-version'], stdout=subprocess.PIPE)
+print(f"Using plantuml -version: {result.stdout}")
 
 
 
