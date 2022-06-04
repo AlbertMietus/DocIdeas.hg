@@ -6,6 +6,7 @@
    .. tabs::
 
      .. tab:: NFA
+        :selected:
 
         .. uml::
 

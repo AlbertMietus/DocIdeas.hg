@@ -37,12 +37,12 @@ second one to :const:`<pressed-twice>`. And we can even define a states as :cons
 As soon we add variable (eg :samp:`{counter}`) to the code; it’s no longer a FSM!
 
 
-Conceptually coding a FSM is simple; but in practise it is troublesome to make it *solid* and maintainable. And,... it
-typically results in lots of code. Even a trivial FSM_ with only 3 ``states``, 3 ``events``, and a simple function-call on
-all possible `transactions` (but no entry/leave actions). See the UML-diagram and (python) code examples in the
-side-bar, for a first impression.
+Conceptually coding a FSM is simple; but in practise it is troublesome to make it *solid* and maintainable. Typically
+the result is a lot of code. Even a trivial FSM_ with only 3 ``states``, 3 ``events``, and a single function-call on
+all possible `transactions` (but no entry/leave actions) will give about 30 lines. See the UML-diagram and (python) code
+examples in the side-bar, for a first impression.
 |BR|
-The straightforward implementation used a nested switch: for every :math:`S` ``states`` we divert for every :math:`E`
+This straightforward implementation used a nested switch: for every :math:`S` ``states`` we divert for every :math:`E`
 ``events``; where we need 2 lines: one to update the state and one function-call. This leads to :math:`2*S*E` lines. Or
 bit less when using a compact notation (although the lines become longer).
 |BR|
@@ -104,9 +104,9 @@ FSMs (NFA_), however.  When a (at least one) *input-sequence* can lead to more-a
 Despite that a NFA_ can’t be realised directly and is mathematically equivalent to a FSM_, they have more
 expressions-power: the table to describe them can be shorter! They are also used to implement regular-expressions
 
-In the NFA_\-theory the input-sequence is valid as there is *a path* (of internal states) that is valid; the options
-others are ignored. It kind of magic: we just assume the NFA_ gambles correctly which path to follow. For mathematics
-that will do; the practical issues we as engineers have is not there concern.
+In the NFA_\-theory the input-sequence is ‘valid’ as there is *a path* (of internal states) that is valid; the others
+options are ignored. It kind of magic: we just assume the NFA_ gambles correctly which path to follow. For mathematics
+that will do; the practical issues, that we as engineers need to solve, is not there concern.
 
 Transformations
 ~~~~~~~~~~~~~~~
@@ -115,10 +115,11 @@ We could be tempted to implement a NFA_ by using lookahead; but there easier way
 possible to “transform” (rebuild) a FSM_ into another kind. We can transform a Mealy_ into a Moore_ machine, or
 back. That is easy: just a bit of mathematics ...
 
-The same for a NFA_. To implement a NFA_, we can transform it into a deterministic FSM_ first. Again, this used a well-know
-(old, 1959) algorithm, that calculates super-sets and constructs a new FSM. That, newly constructed (deterministic) FSM_
-can have up-to :math:`S**2` states and lot of ``rules``. It might sound complicated, But, with a lot of patience
-everybody can do this (manually) by following some simple steps.
+The same for a NFA_. To implement a NFA_, we can transform it into a deterministic FSM_ first. Again, this uses a
+well-know (old, 1959) `algorithm <https://en.wikipedia.org/wiki/Powerset_construction>`__, that calculates super-sets
+and constructs a new FSM. That, newly constructed (deterministic) FSM_ can have up-to :math:`S**2` states and lot of
+``rules``. It might sound complicated, But, with a lot of patience everybody can do this (manually) by following some
+simple steps.
 |BR|
 Would’t it be great when those transformations can be applied automatical? Then we can describe the FSM in the most conviant
 way. And the computer will convert it into one that is deterministic and easy to execute [#converted_actions]_ ...
@@ -126,16 +127,19 @@ way. And the computer will convert it into one that is deterministic and easy to
 Epsilon transitions
 ~~~~~~~~~~~~~~~~~~~
 Another interesting concept are the :math:`\epsilon`\-transitions --even less known by programmers. Then we allow rules
-with state-transition without input.  This makes the FSM_ always a NFA_; as we can’t predict when this `None` input
-happens.
+with state-transition **without** input.  This makes the FSM_ always a NFA_; as we can’t predict when/whether this
+`None` input happens.
 |BR|
 Again, it’s main use is to make the “FSM-table” shorter -- albeit one has to add those :math:`\epsilon`\-rules into the
 table!
 
-A curious transition is the “`instantly` :math:`\epsilon`\-transition”; its needs no input -- and so (when used) the FSM_
-becomes a NFA_. But when this is the only ``rule`` for a ``state``; it does not make a FSM_ non-deterministic and is easy
-to implement in software: :code:`when state==C: { state:=N; act_appropriate(); }`. This is often easier then removing
-that state and combining the actions (one step back in all paths).
+A curious transition is the “`instantly` :math:`\epsilon`\-transition”, where no other rules are allowed (for states
+that has uses it). As its needs no input, we have designed a NFA_. However, as it is the only possibility and the *spec*
+is that this :math:`\epsilon`\-input happens directly, it’s easy to implement in software: :code:`when state==C: {
+state:=N; act_appropriate(); }`.
+|BR|
+This is often easier then removing that state and combining the actions (one step back in all paths). And quite popular
+by SW-developers -- one of the few places where the practise is smoother then the formal theory.
 
 More energetic FSMs
 *******************
@@ -147,15 +151,14 @@ know-how to make the job of the (SW) developers easy. We mention a few and link 
 Statecharts
 ===========
 
-Classically, a FSM has atomic ``states`` only.  In 198X a OO-variant of was invented, called `“statechart diagram”
+Classically, a FSM has atomic ``states`` only.  In 198X a OO-variant of was invented called the `“statechart diagram”
 <https://en.wikipedia.org/wiki/State_diagram#Harel_statechart>`_, by `David Harel`_. This is also know as UML-FSM_, or
 “UML statechart”. Aside of being “OO” it has a few smart concepts, that makes defining a FSM easier. We give you the
-most relevant two.
+most relevants two.
 
 
 Hierarchically superstates
 --------------------------
-
 When we study (or define) a system we typically start with a few “main statuses”: the system can be :const:`off`,
 :const:`working` :const:`halted` or :const:`in-error`, by example. And we change mode with a few event as *TurnOn*
 *TurnOff*, and *InteralError*. The ‘off’-state is quite clear, but how about ‘on’? And perhaps the are a few steps
@@ -164,32 +167,33 @@ between :const:`off` and :const:`on`.
 We can solve this by adding more ``states`` In almost all of those of those ``states``, an event as *TurnOff* can be
 expected, and in those cases it should result in :const:`off` --as before.
 
-This does nog make the FSM_ easier to design nor maintain! Wouldn't it be great to a kind generic “on-state” with one
+This make the FSM_ bigger and so less pleasant to design and maintain. Wouldn't it be great to a kind generic “on-state” with one
 generic *TurnOff* event? And have kind of sub-state of “on-state” that can implement the details?
 |BR|
 With hierarchically superstates this is possible. One groups a set of states together and call that group a
 superstate. One even repeat that process, and add higher-level group -- or most developers prefer: zoom in and create
 “sub” states within a state.
 
-So the :const:`on` state is kind of split in to :const:`booting`, :const:`warming-up`  and :const:`operational`. And
+So the :const:`on` state is kind of split into :const:`booting`, :const:`warming-up`  and :const:`operational`. And
 :const:`operational` contains :const:`do-prog_1`, :const:`do-prog_2`, :const:`do-prog_3`, ect. And in all cases the
 event *TurnOff* will turn-off the system -- but you only need to add one rule!
 
 
 Concurent states (Orthogonal regions)
 --------------------------------------
-
 Concurent states are more complex as super/subs-states. It are kind of local states are active
 *simultaneously*. `Wikipedia <https://en.wikipedia.org/wiki/UML_state_machine#Orthogonal_regions>`__ has a nice example
-with the num-lock and caps-lock key: both change state -- one to select capital on/of, and one to prefer arrow over
-number -- but the are independent and concurent.
+with the num-lock and caps-lock key: both change ``state`` -- one to select capital on/of, and one to prefer arrow over
+number -- but those ``states`` are *independent* and **concurent**.
+
+Again, the advantage is it makes the “FSM table” shorter and better to maintain.
 
 All kind of actions
--------------------
+===================
 
 For a SW-designer the main difference between a Moore_ and a Mealy_ is where to put actions, as described above. But why
 choose? In software it possible to use both Mealy_ actions (‘on’ the transition) as well as Moore_ actions (‘in’ a
-state). And we can even use ‘Entry’ and ‘Leave’ (or *exit* -- but that has the same 1-character abbreviation).
+state). And we can even use ‘**E**\ntry’ and ‘**L**\eave’ (or *exit* -- but that has the same 1-character abbreviation).
 
 When using nested-stated we can define all of those kind-of actions on all levels. `David Harel`_ was so kind to define
 the sematics. Such that we now agree on the order in which the ``rules`` and ``actions`` should be executed, when many
@@ -198,6 +202,12 @@ are valid. The result is quite simple: see UML-FSM_ for the “transition execut
 
 Castle: Build-in FSM syntax
 ***************************
+
+After all this theory and seeing all options, we call conclude *“the best programming-language (for system engineers),
+ever”* needs to have build-in suport for all those options.
+|BR|
+We want do program *Finit State Machines* directly. Not implement the details, but just describe how the FSM_ (or NFA_)
+should behave; the computer can fill in the details -- all theory does exit (for years)!
 
 .. use:: Castle has generic FSM syntax build-in
    :ID: U_FSM_Syntax
