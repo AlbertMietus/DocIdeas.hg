@@ -81,6 +81,7 @@
            @startuml
            hide empty description
            ''!theme vibrant
+           scale 2/3
 
            [*]  -down-> up_1 : A
            dwn1 -up-> [*]    : B
