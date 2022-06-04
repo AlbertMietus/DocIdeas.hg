@@ -1,0 +1,30 @@
+.. include:: /std/localtoc.irst
+
+.. _eval_FSMs-syntax:
+
+=========================
+FSM syntax, an evaluation
+=========================
+
+.. post:: 2022/06/11
+   :category: Castle, Design
+   :tags: Castle, FSM
+
+   As described in `FSMs-are-needed` *Finit State Machines* are great and needed -- even tough no (main) programming
+   language has syntax support for it. But there are other (computer) language that (more-or-less) support the
+   corresponding `State pattern`_.
+   |BR|
+   By example plantUML_ --very populair by mature developers-- has a syntax to draw them
+
+   What can we learn for them? That is the topic of this post, before we define the Castle syntax
+
+
+**************
+
+
+
+
+.. _FSM:		https://en.wikipedia.org/wiki/Finite-state_machine
+.. _State pattern: 	https://en.wikipedia.org/wiki/State_pattern
+.. _UML-FSM:		https://en.wikipedia.org/wiki/UML_state_machine
+.. _plantUML:		https://en.wikipedia.org/wiki/PlantUML
