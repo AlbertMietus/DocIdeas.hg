@@ -1,6 +1,6 @@
-==================================
-CCastle: Evaluating  FSM languages
-==================================
+=============
+FSM languages
+=============
 
 .. toctree::
    :maxdepth: 2
