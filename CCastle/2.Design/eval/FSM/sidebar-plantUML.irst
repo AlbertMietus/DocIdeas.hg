@@ -1,0 +1,18 @@
+.. -*- rst -*-
+   included in  `5.eval-syntax.rst`
+
+.. sidebar::
+
+   .. tabs::
+
+     .. tab:: Demo
+
+        .. uml:: /CCastle/shared/FSM-plantUML-demo.puml
+
+     .. tab:: Links
+
+        .. seealso::
+
+           * wikipedia https://en.wikipedia.org/wiki/PlantUML
+           * plantuml https://plantuml.com/state-diagram
+
