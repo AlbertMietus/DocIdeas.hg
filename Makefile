@@ -51,4 +51,5 @@ RTD  RTfD-build RTfD RTFD RTfD-webhook:
 	@echo
 
 wc:
-	wc -lw `find CCastle/ -iname \*rst`|sort -r
+	@echo "lines	words	file"
+	@wc -lw `find CCastle/ -iname \*rst`|sort -r

@@ -18,12 +18,13 @@ FSM syntax, an evaluation
 
    What can we learn from them? That is the topic of this post, before we define the Castle syntax.
 
+
 Goal: Short & Maintainable
 **************************
 
 Before we can define the (Castle) syntax for FSM_\s, we should know where we are aiming for. We need to support “all”
-kinds of FSM, as required by :need:`U_FSM_Syntax` and refined by :need:`U_FSM_extensions`. E.g. the syntax should
-allow non-determinism. And like all parts of Castle maintainability and preventing mistakes is important.
+kinds of FSM, as required by [:need:`U_FSM_Syntax`] and refined by [:need:`U_FSM_extensions`]; e.g. the syntax should
+allow non-determinism. And like all parts of Castle: maintainability and preventing mistakes is important.
 |BR|
 For a FSM this means **short**: avoid boilerplate-code.
 
@@ -34,24 +35,13 @@ defined: the actions are listed inside the rules.
 |BR|
 Each `rule` is relation :math:`R := S * E -> S, A`; this “table” is typically the biggest part of an FSM.
 
-So, to make a FSM-code compact, we have to focus on the rules.
+So, to make a FSM-code compact, we have to focus on the rules.  It’s tempting to regard this rule-set as a *matrix*:
+with (‘:math:`S`’) and (‘:math:`E`’) on the axes and the next-states [#non-determinism]_ (and actions) inside each
+cell. Nevertheless this matrix is huge and probably sparse: most cells are empty, as the combination does not occur.
 |BR|
-It’s tempting to regard this rule-set as a *matrix*: with (‘:math:`S`’) and (‘:math:`E`’) on the axes and the
-next-states [#non-determinism]_ (and actions) inside each cell. Nevertheless this matrix is huge and probably sparse:
-most cells are empty, as the combination does not occur.
-
 We can describe such a sparse-matrix by listing the cell-value with the coordinates. This boils-down to listing the
-rules, one by one.
-|BR|
-The disadvantage of this that many states and/or events are listed many times. As we will see below, some languages
-solve this by factor-out `states` and/or `events`.
-
-
-
-
-
-
-
+rules, one by one .The disadvantage of this that many states and/or events are listed many times. As we will see below,
+some languages solve this by factor-out `states` and/or `events`.
 
 .. hint:: Concurrency is not needed
 
@@ -60,12 +50,33 @@ solve this by factor-out `states` and/or `events`.
    Therefore, the syntax of the FSM doesn't need special attention to make the FSM concurent.
 
 
+Languages that support the State Pattern
+****************************************
+
+PlantUML
+========
+
+.. include:: sidebar-plantUML.irst
+             
+The design-tool plantuml support the UML-FSM_ State diagram with a quite. The focus however is on ‘drawing’. As one can
+add text ‘on’ the arrows and ‘in’ the states, events and actions can be specified. However, the is no specific syntax
+for that. By example, many add text like :code:`event \ action()` to annotate the transaction with events and
+actions. But for plantUML it us just text. The same for Moore-actions: It an convention to add them to a state, with
+prefixes as **E:** and **L:**.
+|BR|
+A direct 
+
+Some other relevant languages
+*****************************
+
+
+
 XXXXXX
 ********
 
 plantUML: State diagram:
-   - https://en.wikipedia.org/wiki/PlantUML
-   - https://plantuml.com/state-diagram
+   - 
+   - 
 
 DOT/graphviz
    - https://en.wikipedia.org/wiki/DOT_(graph_description_language)
