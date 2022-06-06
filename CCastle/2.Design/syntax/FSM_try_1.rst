@@ -1,0 +1,68 @@
+=======================
+Castle FSM syntax tries
+=======================
+
+.. note:: Based on some experiments we select “a” language to highlight the examples.
+          Its  just try&error; there is  no relation with that language, Castle or a FSM!
+
+Try 1
+=====
+
+.. code:: ReasonML
+
+   FSM AB {
+     state A, B, C;
+
+     A + event_1  ->  state_B, action_I;
+     A + event_2  ->  state_C, action_II;
+     B + event_1  ->  state_D, action_III;
+     Z1 + event_1 ->  state_Z2;            // No action
+     Z1 + event_1 ->  ,action_only;        // Empty state: do not change
+     Z1 + event_1 ->  action_only;  // No new state
+     // Note: In the last line Castle knows it only an action, as “action_only” is not a state!
+     // Potentially it conflict with the “redundancy rule”
+     Z1 + event_1 ->  None, action_only;        // None-state: do not change
+   }
+
+Variant a
+---------
+Actions with ``(`` `parameters-list` ``)``.  **Question**: Do we know those parameters here. Or are the default?
+
+.. code:: ReasonML
+
+   FSM AB {
+     state A, B, C;
+
+     A + event_1  ->  state_B, action_I(p1,p2, p3);
+     A + event_2  ->  state_C, action_II();
+     B + event_1  ->  state_D, action_III();
+     Z1 + event_1 ->  state_Z2;            // No action
+     Z1 + event_1 ->  ,action_only();        // Empty state: do not change
+     Z1 + event_1 ->  action_only();  // No new state
+     // Note: In the last line Castle knows it only an action, as “action_only” is not a state!
+     // Potentially it conflict with the “redundancy rule”
+     Z1 + event_1 ->  None, action_only();        // None-state: do not change
+
+   }
+
+
+Variant b
+---------
+No  FSM/State prequel nor block
+
+.. code:: ReasonML
+
+     state A, B, C;
+
+     A + event_1  ->  state_B, action_I;
+     A + event_2  ->  state_C, action_II;
+     B + event_1  ->  state_D, action_III;
+     Z1 + event_1 ->  state_Z2;            // No action
+     Z1 + event_1 ->  ,action_only;        // Empty state: do not change
+     Z1 + event_1 ->  action_only;  // No new state
+     // Note: In the last line Castle knows it only an action, as “action_only” is not a state!
+     // Potentially it conflict with the “redundancy rule”
+     Z1 + event_1 ->  None, action_only;        // None-state: do not change
+
+
+

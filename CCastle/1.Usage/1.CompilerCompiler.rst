@@ -9,7 +9,7 @@ Compiler Compiler
 
 .. post:: 2022/05/7
    :category: Castle, Usage
-   :tags: Castle, grammar
+   :tags: Castle, Grammar
 
    In Castle you can define a *grammar* directly in your code. The compiler will *translate* them into functions, using
    the build-in (PEG) **compiler-compiler** -- at least that was it called back in the days of *YACC*.

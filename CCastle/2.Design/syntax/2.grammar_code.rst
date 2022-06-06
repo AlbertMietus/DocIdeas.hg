@@ -8,7 +8,7 @@ Grammar is code
 
 .. post:: 2022/05/14
    :category: Castle, DesignStudy
-   :tags: Castle, grammar, PEG
+   :tags: Castle, Grammar, PEG
 
    In :ref:`Castle-CompilerCompiler` we have seen that we can define a grammar within a Castle-program. And we have
    argued that each grammars-rule can be considered as a function.

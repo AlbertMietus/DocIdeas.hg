@@ -10,16 +10,109 @@ FSM syntax, an evaluation
    :category: Castle, Design
    :tags: Castle, FSM
 
-   As described in `FSMs-are-needed` *Finit State Machines* are great and needed -- even tough no (main) programming
+   As described in :ref:`FSMs-are-needed` *Finit State Machines* are great and needed -- even tough no (main) programming
    language has syntax support for it. But there are other (computer) language that (more-or-less) support the
    corresponding `State pattern`_.
    |BR|
-   By example plantUML_ --very populair by mature developers-- has a syntax to draw them
+   By example plantUML_ --very populair by mature developers-- has a syntax to draw them.
 
-   What can we learn for them? That is the topic of this post, before we define the Castle syntax
+   What can we learn from them? That is the topic of this post, before we define the Castle syntax.
+
+Goal: Short & Maintainable
+**************************
+
+Before we can define the (Castle) syntax for FSM_\s, we should know where we are aiming for. We need to support “all”
+kinds of FSM, as required by :need:`U_FSM_Syntax` and refined by :need:`U_FSM_extensions`. E.g. the syntax should
+allow non-determinism. And like all parts of Castle maintainability and preventing mistakes is important.
+|BR|
+For a FSM this means **short**: avoid boilerplate-code.
+
+The FSM_\`s mathematical model is simple: a set of `states` (‘:math:`S`’), the input `events` (‘:math:`E`’),
+the transaction `rules` (‘:math:`R`’), a `start-state` (‘:math:`S0`’), and the `final-states` -- which are not needed
+for a SW-FSM [#final-action]_. Usually, a set of `actions` (‘:math:`A`’) is required too. Where this set is implicitly
+defined: the actions are listed inside the rules.
+|BR|
+Each `rule` is relation :math:`R := S * E -> S, A`; this “table” is typically the biggest part of an FSM.
+
+So, to make a FSM-code compact, we have to focus on the rules.
+|BR|
+It’s tempting to regard this rule-set as a *matrix*: with (‘:math:`S`’) and (‘:math:`E`’) on the axes and the
+next-states [#non-determinism]_ (and actions) inside each cell. Nevertheless this matrix is huge and probably sparse:
+most cells are empty, as the combination does not occur.
+
+We can describe such a sparse-matrix by listing the cell-value with the coordinates. This boils-down to listing the
+rules, one by one.
+|BR|
+The disadvantage of this that many states and/or events are listed many times. As we will see below, some languages
+solve this by factor-out `states` and/or `events`.
 
 
-**************
+
+
+
+
+
+
+.. hint:: Concurrency is not needed
+
+   FSM’s can be huge in code but do not need a lot of computer-power. For every *step* --one input--, one state-variable
+   has to be updated. And the action has to be triggered. That action can be “big”, the FSM itself not.
+   Therefore, the syntax of the FSM doesn't need special attention to make the FSM concurent.
+
+
+XXXXXX
+********
+
+plantUML: State diagram:
+   - https://en.wikipedia.org/wiki/PlantUML
+   - https://plantuml.com/state-diagram
+
+DOT/graphviz
+   - https://en.wikipedia.org/wiki/DOT_(graph_description_language)
+   - https://www.graphviz.org
+
+State Chart XML (SCXML): State Machine Notation for Control Abstraction
+   - https://www.w3.org/TR/scxml/
+
+Regel
+   - https://en.wikipedia.org/wiki/Ragel
+   - http://www.colm.net/open-source/ragel/
+
+Dezyne (of Verum)
+   - https://verum.com/discover-dezyne/
+   - https://dezyne.org/dezyne/manual/dezyne/html_node/A-Simple-State-Machine.html
+
+Frame
+  - https://modeling-languages.com/designing-hierarchical-state-machines-using-frame-notation/
+
+Thompson's construction (Use a RegExp to construct a NFA)
+   - https://en.wikipedia.org/wiki/Thompson%27s_construction
+
+SMC (State Machine Compiler)
+   - http://smc.sourceforge.net
+   - http://smc.sourceforge.net/slides/SMC_Tutorial.pdf
+   - UncleBobVideo version:  https://github.com/unclebob/CC_SMC
+
+
+
+
+
+
+
+
+
+-------
+
+.. rubric:: Footnotes
+
+.. [#final-action]
+   The final-states are used by mathematics to verify/accept an input. Whereas a SW-FSM is typically used to control a
+   system; and run *forever*. When a “final state” is needed in a SW-FSM, typical a “final-action” is used.
+
+.. [#non-determinism]
+   Remember, we have to support non-determinism! Each cell in the matrix can have multiple “next states” (and
+   corresponding actions).
+
 
 
 

@@ -49,3 +49,6 @@ RTD  RTfD-build RTfD RTFD RTfD-webhook:
 	@BRANCH=$${BRANCH:-`hg branch`} ;\
 	curl -X POST -d "branches=$${BRANCH}" -d "token=${TOKEN}" ${HOOK}
 	@echo
+
+wc:
+	wc -lw `find CCastle/ -iname \*rst`|sort -r

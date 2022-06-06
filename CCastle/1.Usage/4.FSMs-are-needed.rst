@@ -20,7 +20,6 @@ FSMs are needed
 FSMs, an intro
 **************
 
-
 .. include:: FSM-sidebar-code.irst
 
 The well known `State pattern`_ is basically an FSM_. It has a *finit* (**!**) number of ``states``, ``inputs`` (often
