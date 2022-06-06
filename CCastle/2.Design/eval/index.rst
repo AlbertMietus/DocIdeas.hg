@@ -9,5 +9,4 @@ When designing Castle, we can learn from other systems. You will find my notes h
    :titlesonly:
    :glob:
 
-   *
    */index

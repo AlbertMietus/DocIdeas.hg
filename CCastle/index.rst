@@ -36,7 +36,6 @@ This section contains a set of pages & blog-post on this topic. Some a design-st
    :titlesonly:
    :glob:
 
-   *
    */index
 
 
@@ -47,4 +46,4 @@ This section contains a set of pages & blog-post on this topic. Some a design-st
    <http://docideas.mietus.nl/en/ccastle-busy/CCastle/index.html>`__ currently support only an old version (*1.2017.15*;
    **2017**). which has no theme and other support to make it more nice-looking. Therefore all those “lines” are comment
    out (or rewritten)
-  
+

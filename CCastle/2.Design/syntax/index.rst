@@ -8,5 +8,4 @@ About the syntax
    :glob:
 
    *
-   */index
 

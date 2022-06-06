@@ -8,4 +8,4 @@ FSM languages
    :glob:
 
    *
-   */index
+

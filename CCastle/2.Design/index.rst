@@ -9,9 +9,8 @@ Castle has to be designed. Not only the “compiler”, but also the language it
    :titlesonly:
    :glob:
 
-   *
    */index
-
+   zz.todo
 
 .. note:: In case you are wondering: *“Are FSMs and Grammars related, or the same?”*
 
