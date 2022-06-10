@@ -91,6 +91,7 @@ is not possible (relevant) in plantUML’s state diagrams. Although some do/try 
 files, and use the “``!include`` preprocessing” options -- a bit like good-old C textual includes. One misses namespaces
 and other *modern* features however.
 
+.. _SMC:
 
 SMC (State Machine Compiler) & friends
 ======================================
@@ -292,34 +293,34 @@ BTW, Dezyne uses both “declarative” and “imperative” statements. As we d
 will promote this declarative style; it’s great to declare a FSM (over implement it in an imperative style). And I have
 no glue why Dezyne made another choice...
 
+Ragel
+=====
 
-XXXXXX
-********
+.. sidebar:: Links
 
-
-
-
-
-
-Regel
    - https://en.wikipedia.org/wiki/Ragel
    - http://www.colm.net/open-source/ragel/
-
-Dezyne (of Verum)
-
-Frame
-  - https://modeling-languages.com/designing-hierarchical-state-machines-using-frame-notation/
-
-Thompson's construction (Use a RegExp to construct a NFA)
    - https://en.wikipedia.org/wiki/Thompson%27s_construction
+
+Ragel is also a FSM-compiler, but unlike `SCM` is does not need ``rules`` as input. It uses RegExps as input!
+|BR|
+There is not a lot of documentation on the input however. But is has a interesting approach.
+
+It looks like one can define “paths” [#path-vs-step]_ by specifying some RegExps. Regel builds a NFA_ by using
+`Thompson's construction algorithm <https://en.wikipedia.org/wiki/Thompson%27s_construction>`__, out of those
+RegExps. So, the developer doesn't need tho specify which ``states`` nor ``rules`` are needed; only all the allowed
+paths (or routes). 
+
+Actions are also possible. They are “added” to the route (but do not consume input, so like a
+:math:`\epsilon`-transition.
 
 
 Remarks (general)
-=================
+******************
 
 
 Transitions & Symmetry
-----------------------
+======================
 
 Many tools use a syntax (and/or terminology) that is not inline with the (original) FSM_ (mathematical) model;
 especially for a **“transition”**:
@@ -336,10 +337,10 @@ the event -- as shown in e.g. the “revered” code example.
 * The (basic) UncleBob’s version of SMC uses this more symmetrical model -- which leads to compact table.
   |BR|
   But as the whitespace formating, does not allow to change the order of state/event; only factoring-out over the 1ste
-  is possible. 
+  is possible.
 
 Hierarchy
----------
+=========
 
 Several formats do kind-of embrace the hierarchical states, but only in an inline-notation. Which effectively cancel the
 effect of hierarchy. A figure that displays states “nested” inside states (as plantUML can produce) is showning
@@ -410,7 +411,10 @@ that comment.
    variable; that act as stare (like in C). Probably one can use the Enum type to define (simulate) state; but still one
    has to assign that value to a variable.
 
-
+.. [#path-vs-step]
+   In a  FSM (diagram) there are “steps” to go from one state to another. A “path” is a sequence of such a steps. 
+   
 .. _FSM:		https://en.wikipedia.org/wiki/Finite-state_machine
 .. _State pattern: 	https://en.wikipedia.org/wiki/State_pattern
 .. _UML-FSM:		https://en.wikipedia.org/wiki/UML_state_machine
+.. _NFA:		https://en.wikipedia.org/wiki/Nondeterministic_finite_automaton
