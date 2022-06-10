@@ -19,4 +19,19 @@ Matching Statements (todo)
 
      .. seealso:: :ref:`G2C-actions`
 
+.. _Declarative-programming:
 
+Declarative programming (todo)
+==============================
+
+.. todo::
+
+   * I like a declarative style
+
+     - describe what you need; not how to implement (the details)
+
+   * Makefiles are a good example
+
+   * Argparse (vs loop over argv) is a second example
+
+   .. note:: CCastle: blog: “(1) declare what you need”. Declarative style programing. Eg loop over Argv vs argparse, makefiles

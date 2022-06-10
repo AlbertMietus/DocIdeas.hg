@@ -92,16 +92,15 @@ files, and use the “``!include`` preprocessing” options -- a bit like good-o
 and other *modern* features however.
 
 
-SMC (State Machine Compiler) & friend
-=====================================
+SMC (State Machine Compiler) & friends
+======================================
 
 .. include:: sidebar-SMC.irst
 
 There are many versions of the “State Machine Compiler”. Most use a text-input-file to specify a FSM_ and *’compile’*
-that first into source-code, that can then will be compiled “asis”. We do not discuss the tools itself, but will examine
-the input-file. Even have defined a formal grammar; like Uncle Bob’s version, which we take as a reference.
+that into programm-code first. Then the normal compiler is used to compile it “asis”.
 |BR|
-Some “friends” use a XML-input file, which are characterised below.
+We do not discuss the tools itself, but will examine the input-file. And (when given) the formal grammar.
 
 Uncle Bobs’s version
 ---------------------
@@ -123,8 +122,8 @@ This block concept can also be use to describe “abstract states”, which rese
 ``:``\-modifier postfixing a state, and putting the  abstract-state-name between
 parenthesis.
 |BR|
-It is also possible to specify entry/leave(exit) action, again by postfixing state with :samp:`‘<’ {entry-action}` or
-:samp:`‘>’ {exit-action}`.
+It is also possible to specify entry/leave(exit) action, again by postfixing a state with :samp:`‘<’ {entry-action}`
+or/and :samp:`‘>’ {exit-action}`.
 
 The basic syntax is quite simple and readable; although whitespace as separator is not ideally --also as it make it a bit
 unclear (hard to remember) what the order is. This readability issues becomes bigger when factoring-out (and the number
@@ -205,7 +204,19 @@ know about this concurrency.
 |BR|
 Additionally, those concurren “substates” do not *exist*, whe the upper state is passive ...
 
-.. centered:: Have to give it a tought ...
+.. tip:: Have to give this a tought ...
+
+   When ``state`` can act a small FSM_ internally, we can possible define a “concurrent state class” too. That class
+   act as state, and can have “two” (or more) FSM’s inside ...
+
+   The inheritance-order/tree becomes complex however;  `Liskov
+   <https://en.wikipedia.org/wiki/Liskov_substitution_principle>`__  should not be violated.
+
+   *  ``FSM`` is s subtype of ``state``. (as a state, is only active or not).
+   * The “concurrent one`` is also a subtype of ``state``, not containing some  ``FSM``\s
+
+   *Or, should we not inherited, but always aggregate? Sometimes 1, sometimes more...*
+
 
 No Referring
 ------------
@@ -218,11 +229,68 @@ help (me) [#google]_.
 Some other relevant languages
 *****************************
 
+There are more tools (and there input languages) that can inspire us. They do not directly define a FSM_, but can be
+used to visualize it, or use FSMs as part of the languages.
+
 DOT/graphviz
 ============
 
-- https://en.wikipedia.org/wiki/DOT_(graph_description_language)
-- https://www.graphviz.org
+.. sidebar:: Links
+
+   * `https://en.wikipedia.org/wiki/DOT_(graph_description_language)
+     <https://en.wikipedia.org/wiki/DOT_(graph_description_language)>`__
+   * https://en.wikipedia.org/wiki/Graphviz
+   * https://www.graphviz.org
+
+DOT is language --introduced & used by tool Graphviz-- to describe (mathematical) graphs. It’s a very flexible language:
+both undirected and directed “edges”  between “nodes” are possible; one can describe trees “woods” and more, which can
+be cyclic (or not). When introduced (together with the autorouters graphviz), over 30 years ago, it hit the marked ...
+|BR|
+Suddenly we could describe & show anything ... Including state-diagrams.
+
+DOT, as a language, can’t define a FSM -even we can show the state-transitions. And nowadays one would prefer plantUML
+(which used graphviz) to that.
+|BR|
+But it has learned us that state-transition (arrows, or edges in a graph) can be described in text as simple as
+:samp:`{current} --> {next}`.  A syntax we will reuse in Castle.
+
+Verum’s Dezyne
+==============
+
+.. sidebar:: Links
+
+   - https://dezyne.org
+   - https://gitlab.com/dezyne
+   - https://verum.com/discover-dezyne/
+   - https://dezyne.org/dezyne/manual/dezyne/html_node/A-Simple-State-Machine.html
+
+Dezyne (now open-source) is a programming language (with a set of tools) to implement (embedded) controll software. One
+can also create state-machines with it. So that part of the language can inspire Castle.  We use `this Tutorial
+<https://dezyne.org/dezyne/manual/dezyne/html_node/A-Simple-State-Machine.html>`__ example as reference.
+
+In this example the `behavior` is described in an (mostly) `“Imperative”
+<https://en.wikipedia.org/wiki/Imperative_programming>`__ (normal) style of programming [#dezyne-semantics]_, mixed with
+events (``on`` keywords) and guards (:samp:`[{bool-expr}]`, like above). Therefore this simple FSM is implemented in a
+phraseology that is very close to the nested-switch one. The outer switch is replaced by pillar of guards (The lines starting
+with ``[]`` can we top-levels cases); the inner switch by ``on`` “event-handler”.
+
+|BR|
+Not shown in this example, but one use the reverted style (as far as I know).
+
+In away, it also resembles the “factor the state out” style as described above in the “tables” -- although de developer
+has to use an assign-statement to change state; unlike above where naming the new state will do [#dezyne-state]_.
+|BR|
+Assuming one can use the “reverted” (nested-switch) style too, it is in Dezyne possible to (“in a way”) factor-out the
+inputs (instead of the state). None of the examples above where able to this.
+
+For Castle, if (and only if) we enable this factor-out option (even when we do not endorse it), I would prefer to have
+this symmetry (as in Dezyne): one can factor-out both state and/or inputs! As shown in the example, the syntax for both
+switches is a differs a bit. By such a  contrast in syntax, its become cleare wich “ID” is state an which one it de
+“input”. And thus we can allow to swap the order, and so, it becomes possible to factor-out both. #Nice
+
+BTW, Dezyne uses both “declarative” and “imperative” statements. As we describe in :ref:`Declarative-programming` Castle
+will promote this declarative style; it’s great to declare a FSM (over implement it in an imperative style). And I have
+no glue why Dezyne made another choice...
 
 
 XXXXXX
@@ -238,8 +306,6 @@ Regel
    - http://www.colm.net/open-source/ragel/
 
 Dezyne (of Verum)
-   - https://verum.com/discover-dezyne/
-   - https://dezyne.org/dezyne/manual/dezyne/html_node/A-Simple-State-Machine.html
 
 Frame
   - https://modeling-languages.com/designing-hierarchical-state-machines-using-frame-notation/
@@ -326,15 +392,24 @@ that comment.
 
 .. [#google]
    When `googling for scxml + xinclude <https://www.google.com/search?q=scxml+xinclude>`__ one find a few hits. Like
-   asking it is an omission (as it was descriped in a draft), or is it removed from the spec (and forgotten to update
-   the example)?
+   the comment/question “is it an omission” (as it was descriped in a draft), or “is it removed” from the spec (and
+   *forgotten* to update the example)?
    |BR|
-   There is no clear answer, but is appears that XINclude is kind of a general XML-facility; that have to be applied
+   There is no clear answer, but is appears that `XInclude` is kind of a general XML-facility; that have to be applied
    first (before using scxml). Which resembles the preprocessor. So I give up [#xml-more]_
 
 .. [#xml-more]
    I was kind of hoping that one coud refer to a part in another file. Like we have a common “library” scxml-file and
-   use (the definitions of) a few “states” in that file. Apparently not
+   use (the definitions of) a few “states” in that file. Apparently not ...
+
+.. [#dezyne-semantics]
+   Notice that the style of Dezyne resembles (or “feels as”) imperative programming, but the semantics do differ!
+
+.. [#dezyne-state]
+   Dezyne has no “states” (at tupe/words) -- at least not in the found FSMs. Is create state by assigning value to
+   variable; that act as stare (like in C). Probably one can use the Enum type to define (simulate) state; but still one
+   has to assign that value to a variable.
+
 
 .. _FSM:		https://en.wikipedia.org/wiki/Finite-state_machine
 .. _State pattern: 	https://en.wikipedia.org/wiki/State_pattern
