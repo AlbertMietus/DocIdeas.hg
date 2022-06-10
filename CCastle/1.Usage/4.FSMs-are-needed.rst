@@ -236,15 +236,13 @@ should behave; the computer can fill in the details -- all theory does exit (for
    :ID: U_FSM_extensions
    :links: U_FSM_Syntax
 
-   To clarify :need:`U_FSM_Syntax` even more.
-
-   Castle will support:
+   To clarify :need:`U_FSM_Syntax` even more. Castle will support:
 
    #. non-deterministic rules
    #. Epsilon transitions
-   #. Instantly (:math:`/epsilon/`) transitions
+   #. *‘Instantly’* transitions (see above: a special kind of :math:`\epsilon`\-transition)
    #. Hierarchically superstates (or sub-states)
-   #. Concurent states (Orthogonal ones)
+   #. Concurent states (Orthogonal regions)
    #. Moore_ and Mealy_ transitions
    #. Entry and Leave transitions
 
