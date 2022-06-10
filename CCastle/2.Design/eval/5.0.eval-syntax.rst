@@ -6,7 +6,7 @@
 FSM syntax, an evaluation
 =========================
 
-.. post:: 2022/06/11
+.. post:: 2022/06/10
    :category: Castle, Design
    :tags: Castle, FSM
 
