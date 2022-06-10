@@ -1,0 +1,84 @@
+.. -*- rst -*-
+   included in  `5.eval-syntax.rst`
+
+.. sidebar::
+
+   .. tabs::
+
+     .. tab:: SMC (example)
+        :selected:
+
+        .. code::
+
+           Initial: Locked
+           FSM: Turnstile
+           {
+             Locked    Coin    Unlocked    unlock
+             Locked    Pass    Locked      alarm
+             Unlocked  Coin    Unlocked    thankyou
+             Unlocked  Pass    Locked      lock
+           }
+
+        --- source: `Uncle Bob <https://github.com/unclebob/CC_SMC/blob/master/README.md>`__.
+        |BR|
+        Showing a basic FSM only; see the website for more examples.
+
+
+     .. tab:: Grammars (BNF)
+
+        UncleBob’s version
+
+        .. code:: BNF
+
+          <FSM>            ::=  <header>* <logic>
+          <header>         ::=  <name> ":" <name>
+          <logic>          ::=  "{" <transition>* "}"
+          <transition>     ::=  <state-spec>     <subtransition>
+                           |    <state-spec> "{" <subtransition>* "}"
+          <state-spec>     ::=  <state> <state-modifier>*
+          <state>          ::=      <name>
+                           |    "(" <name> ")"
+          <state-modifier> ::=  ":"  <name>
+                           |    "<"  <name>
+                           |    ">"  <name>
+          <subtransition>  ::   <event> <next-state> <action>
+          <action>         ::=  <name>  | "{" <name>* "}" | "-"
+          <next-state>     ::=  <state> | "-"
+          <event>          ::   <name>  | "-"
+
+        SMC (sourceforge) version [edited & shortened].
+
+        .. code:: BNF
+
+           <FSM>          ::=  <%headers> <map>+
+           <%headers>     ::=  ...Not shown here ...
+           <map>          ::=  '%map' <word> '%%' <states> '%%'
+           <states>       ::=   <word> <entry>? <exit>? '{' <transitions>* '}'
+           <entry>        ::=   'Entry {' <action>* '}'
+           <exit>         ::=   'Exit  {' <action>* '}'
+           <transitions>  ::=   <word> <args>? <guard>? <next-state> '{' <action>* '}'
+           <args>         ::=   '(' <parameter>+ ')'
+           <parameter>    ::=   <word> ':' <raw-code>
+           <guard>        ::=   '[' <raw-code> ']'
+           <next-state>   ::=   <word> |     'nil'
+           <action>       ::=   <word> '(' <arguments>* ')'
+           <raw-code>     ::=   ...Not shown here ...
+
+     .. tab:: Links
+
+        .. admonition:: UncleBobVideo version
+
+           * source:   https://github.com/unclebob/CC_SMC
+           * Grammar:  https://github.com/unclebob/CC_SMC/blob/master/README.md#BNF
+
+        .. admonition:: SMC
+
+           * source:   http://smc.sourceforge.net
+           * Tutorial: http://smc.sourceforge.net/slides/SMC_Tutorial.pdf
+           * Grammar   http://smc.sourceforge.net/SmcManAppendixA.htm
+
+        .. admonition:: other friend
+
+           * With XML-input https://github.com/jp-embedded/scxmlcc
+
+

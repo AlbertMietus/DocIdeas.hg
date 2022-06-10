@@ -1,0 +1,442 @@
+.. include:: /std/localtoc.irst
+
+.. _eval_FSMs-syntax:
+
+=========================
+FSM syntax, an evaluation
+=========================
+
+.. post:: 2022/06/11
+   :category: Castle, Design
+   :tags: Castle, FSM
+
+   As described in :ref:`FSMs-are-needed` *Finit State Machines* are great and needed -- even tough no (main) programming
+   language has syntax support for it. But there are other (computer) language that (more-or-less) support the
+   corresponding `State pattern`_.
+   |BR|
+   By example plantUML --very populair by mature developers-- has a syntax to draw them.
+
+   What can we learn from them? That is the topic of this post, before we define the Castle syntax.
+
+
+Goal: Short & Maintainable
+**************************
+
+Before we can define the (Castle) syntax for FSM_\s, we should know where we are aiming for. We need to support “all”
+kinds of FSM, as required by [:need:`U_FSM_Syntax`] and refined by [:need:`U_FSM_extensions`]; e.g. the syntax should
+allow non-determinism. And like all parts of Castle: maintainability and preventing mistakes is important.
+|BR|
+For a FSM this means **short**: avoid boilerplate-code.
+
+The FSM_\`s mathematical model is simple: a set of `states` (‘:math:`S`’), the input `events` (‘:math:`E`’),
+the transaction `rules` (‘:math:`R`’), a `start-state` (‘:math:`S0`’), and the `final-states` -- which are not needed
+for a SW-FSM [#final-action]_. Usually, a set of `actions` (‘:math:`A`’) is required too. Where this set is implicitly
+defined: the actions are listed inside the rules.
+|BR|
+Each `rule` is relation :math:`R := S * E -> S, A`; this “table” is typically the biggest part of an FSM.
+
+So, to make a FSM-code compact, we have to focus on the rules.  It’s tempting to regard this rule-set as a *matrix*:
+with (‘:math:`S`’) and (‘:math:`E`’) on the axes and the next-states [#non-determinism]_ (and actions) inside each
+cell. Nevertheless this matrix is huge and probably sparse: most cells are empty, as the combination does not occur.
+|BR|
+We can describe such a sparse-matrix by listing the cell-value with the coordinates. This boils-down to listing the
+rules, one by one .The disadvantage of this that many states and/or events are listed many times. As we will see below,
+some languages solve this by factor-out `states` and/or `events`.
+
+.. hint:: Concurrency is not relevant
+
+   FSM’s can be huge in code but do not need a lot of computer-power. For every *step* --one input-- one state-variable
+   has to be updated, and the action has to be triggered. That action can be “big” (an can need concurrency), the FSM
+   itself not. Therefore, the syntax of the FSM doesn't need special attention to make the FSM concurent.
+
+
+Languages that support the state-pattern
+****************************************
+
+Some tools support FSMs, the state-pattern, or something that resembles it. We will not evaluate the tool, but focus in
+the “input” those tools use. And on what concept we can reuse to design the syntax/grammar that Castle will use for
+FSM-support.
+
+PlantUML
+========
+
+.. include:: sidebar-plantUML.irst
+
+The design-tool plantUML support the UML-FSM_ State diagram with a quite compact syntax. The focus however is on
+*drawing* [#plantUML-arrows]_. As one can add text ‘on’ the arrows and ‘in’ the states, events and actions can be
+specified. However, the is no specific syntax for that. By example, many add text like :code:`event / action()` to
+annotate the transaction with events and actions. But for plantUML it us just text. The same for Moore-actions: It an
+convention to add them to a state, with prefixes as **E:** and **L:**.
+|BR|
+So using this syntax directly isn’t possible. By adding a bit or (formal) grammar is easy.
+
+PlantUML support all aspects of the UML-FSM_, including super/sub-states (plantUML calles them ‘Composite state’) and
+concurent states. As ‘drawing’ is the main goal, support for :math:`\epsilon`\-transaction, all kind of actions, etc is
+solved as described above: by text.
+
+Super/Sub-states
+----------------
+Substates are drawn ‘inside’ a superstate. This is described with a nested structure; a state can have an (optional)
+``{} block``. Inside that block, the same syntax is uses as for the main FSM_.
+
+This part of syntax does not fit the goals of Castle; as it is still *one* piece of code; it does not make the source
+“shorter” [#indirect]_. But more important: one would typically like to reuse “sub FSM” and specify those details
+later/elsewhere in the program.
+
+Referring
+~~~~~~~~~
+
+A developer like to *refer* to other parts; by example to import other modules or *name* those. Not by recode them. This
+is not possible (relevant) in plantUML’s state diagrams. Although some do/try by separate the source into multiple
+files, and use the “``!include`` preprocessing” options -- a bit like good-old C textual includes. One misses namespaces
+and other *modern* features however.
+
+.. _SMC:
+
+SMC (State Machine Compiler) & friends
+======================================
+
+.. include:: sidebar-SMC.irst
+
+There are many versions of the “State Machine Compiler”. Most use a text-input-file to specify a FSM_ and *’compile’*
+that into programm-code first. Then the normal compiler is used to compile it “asis”.
+|BR|
+We do not discuss the tools itself, but will examine the input-file. And (when given) the formal grammar.
+
+Uncle Bobs’s version
+---------------------
+
+Uncle Bob’s version basically uses a “table” with 4 columns: ``current.state``, ``event``, ``next.state``, ``action``;
+separated by whitespace. The name of the FSM, and it initial state are written-down above the tabel. This table is
+translated into a class with a nested-switch FSM [#generated]_; the SW-developer should create a subclass that
+implements actions (as methods).
+|BR|
+As SMC will generated the essential code (which should be deterministic), the FSM needs to be deterministic; the syntax
+does allow (a bit of) non-determinism however. But by example *epsilon*- (and especially *‘instantly’*) transaction are not
+possible.
+
+It is possible to factor-out some current.states (but not events) by using ``{}-blocks`` --the docs speak about
+*“convenient syntactic sugar”*. Equally, one can combine several actions (function-calls) into one: surround
+them with braces.
+|BR|
+This block concept can also be use to describe “abstract states”, which resembles super/sub-states. This is done by the
+``:``\-modifier postfixing a state, and putting the  abstract-state-name between
+parenthesis.
+|BR|
+It is also possible to specify entry/leave(exit) action, again by postfixing a state with :samp:`‘<’ {entry-action}`
+or/and :samp:`‘>’ {exit-action}`.
+
+The basic syntax is quite simple and readable; although whitespace as separator is not ideally --also as it make it a bit
+unclear (hard to remember) what the order is. This readability issues becomes bigger when factoring-out (and the number
+of columns decrease), or using state-modifiers.
+|BR|
+This can easily be improved (for Castle), by adding a bit more grammar-sugar and have several ‘tokens’ between the columns.
+
+The sytax of this version of SMC allows somethings that resembles hierarchically superstates; although the hierarchy is
+“inlined”.
+|BR|
+For Castle, we cherish the ability to spilt the text over multiple files [#hierarchically-split]_.
+
+
+SMC (sourceforge) version
+-------------------------
+
+This version is derived from an early variant of (Uncle) Bob Martin’s (see above), according to its `documentation
+<http://smc.sourceforge.net/SmcManual.htm>`__ The basic input-syntax is equally; although a lot “target-language details
+are added to the header (like file-names etc)-- for Castle this is not relevant.
+
+The syntax is updated. By example, to describe Moore  actions the keywords `Entry` and `Leave` are used with
+``{}-blocks`` surrounding the action (even for a single call). In general, those ``{}-blocks`` has become compulsory;
+every state has such a block., as has every action. This makes the syntax more regulair and readable for C/etc
+programmers.
+|BR|
+But all those braces makes that the compact “table alike” structure for the rules is gone.
+
+guards & parameters
+~~~~~~~~~~~~~~~~~~~
+
+A new feature is **“guards”**: a boolean expression-postfix on events (in square-Brackets: ``[<guard>]``). The specified
+transaction will only happen when and that event happens and the guard is true. The same event without a guard will act
+as a kind of default/fall-through transaction.
+
+Another feature are **event-parameters** (called “Transition Arguments”; as the words event and transition are not used
+consistently). In all examples this event-parameter is used in the guard; it’s not clear (Nore relevant) the tool can
+also use it elsewhere.
+
+
+more changes
+~~~~~~~~~~~~
+
+It support also a few notations, that do (IMHO) not fit in the FSM_ notion; like having a stack (that makes it a
+stack-machine or `PDA <https://en.wikipedia.org/wiki/Pushdown_automaton>`__). But it has a nice feature to generate
+(graphviz) diagrams; this really is convenient for the developer. Even one nowadays probably would prefer to see plantUML
+State diagrams, as they are more standard.
+
+And again, for castle we like to be able to “distribute” details over multiple files.
+
+.. _SCXML:
+
+State Chart XML (SCXML): State Machine Notation for Control Abstraction
+=======================================================================
+
+.. include:: sidebar-SCXML.irst
+
+SCXML is a (XML-based) standard “language” [#voice]_ to describe (more-or-less) an UML-FSM_.
+|BR|
+Surely, the XML-part is not applicable for Castle. Still, XML describes a tree (structure) -- like the Castle text
+format will be converted into an AST (so, also a tree). So there we can learn (or at least try).
+
+This format treads *events* as attributes of a transition. See the disadvantage of this in `Remarks (general)`), below.
+
+Harel StateCharts (aka UML-FSM_) are supported. Both by being able to nest states; using the power of XML: Any
+``<state>`` elements may have (other) ``state`` elements as children. And by having ``<parallel>`` elements, that can
+contain (multiple) ``<state>`` elements -- here, each of those parallel states act as a “small FSMs” that are all active
+when the parent state is active. This is an elegant way to describe “Orthogonal regions” (aka “Concurent states”).
+
+Concurent sub-states
+--------------------
+
+Like a regulair ``<state>``, a ``<parallel>`` element has an ID (attribute), that act as name -- showing a bit of
+similarity between normal states and concurent-substates. This approach can be usable for Castle.
+
+Possible, two concurent states can also be seen in a hierarchical way. At the top level is just one state, that is
+active or not. And when we dive into de details, it *can* have substates (like normal a hierarchy); only here some
+states can be active concurrently. As SCXML describes it, the “upper” state (nor the rest of the FSM) does not have to
+know about this concurrency.
+|BR|
+Additionally, those concurren “substates” do not *exist*, whe the upper state is passive ...
+
+.. tip:: Have to give this a tought ...
+
+   When ``state`` can act a small FSM_ internally, we can possible define a “concurrent state class” too. That class
+   act as state, and can have “two” (or more) FSM’s inside ...
+
+   The inheritance-order/tree becomes complex however;  `Liskov
+   <https://en.wikipedia.org/wiki/Liskov_substitution_principle>`__  should not be violated.
+
+   *  ``FSM`` is s subtype of ``state``. (as a state, is only active or not).
+   * The “concurrent one`` is also a subtype of ``state``, not containing some  ``FSM``\s
+
+   *Or, should we not inherited, but always aggregate? Sometimes 1, sometimes more...*
+
+
+No Referring
+------------
+Although XML has many options to refer other docs, SCXML does use none... Except for one place; the “G.1” example in the
+w3-specification refers to another (scxml-) file, using XInclude! Without any explaining text nor semantics. I guess the
+semantics is like  a textual preprocessor: all text in that file should be read as if it was typed-in. That does not
+help (me) [#google]_.
+
+
+Some other relevant languages
+*****************************
+
+There are more tools (and there input languages) that can inspire us. They do not directly define a FSM_, but can be
+used to visualize it, or use FSMs as part of the languages.
+
+DOT/graphviz
+============
+
+.. sidebar:: Links
+
+   * `https://en.wikipedia.org/wiki/DOT_(graph_description_language)
+     <https://en.wikipedia.org/wiki/DOT_(graph_description_language)>`__
+   * https://en.wikipedia.org/wiki/Graphviz
+   * https://www.graphviz.org
+
+DOT is language --introduced & used by tool Graphviz-- to describe (mathematical) graphs. It’s a very flexible language:
+both undirected and directed “edges”  between “nodes” are possible; one can describe trees “woods” and more, which can
+be cyclic (or not). When introduced (together with the autorouters graphviz), over 30 years ago, it hit the marked ...
+|BR|
+Suddenly we could describe & show anything ... Including state-diagrams.
+
+DOT, as a language, can’t define a FSM -even we can show the state-transitions. And nowadays one would prefer plantUML
+(which used graphviz) to that.
+|BR|
+But it has learned us that state-transition (arrows, or edges in a graph) can be described in text as simple as
+:samp:`{current} --> {next}`.  A syntax we will reuse in Castle.
+
+.. _Dezyne:
+
+Verum’s Dezyne
+==============
+
+.. sidebar:: Links
+
+   - https://dezyne.org
+   - https://gitlab.com/dezyne
+   - https://verum.com/discover-dezyne/
+   - https://dezyne.org/dezyne/manual/dezyne/html_node/A-Simple-State-Machine.html
+
+Dezyne (now open-source) is a programming language (with a set of tools) to implement (embedded) controll software. One
+can also create state-machines with it. So that part of the language can inspire Castle.  We use `this Tutorial
+<https://dezyne.org/dezyne/manual/dezyne/html_node/A-Simple-State-Machine.html>`__ example as reference.
+
+In this example the `behavior` is described in an (mostly) `“Imperative”
+<https://en.wikipedia.org/wiki/Imperative_programming>`__ (normal) style of programming [#dezyne-semantics]_, mixed with
+events (``on`` keywords) and guards (:samp:`[{bool-expr}]`, like above). Therefore this simple FSM is implemented in a
+phraseology that is very close to the nested-switch one. The outer switch is replaced by pillar of guards (The lines starting
+with ``[]`` can we top-levels cases); the inner switch by ``on`` “event-handler”.
+
+|BR|
+Not shown in this example, but one use the reverted style (as far as I know).
+
+In away, it also resembles the “factor the state out” style as described above in the “tables” -- although de developer
+has to use an assign-statement to change state; unlike above where naming the new state will do [#dezyne-state]_.
+|BR|
+Assuming one can use the “reverted” (nested-switch) style too, it is in Dezyne possible to (“in a way”) factor-out the
+inputs (instead of the state). None of the examples above where able to this.
+
+For Castle, if (and only if) we enable this factor-out option (even when we do not endorse it), I would prefer to have
+this symmetry (as in Dezyne): one can factor-out both state and/or inputs! As shown in the example, the syntax for both
+switches is a differs a bit. By such a  contrast in syntax, its become cleare wich “ID” is state an which one it de
+“input”. And thus we can allow to swap the order, and so, it becomes possible to factor-out both. #Nice
+
+BTW, Dezyne uses both “declarative” and “imperative” statements. As we describe in :ref:`Declarative-programming` Castle
+will promote this declarative style; it’s great to declare a FSM (over implement it in an imperative style). And I have
+no glue why Dezyne made another choice...
+
+Ragel
+=====
+
+.. sidebar:: Links
+
+   - https://en.wikipedia.org/wiki/Ragel
+   - http://www.colm.net/open-source/ragel/
+   - https://en.wikipedia.org/wiki/Thompson%27s_construction
+
+Ragel is also a FSM-compiler, but unlike SMC_ is does not need ``rules`` as input. It uses RegExps as input!
+|BR|
+There is not a lot of documentation on the input however. But is has a interesting approach.
+
+It looks like one can define “paths” [#path-vs-step]_ by specifying some RegExps. Regel builds a NFA_ by using
+`Thompson's construction algorithm <https://en.wikipedia.org/wiki/Thompson%27s_construction>`__, out of those
+RegExps. So, the developer doesn't need tho specify which ``states`` nor ``rules`` are needed; only all the allowed
+paths (or routes). 
+
+Actions are also possible. They are “added” to the route (but do not consume input, so like a
+:math:`\epsilon`-transition.
+
+
+Remarks (general)
+******************
+Based on the evaluation of these tools/languages, we can make some general remarks. Especially where relevant for the
+design of the syntax of Castle.
+
+Transitions & Symmetry
+======================
+
+Many tools use a syntax (and/or terminology) that is not inline with the (original) FSM_ (mathematical) model;
+especially for a “transition”:
+|BR|
+(We ignore the ``actions`` for a while, here).
+
+* Tools like SMC_ and SCXML_ see **the transition** as *“the arrow between 2 states”*  The input-event is then like a
+  attribute of that transition.
+  |BR|
+  So we have ``states`` and ``transition``.
+
+* Whereas others -- like Dezyne_ and plantUML_\--   (and the theory) sees **transitions** as *the relation between 3
+  parts*: from ``state``  and ``input (event)`` toward the  next ``state``.
+  |BR|
+  So we have  ``states``, ``inputs/events`` and ``transitions`` (or rules).
+
+The implication of “employing an events as attribute of a transition”, is that one can factor-out states, but nog events
+anymore. Wheres when using ``state`` and ``event`` as more symmetrical pair; one can factor-out either the state, *or*
+the event -- as shown in e.g. the “revered” code example.
+
+* The (basic) UncleBob’s version of SMC uses this more symmetrical model -- which leads to compact table.
+  |BR|
+  But as the whitespace formating, does not allow to change the order of state/event; only factoring-out over the 1ste
+  is possible.
+
+Hierarchy
+=========
+
+Several formats do kind-of embrace the hierarchical states, but only in an inline-notation. Which effectively cancel the
+effect of hierarchy. A figure that displays states “nested” inside states (as plantUML can produce) is showning
+hierarchy. But not the kind of hierarchy that we need/like to construct a complex FSM_
+
+To construct a hierarchical FSM, we like to:
+
+#. Define a “main” FSM with states in one place
+#. Consider each (or some) state of that (upper) FSM as “lower” sub-FSMs itself
+#. Add (later, and “in another file”) sub-states by adding details to *only* that state.
+#. Are able to add more and more details, by “redefining” a state as small FSM in itself.
+
+Independent of those “isolated details”, it would be nice when ‘Castle’ can flaten-out the hierarchy and draw the
+“nested” variant. Or even beter: can display a partial flattened-out one; depending on the focus the developer has on
+that comment.
+
+Compactness
+===========
+
+Inline with the general need as described in :ref:`Declarative-programming`, we can already conclude that a declarative
+style for FSM_\s is more compact then a imperative style where one (also) ahs to specify some implementation details
+(like: assigning the next state).
+
+A style as used in Ragel_ --to specify paths, not steps--, is potential even more compact. Especially when the input are
+characters -- which is not ge the general case.
+|BR|
+It may be also one step to far, as in MAYA (Most Advanced Yet Acceptable).
+
+
+-------
+
+.. rubric:: Footnotes
+ 
+.. [#final-action]
+   The final-states are used by mathematics to verify/accept an input. Whereas a SW-FSM is typically used to control a
+   system; and run *forever*. When a “final state” is needed in a SW-FSM, typical a “final-action” is used.
+
+.. [#non-determinism]
+   Remember, we have to support non-determinism! Each cell in the matrix can have multiple “next states” (and
+   corresponding actions).
+
+.. [#plantUML-arrows]
+   By example: the *arrows* in plantUML can have varions lengths (`->` , `-->`, `--->`) to hint plantUML how to draw;
+   this has no (functional) meaning. This is very conviant for a *drawing tool*, not for a programming-language.
+
+.. [#indirect]
+   This is not completely correct. By ‘nesting’ one has the advantages of sharing higher rules.
+
+.. [#generated]
+   This is generated code, and should not be touched. Therefor the maintainability-issue does not occur; just
+   re-renerate the class!
+
+.. [#hierarchically-split]
+   IMHO the goal of the hierarchy is to be able to split the “source” of the main-state/FSM and the
+   detailed-states. Developers are used to devide functionality over modules/components -- and so text-files. And
+   practice this every time details are added.
+
+.. [#voice]
+   As a practical limitation one should mention that both the standard and may examples have a voice (over IP)
+   background. Which makes the understandability for the *general* case a bit hard.
+
+.. [#google]
+   When `googling for scxml + xinclude <https://www.google.com/search?q=scxml+xinclude>`__ one find a few hits. Like
+   the comment/question “is it an omission” (as it was descriped in a draft), or “is it removed” from the spec (and
+   *forgotten* to update the example)?
+   |BR|
+   There is no clear answer, but is appears that `XInclude` is kind of a general XML-facility; that have to be applied
+   first (before using scxml). Which resembles the preprocessor. So I give up [#xml-more]_
+
+.. [#xml-more]
+   I was kind of hoping that one coud refer to a part in another file. Like we have a common “library” scxml-file and
+   use (the definitions of) a few “states” in that file. Apparently not ...
+
+.. [#dezyne-semantics]
+   Notice that the style of Dezyne resembles (or “feels as”) imperative programming, but the semantics do differ!
+
+.. [#dezyne-state]
+   Dezyne has no “states” (at tupe/words) -- at least not in the found FSMs. Is create state by assigning value to
+   variable; that act as stare (like in C). Probably one can use the Enum type to define (simulate) state; but still one
+   has to assign that value to a variable.
+
+.. [#path-vs-step]
+   In a  FSM (diagram) there are “steps” to go from one state to another. A “path” is a sequence of such a steps. 
+   
+.. _FSM:		https://en.wikipedia.org/wiki/Finite-state_machine
+.. _State pattern: 	https://en.wikipedia.org/wiki/State_pattern
+.. _UML-FSM:		https://en.wikipedia.org/wiki/UML_state_machine
+.. _NFA:		https://en.wikipedia.org/wiki/Nondeterministic_finite_automaton

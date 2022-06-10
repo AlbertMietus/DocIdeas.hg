@@ -8,32 +8,7 @@
      .. tab:: UML
         :selected:
 
-        .. uml::
-
-           @startuml
-           hide empty description
-           ''!theme crt-amber
-
-           [*]  --> S1
-
-           state S1
-           state S2
-           state S3
-
-
-           S1 -> S2 :  E_a /\naction_s1s2
-           S1 ---> S3 :  E_b /\naction_s1s3
-           S1 -> S1 :  E_c /\naction_s1s1
-
-           S2 -> S3 :  E_a /\naction_s2s3
-           S2 --> S1 :  E_b /\naction_s3s2
-           S2 ---> S2 :  E_c /\naction_s3s2
-
-           S3 -> S1 : E_a /\naction_s3s1
-           S3 --> S2 : E_b /\naction_s3s2
-           S3 ---> S3 : E_c /\naction_s3s3
-           @enduml
-
+        .. uml:: /CCastle/shared/FSM-plantUML-demo.puml
 
      .. code-tab:: python nested
 

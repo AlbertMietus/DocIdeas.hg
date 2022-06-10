@@ -1,6 +1,6 @@
-======================
-Notes about the syntax
-======================
+================
+About the syntax
+================
 
 .. toctree::
    :maxdepth: 2
@@ -8,5 +8,4 @@ Notes about the syntax
    :glob:
 
    *
-   */index
 

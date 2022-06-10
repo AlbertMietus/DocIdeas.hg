@@ -8,5 +8,5 @@ Using CC & Castle
    :glob:
 
    *
-   */index
+
 
