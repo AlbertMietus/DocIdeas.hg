@@ -82,7 +82,7 @@ and, act on it with visitors_ (and friend) later; possible in another component.
    <https://en.wikipedia.org/wiki/CSS#Selector>`__ are use to *select* a part of a tree on which a scripts-alike
    “declaration” will act. One can even select multiple parts; the system will interate over them automatically.
    |BR|
-   Also `XLST <https://en.wikipedia.org/wiki/XSLT>`_ used this approach; here `XPATH
+   Also `XLST <https://en.wikipedia.org/wiki/XSLT>`_ uses this approach; here `XPATH
    <https://en.wikipedia.org/wiki/XPath>`__ expressions are used to select the data.
    |BR|
    This kind of visitor needs language-support: to be able to separate which data is to be pick and which actions has to
