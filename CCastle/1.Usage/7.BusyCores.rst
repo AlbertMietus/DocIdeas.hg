@@ -60,45 +60,7 @@ run faster when “your core” isn’t interrupted; those auxiliary task can ru
 When the number of cores raises this does not scale; more and more cores become idle. Now, your code has to use both
 concurrency_ and parallelisme_. But also handle Critical-Sections_, Semaphores_ (and frieds) to  synchronise tasks.
 |BR|
-There is more  below the horizon then just “Threads_”!
-
-Some concepts
-=============
-
-Before we dive into the needs for Castle, lets define --shortly-- the available, theoretical concepts. Routinely, we add
-wikipedia links for a deep-dive.
-
-.. include:: BusyCores-sidebar-concurrency.irst
-
-Concurrency
------------
-Concurrency_ is the ability to “compute” multiple things at the same time, instead  of doing them one after the other.  It requires another mindset, but isn’t that complicated.
-A typical example is a loop: suppose we have a sequence of numbers and we like to compute the square of each one. Most developers will loop over those numbers, get one number, calculate the square, store it in another list, and continue with the next element. It works, but we have also instructed the computer to do it in sequence — especially when the task is bit more complicated, the compiler does know whether the ‘next task’ depends on the current one, and can’t optimise it.
-
-A better plan is to tell the compiler about the tasks; most are independently: square a number. There is also one that has to be run at the end: combine the results into a new list. And one is bit funny: distribute the sequence-elements over the “square-tasks” — clearly, one has to start with this one, but it can be concurrent with many others too.
-
-
-Parallelisme
-------------
-Parallelisme_  is about executing multiple tasks (apparently) at the same time. We will focus running multiple
-concurrent task (of the same program) on as many cores as possible. And when we assume we have a thousand cores we need
-(at least) a thousand independent tasks — at any moment— to gain maximal speed up. This is not trivial!
-|BR|
-It’s not only about doing a thousand things at the same time (that is not to complicated, for a computer), but also — probably: mostly — about finishing a thousand times faster…
-
-With many cores, multiple program-steps can be executed at the same time: from changing the same variable,  acces the
-same memory, or compete for new memory. And when solving that, we introduce new hazards: like deadlocks_ and even
-livelocks_.
-
-Locking
-
-
-
-Distributed
------------
-A special form of parallelisme is Distributed-Computing_: compute on many computers. Many experts consider this
-as an independent field of expertise; still --as Multi-Core_ is basically “many computers on a chips”-- its there is an
-analogue [#DistributedDiff]_, and we should the know-how that is available there to design out “best ever language”.
+.. There is more  below the horizon then just “Threads_”!
 
 
 Threading
@@ -121,25 +83,14 @@ Thread-bugs
 
 .. rubric:: Footnotes
 
-.. [#DistributedDiff]
-   There a two (main) differences between Distributed-Computing_ and Multi-Core_. Firstly, all “CPUs” in
-   Distributed-Computing_ are active, independent and asynchronous. There is no option to share a “core” (as
-   commonly/occasionally done in Multi-process/Threaded programming); nor is there “shared memory” (one can only send
-   messages over a network).
-   |BR|
-   Secondly, collaboration with (network based) messages is a few orders slower then (shared) memory communication. This
-   makes it harder to speed-up; the delay of messaging shouldn't be bigger as the acceleration do doing thing in
-   parallel.
-   |BR|
-   But that condition does apply to Multi-Core_ too. Although the (timing) numbers do differ.
+.. [#FN]
+   Footnote
+
 
 .. _Multi-Core:			https://en.wikipedia.org/wiki/Multi-core_processor
 .. _Concurrency:		https://en.wikipedia.org/wiki/Concurrency_(computer_science)
 .. _Parallelisme:		https://en.wikipedia.org/wiki/Parallel_computing
-.. _Distributed-Computing:	https://en.wikipedia.org/wiki/Distributed_computing
 .. _Critical-Sections:		https://en.wikipedia.org/wiki/Critical_section
 .. _Semaphores:			https://en.wikipedia.org/wiki/Semaphore_(programming)
 .. _Threads:			https://en.wikipedia.org/wiki/Thread_(computing)
 .. _Heisenbugs:			https://en.wikipedia.org/wiki/Heisenbug
-.. _deadlocks:			https://en.wikipedia.org/wiki/Deadlock
-.. _livelocks:			https://en.wikipedia.org/wiki/Deadlock#Livelock
