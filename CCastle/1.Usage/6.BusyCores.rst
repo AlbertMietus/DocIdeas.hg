@@ -1,0 +1,145 @@
+.. .. include:: /std/localtoc.irst
+.. sidebar:: On this page
+   :class: localtoc
+
+   .. contents::
+      :depth: 6
+      :local:
+      :backlinks: none
+
+.. _BusyCores:
+
+======================
+Keep those cores busy!
+======================
+
+.. post::
+   :category: Castle, Usage
+   :tags: Castle, Concurrency
+
+   I always claim that before I retire most computers will have 1024 or more cores. And that a decade later most
+   embedded systems will have even more! It’s however not easy to write technical software for those massive-parallel,
+   embedded computers; not with most languages -- simple because the developers have to put in too many details.
+   Accordingly, a --best, ever-- programming-languages should facilitate and support “natural concurrency”.
+
+   In Castle, you can easily write code that can run efficiently on thousands of cores.
+
+Why do we get more and more cores?
+**********************************
+
+Moore `observed already in 1965 <https://en.wikipedia.org/wiki/Moore's_law>`_ that the number transistors on a chips
+doubles ever 2 years. That made memory cheaper and computers faster. For years we have seen that: CPUs have grown from 4
+bit, to 8, 16, 32 and now 64 bits and the ‘clock-frequently’ has raised into the giga-hertz. This comes (almost) for
+free when the *‘gate-size’ dropped* -- roughly, a ‘gate’ is the smallest “pixel” when a chip is manufactured. By
+shrinking the gates one can put more transistor on a chips and at the same time those chips become faster and use less
+power --this comes automatically; as you will remember from your (advanced) physics-lessons.
+
+But there are limits: transistors can’t switch much faster then a few billion times a second. When we crossed that
+border, just making gates smaller didn't increase the CPU’s speed. But there are other tricks; like huge caches very
+close to (or ‘in’) the CPU. Again it made computers faster, without much work for the SW-developer.
+|BR|
+Another limit is the number of transistors you can utilize in a CPU (or the cache). One can double the number of
+transistors almost without limit, but does it double your CPU-speed? Not anymore, that threshold is passed a few years
+back.
+
+A new trick has started a at the start of this century: put more CPU’s onto *one* chip. Essentially that is what
+Multi-Core_ does: every core is fundamentally an independent CPU - but as we used that word already, we use ‘core’ for
+those copies. The amount of work a chip can do with two cores doubles — at least potentially. Using Moore’s low, the
+number of core will double be every 18-24 months; or 30 times more in a decade. Currently, many (mobile phone) “SoCs’
+already have more then 10 cores — when counting both GPUs & CPUs. That is 300 in 10 years, and 9-thousand in 20 years!
+
+Programming many cores
+**********************
+
+Although the promise of Multi-Core_ is an unlimited expansion of speed, it requires us to adapt out programming
+abilities. Transitional “sequential” programs takes for granted that the CPU can do only one thing at time; at many
+levels. With Multi-Core_ this fundamentally changed. There is no speed-up when we don’t use all cores. This is not an
+much of an issue for a low number of cores; there are plenty of other/background tasks. Even ‘single threaded’ code will
+run faster when “your core” isn’t interrupted; those auxiliary task can run in parallel on another core.
+
+When the number of cores raises this does not scale; more and more cores become idle. Now, your code has to use both
+concurrency_ and parallelisme_. But also handle Critical-Sections_, Semaphores_ (and frieds) to  synchronise tasks.
+|BR|
+There is more  below the horizon then just “Threads_”!
+
+Some concepts
+=============
+
+Before we dive into the needs for Castle, lets define --shortly-- the available, theoretical concepts. Routinely, we add
+wikipedia links for a deep-dive.
+
+.. include:: BusyCores-sidebar-concurrency.irst
+
+Concurrency
+-----------
+Concurrency_ is the ability to “compute” multiple things at the same time, instead  of doing them one after the other.  It requires another mindset, but isn’t that complicated.
+A typical example is a loop: suppose we have a sequence of numbers and we like to compute the square of each one. Most developers will loop over those numbers, get one number, calculate the square, store it in another list, and continue with the next element. It works, but we have also instructed the computer to do it in sequence — especially when the task is bit more complicated, the compiler does know whether the ‘next task’ depends on the current one, and can’t optimise it.
+
+A better plan is to tell the compiler about the tasks; most are independently: square a number. There is also one that has to be run at the end: combine the results into a new list. And one is bit funny: distribute the sequence-elements over the “square-tasks” — clearly, one has to start with this one, but it can be concurrent with many others too.
+
+
+Parallelisme
+------------
+Parallelisme_  is about executing multiple tasks (apparently) at the same time. We will focus running multiple
+concurrent task (of the same program) on as many cores as possible. And when we assume we have a thousand cores we need
+(at least) a thousand independent tasks — at any moment— to gain maximal speed up. This is not trivial!
+|BR|
+It’s not only about doing a thousand things at the same time (that is not to complicated, for a computer), but also — probably: mostly — about finishing a thousand times faster…
+
+With many cores, multiple program-steps can be executed at the same time: from changing the same variable,  acces the
+same memory, or compete for new memory. And when solving that, we introduce new hazards: like deadlocks_ and even
+livelocks_.
+
+Locking
+
+
+
+Distributed
+-----------
+A special form of parallelisme is Distributed-Computing_: compute on many computers. Many experts consider this
+as an independent field of expertise; still --as Multi-Core_ is basically “many computers on a chips”-- its there is an
+analogue [#DistributedDiff]_, and we should the know-how that is available there to design out “best ever language”.
+
+
+Threading
+=========
+
+Threads have become popular to implement parallelisme; but have there drawbacks
+They originated (long, long back) in “realtime & embedded” programming; when those systems didn’t have a OS. Other computers (mostly unix/posix) used processes (and Windows/Dos was not existing, or single threaded). Mid 199x, threads become available as “real-time extensions” on processed; initially within a single process — and so running on a single core. This was long before Multi-Core_ hardware become available; and many studies exist on how to combine threads & process  — should the kernel handle that or not, and how to avoid overhead.
+Nowadays this discussion is void, as we expect that threads can run really in parallel, on multiple cores
+
+.. todo:: ?? Sidebar about threads & speed-up on cpython ??
+
+Thread-bugs
+-----------
+
+* Overhead: slower ipv faster
+* Heisenbugs_
+
+
+----------
+
+.. rubric:: Footnotes
+
+.. [#DistributedDiff]
+   There a two (main) differences between Distributed-Computing_ and Multi-Core_. Firstly, all “CPUs” in
+   Distributed-Computing_ are active, independent and asynchronous. There is no option to share a “core” (as
+   commonly/occasionally done in Multi-process/Threaded programming); nor is there “shared memory” (one can only send
+   messages over a network).
+   |BR|
+   Secondly, collaboration with (network based) messages is a few orders slower then (shared) memory communication. This
+   makes it harder to speed-up; the delay of messaging shouldn't be bigger as the acceleration do doing thing in
+   parallel.
+   |BR|
+   But that condition does apply to Multi-Core_ too. Although the (timing) numbers do differ.
+
+.. _Multi-Core:			https://en.wikipedia.org/wiki/Multi-core_processor
+.. _Concurrency:		https://en.wikipedia.org/wiki/Concurrency_(computer_science)
+.. _Parallelisme:		https://en.wikipedia.org/wiki/Parallel_computing
+.. _Distributed-Computing:	https://en.wikipedia.org/wiki/Distributed_computing
+.. _Critical-Sections:		https://en.wikipedia.org/wiki/Critical_section
+.. _Semaphores:			https://en.wikipedia.org/wiki/Semaphore_(programming)
+.. _Threads:			https://en.wikipedia.org/wiki/Thread_(computing)
+.. _Heisenbugs:			https://en.wikipedia.org/wiki/Heisenbug
+.. _deadlocks:			https://en.wikipedia.org/wiki/Deadlock
+.. _livelocks:			https://en.wikipedia.org/wiki/Deadlock#Livelock

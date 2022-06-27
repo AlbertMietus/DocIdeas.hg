@@ -1,0 +1,35 @@
+.. -*- rst -*-
+   included in  `6.BusyCores.rst`
+
+.. sidebar::
+
+   .. tabs::
+
+     .. tab:: Ordered
+
+        Here, the programmer has (unwittingly) defined a sequential order.
+
+        .. code-block:: python
+
+           L2 = []
+           for n in L1:
+              L2.append(power(n))
+
+        .. note:: As ``power()`` could have side-effects, the compiler **must** keep the defined order!
+
+     .. tab::  Concurrent
+
+        Now, without a specified order, the same functionality has become concurrent.
+
+        .. code-block:: python
+
+           L2 = [power(n) for n in L1]
+
+        .. note::
+
+           Although (current) python-compilers will run it sequentially, it is *allowed* to distribute it; even when
+           ``power()`` has side-effects!
+           |BR|
+           As long as *python* put the results in the correct order in list ``L2`` **any order** is allowed.  “Out of
+           order” side-effects are allowed by this code.
+
