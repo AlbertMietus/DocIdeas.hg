@@ -60,7 +60,7 @@ FSM-support.
 PlantUML
 ========
 
-.. include:: sidebar-plantUML.irst
+.. include:: FSM-sidebar-plantUML.irst
 
 The design-tool plantUML support the UML-FSM_ State diagram with a quite compact syntax. The focus however is on
 *drawing* [#plantUML-arrows]_. As one can add text ‘on’ the arrows and ‘in’ the states, events and actions can be
@@ -96,7 +96,7 @@ and other *modern* features however.
 SMC (State Machine Compiler) & friends
 ======================================
 
-.. include:: sidebar-SMC.irst
+.. include:: FSM-sidebar-SMC.irst
 
 There are many versions of the “State Machine Compiler”. Most use a text-input-file to specify a FSM_ and *’compile’*
 that into programm-code first. Then the normal compiler is used to compile it “asis”.
@@ -179,7 +179,7 @@ And again, for castle we like to be able to “distribute” details over multip
 State Chart XML (SCXML): State Machine Notation for Control Abstraction
 =======================================================================
 
-.. include:: sidebar-SCXML.irst
+.. include:: FSM-sidebar-SCXML.irst
 
 SCXML is a (XML-based) standard “language” [#voice]_ to describe (more-or-less) an UML-FSM_.
 |BR|

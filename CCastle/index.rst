@@ -32,7 +32,7 @@ This section contains a set of pages & blog-post on this topic. Some a design-st
 ‘One day’ the pages will be incorporated into the (docs of, the source of) `CCastle2 <https://osdn.net/users/albertmietus/pf/CCastle2>`_
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :titlesonly:
    :glob:
 

@@ -17,7 +17,11 @@ Matching Statements (todo)
 
    * Replace the “actions” in a grammar.
 
-     .. seealso:: :ref:`G2C-actions`
+     .. seealso::
+
+        * :ref:`G2C-actions`
+        * :ref:`CyclicWoods`
+
 
 .. _Declarative-programming:
 
@@ -35,3 +39,15 @@ Declarative programming (todo)
    * Argparse (vs loop over argv) is a second example
 
    .. note:: CCastle: blog: “(1) declare what you need”. Declarative style programing. Eg loop over Argv vs argparse, makefiles
+
+
+.. _CyclicWoods:
+
+Cyclic woods (todo)
+===================
+
+.. todo:: Generalise and abstract the famous tree-structure and allow cycles 
+
+   E.g. a AST is tree with “cycles”: Each var is defined and used. Use “href” alike
+
+   .. seealso:: Its is (maybed) related to :ref:`matching-statements`
