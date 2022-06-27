@@ -73,3 +73,9 @@ div.GAM-extra li.ablog-cloud {
 .rst-content .localtoc.sidebar {
     max-width:40%; width: auto;
 }
+.rst-content h5,
+.rst-content h6 {
+    margin-bottom: 0;
+    color: #000066;
+}
+
