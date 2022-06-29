@@ -1,9 +1,9 @@
 .. include:: /std/localtoc.irst
 
-.. _MC-concepts:
+.. _BC-concepts:
 
 =======================
-Concepts for Many Cores
+Concepts for Busy Cores
 =======================
 
 .. post::
