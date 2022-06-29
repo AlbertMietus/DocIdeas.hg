@@ -80,12 +80,14 @@ div.GAM-extra li.ablog-cloud {
 }
 
 .rst-content a.external {
-    color: blue;
+    color: inherit;
     border: 0.5px solid  #d6d6d6;
     text-decoration: underline;
     text-decoration-color: #d6d6d6;
 }
 .rst-content a.external:visited { color:inherit;}
-.rst-content a.external:hover   { color:#000066;}
-
-
+.rst-content a.external:hover   {
+    color:#000066;
+    text-decoration: underline;
+    text-decoration-color: #000066;
+}
