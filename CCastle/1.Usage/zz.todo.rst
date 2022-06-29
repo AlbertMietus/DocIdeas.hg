@@ -51,3 +51,15 @@ Cyclic woods (todo)
    E.g. a AST is tree with “cycles”: Each var is defined and used. Use “href” alike
 
    .. seealso:: Its is (maybed) related to :ref:`matching-statements`
+
+.. _CC:
+
+Concurrent//Connected Components (ToDo)
+=======================================
+
+.. todo:: Write a few blog about the CC-concept
+
+.. _XXX:
+
+XXX (ToDo)
+==========

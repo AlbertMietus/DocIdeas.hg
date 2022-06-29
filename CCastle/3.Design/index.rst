@@ -10,6 +10,5 @@ Castle has to be designed. Not only the “compiler”, but also the language it
    :glob:
 
    *
-   */index
 
 

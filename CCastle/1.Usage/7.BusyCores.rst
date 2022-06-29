@@ -6,7 +6,7 @@
 Keep those cores busy!
 ======================
 
-.. post::
+.. post::  2022/06/26
    :category: Castle, Usage
    :tags: Castle, Concurrency
 
@@ -18,7 +18,7 @@ Keep those cores busy!
    In Castle, you can easily write code that can run efficiently on thousands of cores.
 
 Why do we get more and more cores?
-**********************************
+==================================
 
 Moore `observed already in 1965 <https://en.wikipedia.org/wiki/Moore's_law>`_ that the number transistors on a chips
 doubles ever 2 years. That made memory cheaper and computers faster. For years we have seen that: CPUs have grown from
@@ -41,7 +41,7 @@ number of core will double be every 18-24 months; or 30 times more in a decade. 
 already have more then 10 cores — when counting both GPUs & CPUs. That is 300 in 10 years, and 9-thousand in 20 years!
 
 Programming many cores
-**********************
+======================
 
 .. include:: BusyCores-sidebar-CPython_threads.irst
 
@@ -56,20 +56,44 @@ concurrency_ and parallelisme_. But also handle Critical-Sections_, Semaphores_ 
 
 
 Threading
-=========
+---------
 
-Threads have become popular to implement parallelisme; but have there drawbacks
-They originated (long, long back) in “realtime & embedded” programming; when those systems didn’t have a OS. Other computers (mostly unix/posix) used processes (and Windows/Dos was not existing, or single threaded). Mid 199x, threads become available as “real-time extensions” on processed; initially within a single process — and so running on a single core. This was long before Multi-Core_ hardware become available; and many studies exist on how to combine threads & process  — should the kernel handle that or not, and how to avoid overhead.
-Nowadays this discussion is void, as we expect that threads can run really in parallel, on multiple cores
+Threads have become popular to implement parallelisme; but have there drawbacks They originated (long, long back) in
+“realtime & embedded” programming; when those systems didn’t have a OS. Other computers (mostly unix/posix) used
+processes (and Windows/Dos was not existing, or single threaded). Mid 199x, threads become available as “real-time
+extensions” on processed; initially within a single process — and so running on a single core. This was long before
+Multi-Core_ hardware become available; and many studies exist on how to combine threads & process — should the kernel
+handle that or not, and how to avoid overhead.  Nowadays this discussion is void, as we expect that threads can run
+really in parallel, on multiple cores
 
 
 
-Thread-bugs
------------
+Flaws due concurrency
+=====================
 
 * Overhead: slower ipv faster
 * Heisenbugs_
 
+
+
+Castle activates all cores
+==========================
+
+An “*ideal language*” should make it easy to distribute the load over many processors. That should come
+automatically; without the developer has to put a load of effort in. That is also one of the aspect :ref:`CC` is
+enabling --and as Castle supports :ref:`CC` (and is the best language, ever -- so quite close to “ideal”)-- the language
+should be designed to enable this.
+
+.. use:: In castle is easy to use thousands of cores
+   :ID: U_ManyCore
+
+   A “CC Castle” program can run on many cores, without the developer needs to describe “manually” how to do that.
+
+   At the same time it should run efficiently. The goals is **not** to keep all cores *busy*, but to use (all) cores to
+   gain maximal speed-up.
+
+Distributing tasks over multiple cores (or even distributed computers [#web]_ is not new. In :ref:`BC-concepts` we
+analyse some, before we design & describe Castle’s :ref:`XXX`.
 
 ----------
 
@@ -92,6 +116,14 @@ Thread-bugs
 .. [#CS-link]
    See :ref:`BC-concepts` for more on Critical-Sections_ and other well-know concepts and how they relate.
 
+
+.. [#web]
+   A trivial example of dividing work over multiple computers (and so cores) is the “Web”. You have at least two
+   concurrent (active) components: the server and the brouwer. Usually there a more. By example, the server-side run’s
+   the application- a web-, and database-server. And “the web itself” has many active components, like routers, ect. And
+   all are programmed in a style that the developer doesn't need to know all those details(!).
+
+   
 .. _Multi-Core:			https://en.wikipedia.org/wiki/Multi-core_processor
 .. _Concurrency:		https://en.wikipedia.org/wiki/Concurrency_(computer_science)
 .. _Parallelisme:		https://en.wikipedia.org/wiki/Parallel_computing

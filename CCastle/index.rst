@@ -10,8 +10,8 @@ My ambition:
 
    --ALbert Mietus
 
-It’s also the first programming-language that support **CC**: Connected Components. Where `CC` is kind of of the
-successor of OO: active ‘things’ that communicate (solely) by input *and* output ports ...
+It’s also the first programming-language that support **CC**: Connected Components (or *Concurrent  Components*). Where
+`CC` is kind of of the successor of OO: active ‘things’ that communicate (solely) by input *and* output ports ...
 |BR|
 *(Yes, I know, ambition and reality are not always aligned...)*
 
