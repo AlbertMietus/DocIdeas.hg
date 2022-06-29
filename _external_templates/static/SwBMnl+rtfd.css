@@ -80,12 +80,12 @@ div.GAM-extra li.ablog-cloud {
 }
 
 .rst-content a.external {
-    //background: url(/_static/SwBMnl.png) right center no-repeat;
-    //padding-right: 1.7em;
+    color: blue;
     border: 0.5px solid  #d6d6d6;
-    color: #808080;
+    text-decoration: underline;
+    text-decoration-color: #d6d6d6;
 }
-.rst-content a.external:visited { color:#808080;}
+.rst-content a.external:visited { color:inherit;}
 .rst-content a.external:hover   { color:#000066;}
 
 
