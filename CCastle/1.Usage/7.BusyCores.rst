@@ -10,55 +10,55 @@ Keep those cores busy!
    :category: Castle, Usage
    :tags: Castle, Concurrency
 
-   I always claim that before I retire most computers will have 1024 or more cores. And that a decade later most
-   embedded systems will have even more! It’s however not-easy to write technical software for those massive-parallel,
-   embedded computers; not with most languages -- simple because the developers have to put in too many details.
-   Accordingly, a --best, ever-- programming-languages should facilitate and support “natural concurrency”.
+   I always claim that most computers will have 1024 or more cores before my retirement. And that most embedded systems
+   will have even more, a decade later. However, it’s not easy to write technical software for those massive-parallel
+   embedded computers; not with most, current languages -- simple because a developer has to put in too many details.
+   Accordingly, the “best, ever” programming language should facilitate and support “natural concurrency”.
 
    In Castle, you can easily write code that can run efficiently on thousands of cores.
 
 Why do we get more and more cores?
 ==================================
 
-Moore `observed already in 1965 <https://en.wikipedia.org/wiki/Moore's_law>`_ that the number transistors on a chips
-doubles ever 2 years. That made memory cheaper and computers faster. For years we have seen that: CPUs have grown from
-4-bit, to 8, 16, 32 and now 64 bits and the ‘clock-frequently’ has raised into the giga-hertz. This comes (almost) for
+Moore `observed already in 1965 <https://en.wikipedia.org/wiki/Moore's_law>`_ that the number of transistors on a chip
+doubles every 2 years. That made memory cheaper and computers faster. For years we have seen that: CPUs have grown from
+4-bit to 8, 16, 32, and now 64-bit; and the ‘clock-frequently’ has risen into the giga-hertz. This comes (almost) for
 free when the *‘gate-size’ dropped* -- roughly, a ‘gate’ is the smallest “pixel” when a chip is manufactured. By
-shrinking the gates one can put more transistor on a chips and at the same time those chips become faster and use less
-power --this comes automatically; as you may remember from your (advanced) physics-lessons.
+shrinking the gates one can put more transistors on a chip and at the same time those chips become faster and use less
+power --this comes automatically; as you may remember from your (advanced) physics lessons.
 
-But there are limits: transistors can’t switch much faster then a few billion times a second. When we crossed that
+But there are limits: transistors can’t switch much faster than a few billion times a second. When we crossed that
 border, just making gates smaller didn't increase the CPU’s speed. But there are other tricks; like huge caches very
-close to (or ‘in’) the CPU. Again it made computers faster, without much work for the SW-developer.
+close to (or ‘in’) the CPU. Again it made computers faster, without much work for the SW developer.
 Another limit is the number of transistors you can utilize in a CPU (or the cache). One can double the number of
 transistors almost without limit, but does it again double your CPU-speed? *No*, not anymore, that threshold is passed a
 few years back.
 
-A new trick has started a at the start of this century: put more CPU’s onto *one* chip. Essentially that is what
+A new trick started at the start of this century: put more CPUs onto *one* chip. Essentially that is what
 Multi-Core_ does: every core is fundamentally an independent CPU - but as we used that word already, we use ‘core’ for
 those copies. The amount of work a chip can do with two cores doubles — at least potentially. Using Moore’s low, the
-number of core will double be every 18-24 months; or 30 times more in a decade. Currently, many (mobile phone) “SoCs’
-already have more then 10 cores — when counting both GPUs & CPUs. That is 300 in 10 years, and 9-thousand in 20 years!
+number of cores will double be every 18-24 months; or 30 times more in a decade. Currently, many (mobile phone) SoCs
+already have more than 10 cores — when counting both GPUs & CPUs. That is 300 in 10 years, and 9-thousand in 20 years!
 
 Programming many cores
 ======================
 
 .. include:: BusyCores-sidebar-CPython_threads.irst
 
-Although the promise of Multi-Core_ is an unlimited expansion of speed, it requires us to adapt out programming
-abilities. Transitional “sequential” programs takes for granted that the CPU can do only one thing at time; at many
-levels. With Multi-Core_ this fundamentally changed. There is no speed-up when we don’t use all cores. This is not an
-much of an issue for a low number of cores; there are plenty of other/background tasks. Even ‘single threaded’ code will
+Although the promise of Multi-Core_ is an unlimited expansion of speed, it requires us to adapt our programming
+abilities. Transitional “sequential” programs take for granted that the CPU can do only one thing at a time; at many
+levels. With Multi-Core_ this fundamentally changed. There is no speed-up when we don’t use all cores. This is not much
+of an issue for a low number of cores; there are plenty of other/background tasks. Even ‘single threaded’ code will 
 run faster when “your core” isn’t interrupted; when those auxiliary processes can run in parallel on another core.
 
-When the number of cores raises this does not scale; more and more cores become idle. Now, your code has to use both
-concurrency_ and parallelisme_. But also handle Critical-Sections_, Semaphores_ (and frieds) to  synchronise tasks.
+When the number of cores rises this does not scale; more and more cores become idle. Now, your code has to use both
+concurrency_ and parallelism_. But also handle Critical-Sections_, Semaphores_ (and friends) to  synchronize  tasks.
 
 
 Threading
 ---------
 
-Threads have become popular to implement parallelisme; but have there drawbacks They originated (long, long back) in
+Threads have become popular to implement parallelism; but have there drawbacks They originated (long, long back) in
 “realtime & embedded” programming; when those systems didn’t have a OS. Other computers (mostly unix/posix) used
 processes (and Windows/Dos was not existing, or single threaded). Mid 199x, threads become available as “real-time
 extensions” on processed; initially within a single process — and so running on a single core. This was long before
@@ -126,7 +126,7 @@ analyse some, before we design & describe Castle’s :ref:`XXX`.
    
 .. _Multi-Core:			https://en.wikipedia.org/wiki/Multi-core_processor
 .. _Concurrency:		https://en.wikipedia.org/wiki/Concurrency_(computer_science)
-.. _Parallelisme:		https://en.wikipedia.org/wiki/Parallel_computing
+.. _parallelism:		https://en.wikipedia.org/wiki/Parallel_computing
 .. _Critical-Sections:		https://en.wikipedia.org/wiki/Critical_section
 .. _Semaphores:			https://en.wikipedia.org/wiki/Semaphore_(programming)
 .. _Threads:			https://en.wikipedia.org/wiki/Thread_(computing)
