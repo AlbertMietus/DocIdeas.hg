@@ -11,8 +11,8 @@ Keep those cores busy!
    :tags: Castle, Concurrency
 
    I always claim that most computers will have 1024 or more cores before my retirement. And that most embedded systems
-   will have even more, a decade later. However, it’s not easy to write technical software for those massive-parallel
-   embedded computers; not with most, current languages -- simple because a developer has to put in too many details.
+   will have even more, a decade later. However, it’s not easy to write technical software for those “massive-parallel
+   embedded computers”; not with most, current languages -- simple because a developer has to put in too many details.
    Accordingly, the “best, ever” programming language should facilitate and support “natural concurrency”.
 
    In Castle, you can easily write code that can run efficiently on thousands of cores.
@@ -48,7 +48,7 @@ Programming many cores
 Although the promise of Multi-Core_ is an unlimited expansion of speed, it requires us to adapt our programming
 abilities. Transitional “sequential” programs take for granted that the CPU can do only one thing at a time; at many
 levels. With Multi-Core_ this fundamentally changed. There is no speed-up when we don’t use all cores. This is not much
-of an issue for a low number of cores; there are plenty of other/background tasks. Even ‘single threaded’ code will 
+of an issue for a low number of cores; there are plenty of other/background tasks. Even ‘single threaded’ code will
 run faster when “your core” isn’t interrupted; when those auxiliary processes can run in parallel on another core.
 
 When the number of cores rises this does not scale; more and more cores become idle. Now, your code has to use both
@@ -58,22 +58,39 @@ concurrency_ and parallelism_. But also handle Critical-Sections_, Semaphores_ (
 Threading
 ---------
 
-Threads have become popular to implement parallelism; but have there drawbacks They originated (long, long back) in
-“realtime & embedded” programming; when those systems didn’t have a OS. Other computers (mostly unix/posix) used
-processes (and Windows/Dos was not existing, or single threaded). Mid 199x, threads become available as “real-time
-extensions” on processed; initially within a single process — and so running on a single core. This was long before
-Multi-Core_ hardware become available; and many studies exist on how to combine threads & process — should the kernel
-handle that or not, and how to avoid overhead.  Nowadays this discussion is void, as we expect that threads can run
-really in parallel, on multiple cores
+Threads_ have become popular to accomplish parallelism but have drawbacks too. They originated (long, long back) in
+“real-time & embedded” programming; -- those systems didn't have an OS nor processes and used a concept that resembles
+threads.  Other computers (mostly Unix/Posix) used “processes” to run many tasks --Windows/Dos wasn't relevant; it was
+(mostly) single-user. Mid 199x threads_ become available as “real-time extensions”; initially within a single process —
+and so running on a single core. Al this was long before Multi-Core_ hardware was accessible, and studies started on how
+to combine threads & processes — should the kernel handle that or not, and how to avoid overhead.  Nowadays, this
+discussion is void, as we need threads_ that can run in parallel on multiple cores.
+
+Bugs
+~~~~
+A lot of new bugs popped up when developers started to use threads_. One had to learn about concurrency_, parallelism_,
+and their difference. And that two threads can be intertwined in not foreseen ways; multiple threads_ can access
+the same variable. A single line became suddenly not atomic anymore -- even a single assignment is not.
+
+|BR| We
+mastered that today, at least mostly. There are still many quizzes about that, and many do not pass the tricky
+ones. More bothersome is that no one knows how to compose tests to verify the absents of this kind of Heisenbugs_
+
+Overhead
+~~~~~~~~
+Threads have more handicaps: it is hard to gain the speed-up aiming for. Partly because threads_ themself have a lot of
+overhead (especially to start/stop them). But it is also hard to “get” the right number of threads_. Many opinions on
+this exist -- like one thread per core [#wrong]_ -- but hardly (or non) theory on this.
+
+A bigger factor is indirect overhead; especially in CPU-bound (see below) systems. Then, the outcome of a calculation in
+one thread is routinely needed for an algorithm in another thread -- if not, why use threads? That involves sharing data [#share]_
 
 
+IO vs CPU Bound
+---------------
 
-Flaws due concurrency
-=====================
-
-* Overhead: slower ipv faster
-* Heisenbugs_
-
+Alternatives
+============
 
 
 Castle activates all cores
@@ -123,7 +140,19 @@ analyse some, before we design & describe Castle’s :ref:`XXX`.
    the application- a web-, and database-server. And “the web itself” has many active components, like routers, ect. And
    all are programmed in a style that the developer doesn't need to know all those details(!).
 
-   
+.. [#wrong]
+   Having a 1:1 relation is very populair point of view, at some places. But most probably wrong -- although that is an
+   assumption too. In addition, it does not scale (what when the number of core double?), and hard to manage.
+   |BR|
+   Also see: the section about IO- vs CPU bound.
+
+.. [#share]
+   Sharing can be done by a shared-data or by sending messages. For the developer the latter has the advantage that no
+   (synchronised) shared, variables are needed. But that us just an abstraction; at a lower level there is some memory
+   that is written by one an read by another thread -- and so need synchronisation and exclusiveness.
+
+
+
 .. _Multi-Core:			https://en.wikipedia.org/wiki/Multi-core_processor
 .. _Concurrency:		https://en.wikipedia.org/wiki/Concurrency_(computer_science)
 .. _parallelism:		https://en.wikipedia.org/wiki/Parallel_computing
