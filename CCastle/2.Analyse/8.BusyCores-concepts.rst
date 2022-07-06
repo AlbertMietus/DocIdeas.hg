@@ -10,13 +10,17 @@ Concepts for Busy Cores
    :category: Castle DesignStudy
    :tags: Castle, Concurrency
 
-   Effectively making benefit thousands of cores, as I announced in :ref:`BusyCores` is not easy. Many languages put it
-   on the shoulders of the developer: usually by referring to pthreads_.
+   In the near future, more and more cores will become available as described in :ref:`BusyCores` And Castle should
+   make it easy to write code for all of them; not to keep them busy, but maximize speed up [useCase:
+   :need:`U_ManyCore`].
    |BR|
-   But there is more below the horizon then just “Threads_”!
+   We also discused threads_, they do not scale well for CPU-bound (embedded) systems, and that er are contemporary,
+   abstractions on top of them --although the not always fit nicely in existing languages.
 
-   Let discover some concepts that can help to design prober support, and unburden the typical (moderen, embedded)
-   developer.
+   As Castle is a new language we have the opportunity to select such a concept, and incorporate it in the language ...
+
+   In this blog we analyse the options; not focusing in the syntax,  but on semantics and implementation details: Does
+   it scale and will it be effectively on many, many cores
 
 ----------
 
