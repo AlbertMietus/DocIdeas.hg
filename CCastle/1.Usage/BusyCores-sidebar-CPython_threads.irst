@@ -5,9 +5,9 @@
 
    Python_ was conceived in early 198X when the word was single-core. And even though there were already debates on very
    advanced `M:N <https://en.wikipedia.org/wiki/Thread_(computing)#M:N_(hybrid_threading)>`__ models, threads_ were
-   singular, an option within one process. When one thread is running, “all cores” are busy...
+   singular. When one thread is running, “all cores” are busy...
    |BR|
-   Back then, CPython_ made the design choice for the now-famous GIL_ [#GIL-speed]_, to implement Critical-Sections_
+   Back then, CPython_ made the design choice to use the now-famous GIL_ [#GIL-speed]_ to implement Critical-Sections_
    [#CS-link]_.
 
    In hindsight, that was maybe not the best approach. Although the Python developer can use sound threads, and
