@@ -6,13 +6,13 @@
 Keep those cores busy!
 ======================
 
-.. post::  2022/06/26
+.. post::  2022/07/06
    :category: Castle, Usage
    :tags: Castle, Concurrency
 
    I always claim that most computers will have 1024 or more cores before my retirement. And that most embedded systems
    will have even more, a decade later. However, it’s not easy to write technical software for those “massive-parallel
-   embedded computers”; not with most, current languages -- simple because a developer has to put in too many details.
+   embedded computers”, not with the current languages -- simple because a developer has to put in too many details.
    Accordingly, the “best, ever” programming language should facilitate and support “natural concurrency”.
 
    In Castle, you can easily write code that can run efficiently on thousands of cores.
