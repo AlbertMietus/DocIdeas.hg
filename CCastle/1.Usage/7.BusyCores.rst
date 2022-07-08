@@ -216,7 +216,7 @@ automatically; without the developer has to put a load of effort in. That is als
 enabling --and as Castle supports :ref:`CC` (and is the best language, ever -- so quite close to “ideal”)-- the language
 should be designed to enable this.
 
-.. use:: In castle is easy to use thousands of cores
+.. use:: In Castle is easy to use thousands of cores
    :ID: U_ManyCore
 
    A “CC Castle” program can run on many cores, without the developer needs to describe “manually” how to do that.
