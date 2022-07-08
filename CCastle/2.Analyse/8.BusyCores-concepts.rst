@@ -14,13 +14,20 @@ Concepts for Busy Cores
    make it easy to write code for all of them; not to keep them busy, but maximize speed up [useCase:
    :need:`U_ManyCore`].
    |BR|
-   We also discused threads_, they do not scale well for CPU-bound (embedded) systems, and that er are contemporary,
-   abstractions on top of them --although the not always fit nicely in existing languages.
+   We also discused threads_: they do not scale well for CPU-bound (embedded) systems, and that there are contemporary
+   abstractions on top of them --although they don’t always fit nicely in existing languages.
 
    As Castle is a new language we have the opportunity to select such a concept, and incorporate it in the language ...
 
    In this blog we analyse the options; not focusing in the syntax,  but on semantics and implementation details: Does
    it scale and will it be effectively on many, many cores
+
+
+TODO
+****
+
+.. todo:: All below is draft and needs work
+
 
 ----------
 
