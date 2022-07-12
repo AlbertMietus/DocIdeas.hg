@@ -128,7 +128,7 @@ Alternatives
 Raw threads_, as in pthreads_, are not the only option; there are contemporary alternatives. For the most part,
 they use threads to implement a more abstract interface; to unburden developers for those technicalities.
 
-We introduce a few but leave the details to the next blog: the study on :ref:`BC-concepts`.
+We introduce a few but leave the details to the next blog: the study on :ref:`ConcurrentComputingConcepts`.
 
 Thread-Pools
 ------------
@@ -224,7 +224,7 @@ should be designed to enable this.
    At the same time it should run efficiently. The goals is **not** to keep all cores *busy*, but to use (all) cores to
    gain maximal speed up.
 
-Distributing tasks over multiple cores (or even distributed computers [#web]_ is not new. In :ref:`BC-concepts` we
+Distributing tasks over multiple cores (or even distributed computers [#web]_ is not new. In :ref:`ConcurrentComputingConcepts` we
 analyse some, before we design & describe Castle’s :ref:`XXX`.
 
 ----------
@@ -246,7 +246,7 @@ analyse some, before we design & describe Castle’s :ref:`XXX`.
    *It not about using all cores, it about the speed up!*
 
 .. [#CS-link]
-   See :ref:`BC-concepts` for more on Critical-Sections_ and other well-know concepts and how they relate.
+   See :ref:`ConcurrentComputingConcepts` for more on Critical-Sections_ and other well-know concepts and how they relate.
 
 
 .. [#web]

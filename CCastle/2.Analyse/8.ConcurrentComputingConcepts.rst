@@ -1,6 +1,6 @@
 .. include:: /std/localtoc.irst
 
-.. _BC-concepts:
+.. _ConcurrentComputingConcepts:
 
 =============================
 Concurrent Computing Concepts
