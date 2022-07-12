@@ -28,7 +28,7 @@ Basic terminology
 As there is many theory available and even more practical expertise, but a limited set of “common words”, let describe
 some basic terms. As always, we use Wikipedia as common ground, and add links for a deep-dive.
 
-.. include:: BusyCores-sidebar-concurrency.irst
+.. include:: CCC-sidebar-concurrency.irst
 
 
 
