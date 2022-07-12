@@ -2,9 +2,9 @@
 
 .. _BC-concepts:
 
-=======================
-Concepts for Busy Cores
-=======================
+=============================
+Concurrent Computing Concepts
+=============================
 
 .. post::
    :category: Castle DesignStudy
@@ -20,61 +20,92 @@ Concepts for Busy Cores
    As Castle is a new language we have the opportunity to select such a concept and incorporate it into the language ...
 
    In this blog, we explore a bit of theory. I will focus on semantics and the possibilities to implement them
-   efficiently. The syntactic details come later.
+   efficiently. The exact syntax will come later.
 
+Basic terminology
+=================
+
+As there is many theory available and even more practical expertise, but a limited set of “common words”, let describe
+some basic terms. As always, we use Wikipedia as common ground, and add links for a deep-dive.
+
+.. include:: BusyCores-sidebar-concurrency.irst
 
 
 
 TODO
-****
+************************************************************
 
-.. todo:: All below is draft and needs work
+.. todo:: All below is draft and needs work!!!!
 
 
-----------
-
-CUT & PAST
-
-----------
-
-Some concepts
-=============
-
-Before we dive into the needs for Castle, lets define --shortly-- the available, theoretical concepts. Routinely, we add
-wikipedia links for a deep-dive.
-
-.. include:: BusyCores-sidebar-concurrency.irst
 
 Concurrency
 -----------
-Concurrency_ is the ability to “compute” multiple things at the same time, instead  of doing them one after the other.  It requires another mindset, but isn’t that complicated.
-A typical example is a loop: suppose we have a sequence of numbers and we like to compute the square of each one. Most developers will loop over those numbers, get one number, calculate the square, store it in another list, and continue with the next element. It works, but we have also instructed the computer to do it in sequence — especially when the task is bit more complicated, the compiler does know whether the ‘next task’ depends on the current one, and can’t optimise it.
 
-A better plan is to tell the compiler about the tasks; most are independently: square a number. There is also one that has to be run at the end: combine the results into a new list. And one is bit funny: distribute the sequence-elements over the “square-tasks” — clearly, one has to start with this one, but it can be concurrent with many others too.
+Concurrency_ is the ability to “compute” multiple things at the same time.
+|BR|
+Designing concurrent software isn’t that complicated but; demands another mindset the when we write software that does
+one thing afer the other.
+
+A typical example is a loop: suppose we have a sequence of numbers and we like to compute the square of each one. Most
+developers will loop over those numbers, get one number, calculate the square, store it in another list, and continue.
+It works, but we have also instructed the computer to do it in sequence — especially when the
+task is bit more complicated, the compiler does know whether the ‘next task’ depends on the current one, and can’t
+optimise it.
+
+A better plan is to tell the compiler about the tasks; most are independently: square a number. There is also one that
+has to be run at the end: combine the results into a new list. And one is bit funny: distribute the sequence-elements
+over the “square-tasks” — clearly, one has to start with this one, but it can be concurrent with many others too.
+|BR|
+This is *not* a parallel algorithm. When not specifying the order, we allow parallel execution. We do not demand it,
+sequential execution is allowed too.
+
 
 
 Parallelisme
 ------------
-Parallelisme_  is about executing multiple tasks (apparently) at the same time. We will focus running multiple
-concurrent task (of the same program) on as many cores as possible. And when we assume we have a thousand cores we need
-(at least) a thousand independent tasks — at any moment— to gain maximal speed up. This is not trivial!
+
+Parallelisme_ is about executing multiple tasks (apparently) at the same time. We will focus running multiple concurrent
+task (of the same program) on “as many cores as possible”.  When we assume a thousand cores, we need a thousand
+independent tasks (at least) to gain maximal speed up. A thousand at any moment!
 |BR|
-It’s not only about doing a thousand things at the same time (that is not to complicated, for a computer), but also — probably: mostly — about finishing a thousand times faster…
+It’s not only about doing a thousand things at the same time (that is not to complicated, for a computer), but also —
+probably: mostly — about finishing a thousand times faster…
 
 With many cores, multiple program-steps can be executed at the same time: from changing the same variable,  acces the
 same memory, or compete for new memory. And when solving that, we introduce new hazards: like deadlocks_ and even
 livelocks_.
 
-Locking
-
-
 
 Distributed
 -----------
+
 A special form of parallelisme is Distributed-Computing_: compute on many computers. Many experts consider this
 as an independent field of expertise; still --as Multi-Core_ is basically “many computers on a chips”-- its there is an
-analogue [#DistributedDiff]_, and we should the know-how that is available there to design out “best ever language”.
+analogy [#DistributedDiff]_, and we should use the know-how that is available, to design out “best ever language”.
 
+Messages & shared-data
+----------------------
+
+Communication between two (concurrent) tasks (or processes, CPUs, computers) needs the passing of data (in one or two
+direction). Roughly, there are two ways to do so:
+
+Shared-Data
+   Memory (variables) that can be written and/or read by both. As the acces is typical not acces, a bit of 
+
+
+Controll
+========
+
+Models
+======
+
+Probably the oldest model to described concurrency is the Petri-net_; which has the disadvantage that is synchronous
+(all tokens move at the same timeslot) -- which is a hard to implement (efficiently) on Multi-Core_.
+
+Actors
+
+A very introduce
 
 --------
 
@@ -104,3 +135,8 @@ END
 .. _livelocks:			https://en.wikipedia.org/wiki/Deadlock#Livelock
 .. _Critical-Sections:		https://en.wikipedia.org/wiki/Critical_section
 .. _Distributed-Computing:	https://en.wikipedia.org/wiki/Distributed_computing
+
+.. _Actor-Model:		https://en.wikipedia.org/wiki/Actor_model
+.. _Actor-Model-Theory:		https://en.wikipedia.org/wiki/Actor_model_theory
+
+.. _Petri-Net:			https://en.wikipedia.org/wiki/Petri_net
