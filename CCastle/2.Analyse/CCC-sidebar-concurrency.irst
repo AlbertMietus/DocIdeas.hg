@@ -5,7 +5,7 @@
 
    .. tabs::
 
-     .. tab:: Ordered
+     .. tab:: Sequential
 
         Here, the programmer has (unwittingly) defined a sequential order.
 

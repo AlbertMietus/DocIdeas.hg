@@ -1,6 +1,7 @@
 .. -*- rst -*-
    included in  `4.FSMs-are-needed.rst`
 
+.. _Threads-in-CPython:
 .. sidebar:: Threads in CPython
 
    Python_ was conceived in early 198X when the word was single-core. And even though there were already debates on very

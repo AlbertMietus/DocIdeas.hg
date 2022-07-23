@@ -14,11 +14,11 @@ Concurrent Computing Concepts
    make it easy to write code for all of them: not to keep them busy, but to maximize speed up [useCase:
    :need:`U_ManyCore`].
    |BR|
-   We also discussed threads_: they do not scale well for CPU-bound (embedded) systems. And I introduced some
+   We also discussed threads_: they do not scale well for CPU-bound (embedded) systems. And, I introduced some
    contemporary abstractions; which do not always fit nicely in existing languages.
 
    As Castle is a new language we have the opportunity to select such a concept and incorporate it into the language ...
-
+   |BR|
    In this blog, we explore a bit of theory. I will focus on semantics and the possibilities to implement them
    efficiently. The exact syntax will come later.
 
@@ -34,10 +34,10 @@ computer, etc.
 
 .. include:: CCC-sidebar-concurrency.irst
 
-Concurrency
------------
+Concurrent
+----------
 
-Concurrency_ is the ability to “compute” multiple *tasks* at the same time.
+Concurrency_ is the **ability** to “compute” multiple *tasks* at the same time.
 |BR|
 Designing concurrent software isn’t that complicated but; demands another mindset the when we write software that does
 one tasks afer the other.
@@ -56,10 +56,10 @@ This is *not* a parallel algorithm. When not specifying the order, we allow para
 sequential execution is allowed too.
 
 
-Parallelisme
-------------
+Parallel
+--------
 
-Parallelisme_ is about executing multiple tasks (apparently) at the same time. We will focus running multiple concurrent
+Parallelism_ is about executing multiple tasks (seemingly) at the same time. We will focus running multiple concurrent
 task (of the same program) on “as many cores as possible”.  When we assume a thousand cores, we need a thousand
 independent tasks (at least) to gain maximal speed up. A thousand at any moment!
 |BR|
@@ -79,37 +79,69 @@ as an independent field of expertise; still --as Multi-Core_ is basically “man
 analogy [#DistributedDiff]_, and we should use the know-how that is available, to design out “best ever language”.
 
 
-
 Communication
--------------
+=============
 
-When tasks run in various environments they have to communicate: to pass data and to controll progress. Unlike in a
+When multiple tasks run in concurrently, they have to communicate to pass data and to controll progress. Unlike in a
 sequential program -- where the controll is trivial, as sharing data-- this needs a bit of extra effort.
 |BR|
 There are two main approches: shared-data of message-passing.
 
 Shared Memory
-~~~~~~~~~~~~~
-In this model all tasks (thread or process) have some shared/common memory; typically “variables”. As the acces is
-asynchronous, the risk exist the data is updated “at the same time” by two or more tasks. This can lead to invalid data;
-and so Critical-Sections_ are needed.
+-------------
+
+In this model all tasks (usually threads or process) have some shared/common memory; typically “variables”. As the acces
+is asynchronous, the risk exist the data is updated “at the same time” by two or more tasks. This can lead to invalid
+data; and so Critical-Sections_ are needed.
 
 This is a very basic model which assumes that there is physically memory that can be shared. In distributed systems this
 is uncommon; but for threads it’s straightforward. As disadvantage of this model is that is hazardous: Even when a
 single access to such a shared variable is not protected by a Critical-Section_, the whole system can break [#OOCS]_.
 
+About Critical Sections
+~~~~~~~~~~~~~~~~~~~~~~~
+For those, who are not familiar with Critical-Sections_ and/or Semaphores, a very short intro.
+|BR|
+Unlike some developers presume “code-lines” are not *‘atomic’*: they can be interrupted. When using (e.g) threads_, the
+“computer” can pause one thread halfway an statement, to run another one temporally and continue a millisecond later. When
+that happens when writing or reading a variable and the other thread also access the same shared-memory, the result is
+unpredictable. To prevent that, we need to controle the handling that variable: make it a Critical-Section_.
+
+In essense, we have to tell the “computer” to make that line (of a few lines) atomic; make it exclusive for a task. Then
+the compiler will add some extra fundamental instructions (specific for that CPU-type) to assure this. A check is
+inserted just before the section is entered, and the thread will be suspended when another task is using it. When
+granted acces, a bit of bookkeeping is done -- so the “check” in other thread is halted). That bookkeeping is updated
+and when leaving. Along with more bookkeeping to un-pauze the suspended threads.
+
+As you can imagen, this “bookkeeping” is extra complicated on a Multi-Core_ system; some global data structure is
+needed; which is a Critical-Sections in itself.
+|BR|
+There are many algorithms to solve this. All with the same disadvantage: it takes a bit of time -- possible by
+“Spinlocking_” all other cores (for a few nanoseconds). As Critical-Sections a usually short (e.g a assignment, or a
+few lines) the overhead can be huge(!) [#timesCPU]_.
+
 
 Messages
-~~~~~~~~
-A more modern approach is Message-Passing_. One task send a message (sometimes called “event”) to another task; as there
-is a distinct sender and receiver -- and apparently no common/shared memory-- no Critical-Sections [#MPCS]_ are
-needed. At least no explicitly. Messages can be used by all kind of task; even in a distributed system -- then the
-message (and it data) is serialised, transmitted over a network and deserialised. Which can introduce some overhead and
-delay.
+--------
+
+A more modern approach is Message-Passing_: a task sends some information to another; this can be a message, some data,
+or an event. In all cases, there is a distinct sender and receiver -- and apparently no common/shared memory--, so no
+Critical-Sections [#MPCS]_ are needed; at least no explicitly. Messages can be used by all kind of task; even in a
+distributed system -- then the message (and it data) is serialised, transmitted over a network and deserialised. Which
+can introduce some overhead and delay.
 |BR|
 Many people use this networking mental model when they thing about Message-Passing_, and *wrongly* assume there is
-always overhead. When (carefully) implemented this is not needed; and can be as efficiently as shared-memory (assuming
-there is shared-memory to can be used).
+always serialisation (or network) overhead. When (carefully) implemented this is not needed; and can be as efficiently
+as shared-memory (assuming there is shared-memory that can be used).
+
+This “message
+There is an analogy between Message-Passing_ and Events_ (and the event-loop). They have separate history, but are quite
+similar in nature. Like a “message”, the “event” is also used to share data (& controll) to isolated “tasks”.
+
+Variants
+~~~~~~~~
+
+There are may variants of Message-Passing_
 
 
 ************************************************************
@@ -160,18 +192,25 @@ END
    This is not completely correct; Message-Passing_ can be implemented on top of shared-memory. Then, the implementation
    of this (usually) OO-abstraction contains the Critical-Sections_; a bit as described in the footnote above.
 
+.. [#timesCPU]
+   And the overhead will grow when we add more cores. Firstly while more “others” have to wait (or spin), and secondly
+   that the number of communications will grow with the number of cores too.  As described in the :ref:`sidebar
+   <Threads-in-CPython>` in :ref:`BusyCores`, solving this can give more overhead then the speed we are aiming for.
 
-
+.. _Concurrency:		https://en.wikipedia.org/wiki/Concurrency_(computer_science)
+.. _parallelism:		https://en.wikipedia.org/wiki/Parallel_computing
 .. _pthreads: 			https://en.wikipedia.org/wiki/Pthreads
 .. _Threads:			https://en.wikipedia.org/wiki/Thread_(computing)
 .. _Multi-Core:			https://en.wikipedia.org/wiki/Multi-core_processor
-
 .. _deadlocks:			https://en.wikipedia.org/wiki/Deadlock
 .. _livelocks:			https://en.wikipedia.org/wiki/Deadlock#Livelock
 .. _Critical-Section:		https://en.wikipedia.org/wiki/Critical_section
 .. _Critical-Sections:		Critical-Section_
+.. _Semaphores:			https://en.wikipedia.org/wiki/Semaphore_(programming)
+.. _Spinlocking:		https://en.wikipedia.org/wiki/
 .. _Distributed-Computing:	https://en.wikipedia.org/wiki/Distributed_computing
 .. _Message-Passing:		https://en.wikipedia.org/wiki/Message_passing
+.. _Events:			https://en.wikipedia.org/wiki/Event_(computing)
 .. _Actor-Model:		https://en.wikipedia.org/wiki/Actor_model
 .. _Actor-Model-Theory:		https://en.wikipedia.org/wiki/Actor_model_theory
 

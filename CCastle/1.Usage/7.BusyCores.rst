@@ -58,7 +58,7 @@ concurrency_ and parallelism_. But also handle Critical-Sections_, Semaphores_ (
 Threading
 ---------
 
-Threads_ have become popular to accomplish parallelism but have drawbacks too. They originated (long, long back) in
+Threads_ have become popular to accomplish parallelism_ but have drawbacks too. They originated (long, long back) in
 “real-time & embedded” programming; -- those systems didn't have an OS nor processes and used a concept that resembles
 threads.  Other computers (mostly Unix/Posix) used “processes” to run many tasks --Windows/Dos wasn't relevant; it was
 (mostly) single-user. Mid 199x threads_ become available as “real-time extensions”; initially within a single process —
@@ -178,6 +178,8 @@ processing those task-objects. As those tasks are isolated, running them is easy
 The developer is hidden from the threads -- (s)he is not even aware of them! Or actually, there is just this general
 understanding the “raw threads” are used in the background, but that is not required. Any “scheduler” will do!
 
+
+.. _BC-events:
 
 Events (interrupts)
 -------------------
