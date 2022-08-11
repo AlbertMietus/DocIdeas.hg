@@ -15,7 +15,7 @@ Concurrent Computing Concepts
    :need:`U_ManyCore`].
    |BR|
    We also discussed threads_: they do not scale well for CPU-bound (embedded) systems. And, I introduced some
-   contemporary abstractions; which do not always fit nicely in existing languages.
+   (other) concurrency abstractions; which do not always fit nicely in existing languages.
 
    As Castle is a new language we have the opportunity to select such a concept and incorporate it into the language ...
    |BR|
@@ -56,8 +56,8 @@ This is *not* a parallel algorithm. When not specifying the order, we allow para
 sequential execution is allowed too.
 
 
-Parallel
---------
+Parallelism
+-----------
 
 Parallelism_ is about executing multiple tasks (seemingly) at the same time. We will focus running multiple concurrent
 task (of the same program) on “as many cores as possible”.  When we assume a thousand cores, we need a thousand
@@ -79,24 +79,34 @@ as an independent field of expertise; still --as Multi-Core_ is basically “man
 analogy [#DistributedDiff]_, and we should use the know-how that is available, to design out “best ever language”.
 
 
-Communication
-=============
+Efficient Communication
+=======================
 
 When multiple tasks run in concurrently, they have to communicate to pass data and to controll progress. Unlike in a
-sequential program -- where the controll is trivial, as sharing data-- this needs a bit of extra effort.
+sequential program -- where the controll is trivial, as is sharing data-- this needs a bit of extra effort.
 |BR|
-There are two main approches: shared-data of message-passing.
+There are two main approches: shared-data of message-passing; we will introduce them below.
+
+Communication takes time, especially *wall-time* [#wall-time]_ (or real time) and may slow down computing. Therefore
+communication has to be efficient. This is a hard problem and becomes harder when we have more communication, more
+concurrently (& parallel) tasks, and/or those task are shorter living. Or better: is depends on the ratio
+communication-time over time-between-two-communications.
+
 
 Shared Memory
 -------------
 
 In this model all tasks (usually threads or process) have some shared/common memory; typically “variables”. As the acces
 is asynchronous, the risk exist the data is updated “at the same time” by two or more tasks. This can lead to invalid
-data; and so Critical-Sections_ are needed.
+data and so Critical-Sections_ are needed.
 
 This is a very basic model which assumes that there is physically memory that can be shared. In distributed systems this
 is uncommon; but for threads it’s straightforward. As disadvantage of this model is that is hazardous: Even when a
 single access to such a shared variable is not protected by a Critical-Section_, the whole system can break [#OOCS]_.
+
+The advantage of shared memory is the short communication-time. The wall-time and CPU-time are roughly the same: the
+time to write & read the variable, added to the (overhead) time for the critical section --  which is typical the
+bigger part.
 
 About Critical Sections
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -107,7 +117,7 @@ Unlike some developers presume “code-lines” are not *‘atomic’*: they can
 that happens when writing or reading a variable and the other thread also access the same shared-memory, the result is
 unpredictable. To prevent that, we need to controle the handling that variable: make it a Critical-Section_.
 
-In essense, we have to tell the “computer” to make that line (of a few lines) atomic; make it exclusive for a task. Then
+In essense, we have to tell the “computer” that a line (of a few lines) are *atomic*; to make access exclusive  The
 the compiler will add some extra fundamental instructions (specific for that CPU-type) to assure this. A check is
 inserted just before the section is entered, and the thread will be suspended when another task is using it. When
 granted acces, a bit of bookkeeping is done -- so the “check” in other thread is halted). That bookkeeping is updated
@@ -118,42 +128,70 @@ needed; which is a Critical-Sections in itself.
 |BR|
 There are many algorithms to solve this. All with the same disadvantage: it takes a bit of time -- possible by
 “Spinlocking_” all other cores (for a few nanoseconds). As Critical-Sections a usually short (e.g a assignment, or a
-few lines) the overhead can be huge(!) [#timesCPU]_.
+few lines) the overhead can be (relatively) huge [#timesCPU]_!
 
 
 Messages
 --------
 
 A more modern approach is Message-Passing_: a task sends some information to another; this can be a message, some data,
-or an event. In all cases, there is a distinct sender and receiver -- and apparently no common/shared memory--, so no
-Critical-Sections [#MPCS]_ are needed; at least no explicitly. Messages can be used by all kind of task; even in a
+or an event. In all cases, there is a distinct sender and receiver -- and apparently no common/shared memory-- so no
+Critical-Sections [#MPCS]_ are needed; at least not explicitly. Messages can be used by all kind of task; even in a
 distributed system -- then the message (and it data) is serialised, transmitted over a network and deserialised. Which
 can introduce some overhead and delay.
+
+As you may have noticed, there is an analogy between Message-Passing_ and Events_ (and the event-loop). They have
+separate history, but are quite similar in nature. Like a “message”, the “event” is also used to share data (& controll)
+to isolated “tasks”.
+
+.. warning::
+
+   Many people use the networking mental model when they thing about Message-Passing_, and *wrongly* assume there is
+   always serialisation (or network) overhead. This is not needed for parallel cores as they typically have shared
+   memory.
+
+   Then, at developers-level we can use the Messaging abstraction, where the compiler will translate it into shared
+   memory instructions at processor level.
+
+There are many variant on messaging, mostly combinations some fundamental aspects
+
+(Un)Buffered
+~~~~~~~~~~~~
+Messages can be *buffered*, or not. It’s not a characteristic of the messages itself, but more about the channel that
+transport the messages: How many messages can be stored ‘in’ the channel (often depicted a a queue). When there is no
+storage at all the writer and reader needs to rendezvous: send and receive at the same (wall) time.
 |BR|
-Many people use this networking mental model when they thing about Message-Passing_, and *wrongly* assume there is
-always serialisation (or network) overhead. When (carefully) implemented this is not needed; and can be as efficiently
-as shared-memory (assuming there is shared-memory that can be used).
+When a buffer is available, this is not needed. Depending on the size of the buffer, some messages can be send before
+the are picked-up bt the receiver. Note this is always asymmetric: messages need to be send before the can be read.
 
-This “message
-There is an analogy between Message-Passing_ and Events_ (and the event-loop). They have separate history, but are quite
-similar in nature. Like a “message”, the “event” is also used to share data (& controll) to isolated “tasks”.
-
-Variants
+Blocking
 ~~~~~~~~
+Both the writer and the reader can be blocking (or not). A blocking reader it will always return when a messages is
+available -- and will pauze until then. Also writers can be blocking: it will pauze until the message can be send --
+e.g. the reader is available (rendezvous) or a message-buffer is free.
 
-There are may variants of Message-Passing_
+(A)Synchronous
+~~~~~~~~~~~~~~
+Synchronous messages resembles normal function-calls. Typically a “question” is send, the call awaits the
+answer-messages, and that answer is returned.
+
 
 
 ************************************************************
 
-.. todo:: All below is draft and needs work!!!!
+.. todo::
 
+   * Async, buffered, blocking 
+   * Pipe : kind of data messages 
+
+
+ .. todo:: All below is draft and needs work!!!!
 
 
 Models
 ======
 
-Probably the oldest model to described concurrency is the Petri-net_; which has the disadvantage that is synchronous
+Probably the oldest model to described concurrency is the
 (all tokens move at the same timeslot) -- which is a hard to implement (efficiently) on Multi-Core_.
 
 Actors
@@ -182,6 +220,10 @@ END
    parallel.
    |BR|
    But that condition does apply to Multi-Core_ too. Although the (timing) numbers do differ.
+
+.. [#wall-time]
+   As reminder: We speak about *CPU-time* when we count the cycles that a core us busy; so when a core is waiting, no
+   CPU-time is used. And we use *wall-time* when we time according the “the clock on the wall”.
 
 .. [#OOCS]
    The brittleness of Critical-Sections_ can be reduced by embedding (the) (shared-) variable in an OO abstraction. By
@@ -214,4 +256,4 @@ END
 .. _Actor-Model:		https://en.wikipedia.org/wiki/Actor_model
 .. _Actor-Model-Theory:		https://en.wikipedia.org/wiki/Actor_model_theory
 
-.. _Petri-Net:			https://en.wikipedia.org/wiki/Petri_net
+

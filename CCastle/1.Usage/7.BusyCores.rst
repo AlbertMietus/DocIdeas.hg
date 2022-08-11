@@ -226,8 +226,9 @@ should be designed to enable this.
    At the same time it should run efficiently. The goals is **not** to keep all cores *busy*, but to use (all) cores to
    gain maximal speed up.
 
-Distributing tasks over multiple cores (or even distributed computers [#web]_ is not new. In :ref:`ConcurrentComputingConcepts` we
-analyse some, before we design & describe Castle’s :ref:`XXX`.
+Distributing tasks over multiple cores (or even distributed computers) [#web]_ is not new. In
+:ref:`ConcurrentComputingConcepts` we describe some (common, theoretical) concepts, and in :ref:`ActorAbstractions`
+analyse a powerfull approach. That we like to use for CCastle.
 
 ----------
 
