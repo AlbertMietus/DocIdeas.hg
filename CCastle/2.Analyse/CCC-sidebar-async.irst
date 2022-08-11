@@ -1,0 +1,32 @@
+.. -*- rst -*-
+   included in  `8.BusyCores-concepts.rst`
+
+.. sidebar::
+
+   .. seealso::
+
+      The words *synchronous*, *asynchronous* (and the popular ``async`` keyword) can have many intents -- all more or less
+      related (on basic fundamental theories) but can be very dissimilar in practical applications also.
+
+      See e.g. Wikipedia for more info
+
+      * Synchronous_serial_communication_
+      * Asynchronous_communication_
+      * Asynchrony_Computer_Programming_
+      * Synchronization_
+
+      and (disambiguation pages):
+
+      * Sync_
+      * Async_
+      * Synchronization-Disambiguation_
+
+
+.. _Asynchronous_communication:      		https://en.wikipedia.org/wiki/Asynchronous_communication
+.. _Synchronous_serial_communication: 		https://en.wikipedia.org/wiki/Synchronous_serial_communication
+.. _Asynchrony_Computer_Programming: 		https://en.wikipedia.org/wiki/Asynchrony_(computer_programming)
+.. _Synchronization:      			https://en.wikipedia.org/wiki/Synchronization
+.. _Synchronization-Disambiguation:      	https://en.wikipedia.org/wiki/Synchronization_(disambiguation)
+.. _Async:	      				https://en.wikipedia.org/wiki/Asynchrony
+.. _Sync:      					https://en.wikipedia.org/wiki/Sync
+

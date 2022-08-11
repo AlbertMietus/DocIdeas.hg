@@ -2,19 +2,19 @@
 
 .. _ActorAbstractions:
 
-================================
-Actor Abstractions (Busy, DRAFT)
-================================
+=========================
+Actor Abstractions (IDEA)
+=========================
 
-.. post::
+.. post::	
    :category: Castle DesignStudy
-   :tags: Castle, Concurrency
+   :tags: Castle, Concurrency, DRAFT
 
    The Actor-Model_ which is inspired by physics, unlike older models like the famous Petri-net_ that are mostly
    mathematical. And has become popular for Distributed-Computing_, where each node/computing act as in independent,
    active actor.
 
-   As an abstraction, this is similar to the “Many Core” :ref:`CC` we use for CCastle. Hence, we study this model a bit  more
+   As an abstraction, those active actors are similar to the :ref:`”Many Core” concept<CC>` we use for CCastle. Hence, we study this model a bit  more
 
 
 

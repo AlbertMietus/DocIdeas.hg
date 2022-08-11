@@ -2,13 +2,13 @@
 
 .. _ConcurrentComputingConcepts:
 
-=============================
-Concurrent Computing Concepts
-=============================
+====================================
+Concurrent Computing Concepts (BUSY)
+====================================
 
-.. post::
+.. post::	
    :category: Castle DesignStudy
-   :tags: Castle, Concurrency
+   :tags: Castle, Concurrency, DRAFT
 
    Shortly, more and more cores will become available alike I described in “:ref:`BusyCores`”. Castle should
    make it easy to write code for all of them: not to keep them busy, but to maximize speed up [useCase:
@@ -25,12 +25,12 @@ Concurrent Computing Concepts
 Basic terminology
 =================
 
-As there is many theory available and even more practical expertise, but a limited set of “common words”, let describe
-some basic terms. As always, we use Wikipedia as common ground, and add links for a deep-dive.
+There are many theories available and some more practical expertise but they hardly share a common vocabulary.
+For that reason, let describe some basic terms, that will be used in these blogs. As always, we use Wikipedia as common
+ground, and add links for a deep-dive. 
 |BR|
 Again, we use ‘task’ as the most generic term of work-to-be-executed; that can be (in) a process, (on) a thread, (by) a
 computer, etc.
-
 
 .. include:: CCC-sidebar-concurrency.irst
 
@@ -60,7 +60,7 @@ Parallelism
 -----------
 
 Parallelism_ is about executing multiple tasks (seemingly) at the same time. We will focus running multiple concurrent
-task (of the same program) on “as many cores as possible”.  When we assume a thousand cores, we need a thousand
+task (of the same program) on *“as many cores as possible”*.  When we assume a thousand cores, we need a thousand
 independent tasks (at least) to gain maximal speed up. A thousand at any moment!
 |BR|
 It’s not only about doing a thousand tasks at the same time (that is not to complicated, for a computer), but also —
@@ -140,20 +140,40 @@ Critical-Sections [#MPCS]_ are needed; at least not explicitly. Messages can be 
 distributed system -- then the message (and it data) is serialised, transmitted over a network and deserialised. Which
 can introduce some overhead and delay.
 
-As you may have noticed, there is an analogy between Message-Passing_ and Events_ (and the event-loop). They have
+As you may have noticed, there is an analogy between Message-Passing_ and Events_ (in an the event-loop). They have
 separate history, but are quite similar in nature. Like a “message”, the “event” is also used to share data (& controll)
 to isolated “tasks”.
 
 .. warning::
 
    Many people use the networking mental model when they thing about Message-Passing_, and *wrongly* assume there is
-   always serialisation (or network) overhead. This is not needed for parallel cores as they typically have shared
-   memory.
+   always serialisation (and network) overhead. This is not needed for parallel cores as they typically have shared
+   (physical) memory.
 
-   Then, at developers-level we can use the Messaging abstraction, where the compiler will translate it into shared
+   Then, we can use the message abstraction at developer-level, and let the compiler will translate that it into shared
    memory instructions at processor level.
+   |BR|
+   Notice: As the compiler will insert the (low level) Semaphores_, the risk that a developer forgets one is gone!
 
 There are many variant on messaging, mostly combinations some fundamental aspects
+
+.. include:: CCC-sidebar-async.irst
+
+(A)Synchronous
+~~~~~~~~~~~~~~
+Synchronous messages resembles normal function-calls. Typically a “question” is send, the call awaits the
+answer-messages, and that answer is returned. This can be seen as a layer on top of the send/receive more fundamental
+calls. An famous example is RPC_: the Remote ProcedureCall.
+
+Asynchronous messages are more basic: a task send a messages (to somebody else) and continues. That message can be
+“data”, an “event:, a “commands” or a “query”. Only in the latter case some responds is essental. With async messages,
+there is no desire that to get the answer immediately.
+
+As an example: A task can send many queries (and/or other messages) to multiple destinations at once, then go into
+*listen-mode*, and handle the replies in the order the are received (which can be different then send-order). Typically,
+this speeds up (wall) time, and is only possible with async messages. Notice: the return messages need to carry an “ID”
+of the initial messages to keep track -- often that is the query itself.
+
 
 (Un)Buffered
 ~~~~~~~~~~~~
@@ -161,20 +181,23 @@ Messages can be *buffered*, or not. It’s not a characteristic of the messages 
 transport the messages: How many messages can be stored ‘in’ the channel (often depicted a a queue). When there is no
 storage at all the writer and reader needs to rendezvous: send and receive at the same (wall) time.
 |BR|
-When a buffer is available, this is not needed. Depending on the size of the buffer, some messages can be send before
-the are picked-up bt the receiver. Note this is always asymmetric: messages need to be send before the can be read.
+This is not needed when a buffer is available; Depending on the size of the buffer, some messages can be send before
+the are picked-up by the receiver.
+
+Note this is always asymmetric: messages need to be send before the can be read.
 
 Blocking
 ~~~~~~~~
-Both the writer and the reader can be blocking (or not). A blocking reader it will always return when a messages is
-available -- and will pauze until then. Also writers can be blocking: it will pauze until the message can be send --
-e.g. the reader is available (rendezvous) or a message-buffer is free.
+Both the writer and the reader can be blocking (or not); which is a facet of the function-call. A blocking reader it
+will always return when a messages is available -- and will pauze until then.
+|BR|
+Also the write-call can be blocking: it will pauze until the message can be send -- e.g. the reader is available
+(rendezvous) or a message-buffer is free.
 
-(A)Synchronous
-~~~~~~~~~~~~~~
-Synchronous messages resembles normal function-calls. Typically a “question” is send, the call awaits the
-answer-messages, and that answer is returned.
-
+When the call is non-blocking, the call will return without waiting and yield a flag whether is was successful or not.
+|BR|
+Typically, the developer will to “cycle” to poll for a profitable call; and let the task do some other/background work
+as well.
 
 
 ************************************************************
@@ -255,5 +278,4 @@ END
 .. _Events:			https://en.wikipedia.org/wiki/Event_(computing)
 .. _Actor-Model:		https://en.wikipedia.org/wiki/Actor_model
 .. _Actor-Model-Theory:		https://en.wikipedia.org/wiki/Actor_model_theory
-
-
+.. _RPC:			https://en.wikipedia.org/wiki/Remote_procedure_call
