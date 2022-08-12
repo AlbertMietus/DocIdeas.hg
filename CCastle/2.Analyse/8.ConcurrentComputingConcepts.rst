@@ -161,9 +161,10 @@ There are many variant on messaging, mostly combinations some fundamental aspect
 
 (A)Synchronous
 ~~~~~~~~~~~~~~
+
 Synchronous messages resembles normal function-calls. Typically a “question” is send, the call awaits the
-answer-messages, and that answer is returned. This can be seen as a layer on top of the send/receive more fundamental
-calls. An famous example is RPC_: the Remote ProcedureCall.
+answer-messages, and that answer is returned. This can be seen as a layer on top of the more fundamental send/receive
+calls. An famous example is RPC_: the Remote Procedure Call.
 
 Asynchronous messages are more basic: a task send a messages (to somebody else) and continues. That message can be
 “data”, an “event:, a “commands” or a “query”. Only in the latter case some responds is essental. With async messages,
@@ -171,19 +172,20 @@ there is no desire that to get the answer immediately.
 
 As an example: A task can send many queries (and/or other messages) to multiple destinations at once, then go into
 *listen-mode*, and handle the replies in the order the are received (which can be different then send-order). Typically,
-this speeds up (wall) time, and is only possible with async messages. Notice: the return messages need to carry an “ID”
+this speeds-up (wall) time, and is only possible with async messages. Notice: the return messages need to carry an “ID”
 of the initial messages to keep track -- often that is the query itself.
 
 
 (Un)Buffered
 ~~~~~~~~~~~~
-Messages can be *buffered*, or not. It’s not a characteristic of the messages itself, but more about the channel that
-transport the messages: How many messages can be stored ‘in’ the channel (often depicted a a queue). When there is no
-storage at all the writer and reader needs to rendezvous: send and receive at the same (wall) time.
-|BR|
-This is not needed when a buffer is available; Depending on the size of the buffer, some messages can be send before
-the are picked-up by the receiver.
 
+Despide it’s is not truly a characteristic of the messages itself, messages can be *buffered*, or not. This about the
+channel that transports the messages: How many messages can be stored ‘in’ the channel (often depicted a a queue). When
+there is no storage at all, the writer and reader needs to rendezvous: send and receive at the same (wall) time.
+
+This is not needed when a buffer is available. Depending on the size of the buffer, some messages can be send before
+the are picked-up by the receiver.
+|BR|
 Note this is always asymmetric: messages need to be send before the can be read.
 
 Blocking
@@ -195,8 +197,7 @@ Also the write-call can be blocking: it will pauze until the message can be send
 (rendezvous) or a message-buffer is free.
 
 When the call is non-blocking, the call will return without waiting and yield a flag whether is was successful or not.
-|BR|
-Typically, the developer will to “cycle” to poll for a profitable call; and let the task do some other/background work
+Then, the developer will commonly “cycle” to poll for a profitable call; and let the task do some other/background work
 as well.
 
 
@@ -204,7 +205,7 @@ as well.
 
 .. todo::
 
-   * Async, buffered, blocking 
+
    * Pipe : kind of data messages 
 
 
