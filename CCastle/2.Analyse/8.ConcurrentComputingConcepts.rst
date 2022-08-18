@@ -23,11 +23,11 @@ Concurrent Computing Concepts (BUSY)
    efficiently. The exact syntax will come later.
 
 Basic terminology
-=================
+*****************
 
 There are many theories available and some more practical expertise but they hardly share a common vocabulary.
 For that reason, let describe some basic terms, that will be used in these blogs. As always, we use Wikipedia as common
-ground, and add links for a deep-dive. 
+ground, and add links for a deep-dive.
 |BR|
 Again, we use ‘task’ as the most generic term of work-to-be-executed; that can be (in) a process, (on) a thread, (by) a
 computer, etc.
@@ -35,7 +35,7 @@ computer, etc.
 .. include:: CCC-sidebar-concurrency.irst
 
 Concurrent
-----------
+==========
 
 Concurrency_ is the **ability** to “compute” multiple *tasks* at the same time.
 |BR|
@@ -57,7 +57,7 @@ sequential execution is allowed too.
 
 
 Parallelism
------------
+===========
 
 Parallelism_ is about executing multiple tasks (seemingly) at the same time. We will focus running multiple concurrent
 task (of the same program) on *“as many cores as possible”*.  When we assume a thousand cores, we need a thousand
@@ -72,7 +72,7 @@ livelocks_.
 
 
 Distributed
-~~~~~~~~~~~
+-----------
 
 A special form of parallelisme is Distributed-Computing_: compute on many computers. Many experts consider this
 as an independent field of expertise; still --as Multi-Core_ is basically “many computers on a chips”-- its there is an
@@ -80,7 +80,7 @@ analogy [#DistributedDiff]_, and we should use the know-how that is available, t
 
 
 Efficient Communication
-=======================
+***********************
 
 When multiple tasks run in concurrently, they have to communicate to pass data and to controll progress. Unlike in a
 sequential program -- where the controll is trivial, as is sharing data-- this needs a bit of extra effort.
@@ -94,7 +94,7 @@ communication-time over time-between-two-communications.
 
 
 Shared Memory
--------------
+=============
 
 In this model all tasks (usually threads or process) have some shared/common memory; typically “variables”. As the acces
 is asynchronous, the risk exist the data is updated “at the same time” by two or more tasks. This can lead to invalid
@@ -109,7 +109,7 @@ time to write & read the variable, added to the (overhead) time for the critical
 bigger part.
 
 About Critical Sections
-~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
 For those, who are not familiar with Critical-Sections_ and/or Semaphores, a very short intro.
 |BR|
 Unlike some developers presume “code-lines” are not *‘atomic’*: they can be interrupted. When using (e.g) threads_, the
@@ -132,7 +132,7 @@ few lines) the overhead can be (relatively) huge [#timesCPU]_!
 
 
 Messages
---------
+========
 
 A more modern approach is Message-Passing_: a task sends some information to another; this can be a message, some data,
 or an event. In all cases, there is a distinct sender and receiver -- and apparently no common/shared memory-- so no
@@ -154,6 +154,9 @@ to isolated “tasks”.
    memory instructions at processor level.
    |BR|
    Notice: As the compiler will insert the (low level) Semaphores_, the risk that a developer forgets one is gone!
+
+Features
+--------
 
 There are many variant on messaging, mostly combinations some fundamental aspects
 
@@ -190,6 +193,7 @@ Note this is always asymmetric: messages need to be send before the can be read.
 
 Blocking
 ~~~~~~~~
+
 Both the writer and the reader can be blocking (or not); which is a facet of the function-call. A blocking reader it
 will always return when a messages is available -- and will pauze until then.
 |BR|
@@ -200,8 +204,50 @@ When the call is non-blocking, the call will return without waiting and yield a 
 Then, the developer will commonly “cycle” to poll for a profitable call; and let the task do some other/background work
 as well.
 
+Reliable
 
-************************************************************
+Uni/Bi-Directional, Broadcast
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Messages --or actually the channel that transport them-- can be *unidirectional*: from sender to receiver only;
+*bidirectional*: both sides can send and receive; or *broadcasted*: one message is send to many receivers [#anycast]_.
+
+
+Reliability
+~~~~~~~~~~~
+
+Especially when studying “network messages”, we have to consider Reliability_ too: Will a send message always be
+received (and will they be received in the same order, and/or only once. This has advantages, but disadvantages too: a
+reliable connection (over an unreliable network) needs more overhead and has more delay.
+
+This also applies to software-message, although in lesser extent.
+
+.. hint::
+
+   As a simple example to demonstrate the advantage of a “unreliable connection”, lets consider an audio (bidirectional)
+   connection, that is not 100% reliable.
+   |BR|
+   When we use it “as is”, there will be a bit of noise, and even some hick-ups. For most people this is acceptable,
+   when needed they will use phrases  as “can you repeat that?”.
+
+   To make that connection reliable, we need checksums, low-level conformation message, and once in a while send a
+   message again. To make it an audio-stream all messages will be delayed a bit --so that an automatically resend
+   messages can be inserted. This is common in a (unidirectional) POD-cast kind of connection.
+
+   For a (bidirectional) conversation, this buffering is often not satisfactory. As it makes the connection *slow*.
+
+
+Some examples
+-------------
+
+In the section below, we mention a few, everyday message-passing systems, to shed light on the theoretical features 
+
+Pipes
+~~~~~
+
+Unix Pipes are 
+
+------------------------
 
 .. todo::
 
@@ -213,7 +259,7 @@ as well.
 
 
 Models
-======
+******
 
 Probably the oldest model to described concurrency is the
 (all tokens move at the same timeslot) -- which is a hard to implement (efficiently) on Multi-Core_.
@@ -263,6 +309,11 @@ END
    that the number of communications will grow with the number of cores too.  As described in the :ref:`sidebar
    <Threads-in-CPython>` in :ref:`BusyCores`, solving this can give more overhead then the speed we are aiming for.
 
+.. [#anycast]
+   Broadcasting_ is primarily know from “network messages”; where is has many variants -- mostly related to the
+   physical network abilities, and the need to save bandwith. As an abstraction, they can be used in “software messages”
+   (aka message passing) too.
+
 .. _Concurrency:		https://en.wikipedia.org/wiki/Concurrency_(computer_science)
 .. _parallelism:		https://en.wikipedia.org/wiki/Parallel_computing
 .. _pthreads: 			https://en.wikipedia.org/wiki/Pthreads
@@ -280,3 +331,5 @@ END
 .. _Actor-Model:		https://en.wikipedia.org/wiki/Actor_model
 .. _Actor-Model-Theory:		https://en.wikipedia.org/wiki/Actor_model_theory
 .. _RPC:			https://en.wikipedia.org/wiki/Remote_procedure_call
+.. _Broadcasting:		https://en.wikipedia.org/wiki/Broadcasting_(networking)
+.. _Reliability:		https://en.wikipedia.org/wiki/Reliability_(computer_networking)
