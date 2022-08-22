@@ -1,4 +1,4 @@
-.. -*- rst -*-
+.. -*-rst-*-
    included in  `8.BusyCores-concepts.rst`
 
 .. sidebar::
@@ -14,6 +14,7 @@
       * Asynchronous_communication_
       * Asynchrony_Computer_Programming_
       * Synchronization_
+      * Blocking_
 
       and (disambiguation pages):
 
@@ -29,4 +30,4 @@
 .. _Synchronization-Disambiguation:      	https://en.wikipedia.org/wiki/Synchronization_(disambiguation)
 .. _Async:	      				https://en.wikipedia.org/wiki/Asynchrony
 .. _Sync:      					https://en.wikipedia.org/wiki/Sync
-
+.. _Blocking:					https://en.wikipedia.org/wiki/Blocking_(computing)

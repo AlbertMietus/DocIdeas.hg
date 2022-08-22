@@ -1,4 +1,13 @@
-.. include:: /std/localtoc.irst
+.. .. include:: /std/localtoc.irst
+
+.. sidebar:: On this page (override:4)
+   :class: localtoc
+
+   .. contents::
+      :depth: 4
+      :local:
+      :backlinks: none
+
 
 .. _ConcurrentComputingConcepts:
 
@@ -155,8 +164,8 @@ to isolated “tasks”.
    |BR|
    Notice: As the compiler will insert the (low level) Semaphores_, the risk that a developer forgets one is gone!
 
-Features
---------
+Aspects
+-------
 
 There are many variant on messaging, mostly combinations some fundamental aspects
 
@@ -165,11 +174,11 @@ There are many variant on messaging, mostly combinations some fundamental aspect
 (A)Synchronous
 ~~~~~~~~~~~~~~
 
-Synchronous messages resembles normal function-calls. Typically a “question” is send, the call awaits the
+**Synchronous** messages resembles normal function-calls. Typically a “question” is send, the call awaits the 
 answer-messages, and that answer is returned. This can be seen as a layer on top of the more fundamental send/receive
 calls. An famous example is RPC_: the Remote Procedure Call.
 
-Asynchronous messages are more basic: a task send a messages (to somebody else) and continues. That message can be
+**Asynchronous** messages are more basic: a task send a messages (to somebody else) and continues. That message can be
 “data”, an “event:, a “commands” or a “query”. Only in the latter case some responds is essental. With async messages,
 there is no desire that to get the answer immediately.
 
@@ -189,12 +198,12 @@ there is no storage at all, the writer and reader needs to rendezvous: send and 
 This is not needed when a buffer is available. Depending on the size of the buffer, some messages can be send before
 the are picked-up by the receiver.
 |BR|
-Note this is always asymmetric: messages need to be send before the can be read.
+Note: this is always asymmetric; messages need to be send before the can be read.
 
-Blocking
-~~~~~~~~
+(Non-) Blocking
+~~~~~~~~~~~~~~~
 
-Both the writer and the reader can be blocking (or not); which is a facet of the function-call. A blocking reader it
+Both the writer and the reader can be *blocking* (or not); which is a facet of the function-call. A blocking reader it
 will always return when a messages is available -- and will pauze until then.
 |BR|
 Also the write-call can be blocking: it will pauze until the message can be send -- e.g. the reader is available
@@ -204,14 +213,11 @@ When the call is non-blocking, the call will return without waiting and yield a 
 Then, the developer will commonly “cycle” to poll for a profitable call; and let the task do some other/background work
 as well.
 
-Reliable
-
 Uni/Bi-Directional, Broadcast
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Messages --or actually the channel that transport them-- can be *unidirectional*: from sender to receiver only;
 *bidirectional*: both sides can send and receive; or *broadcasted*: one message is send to many receivers [#anycast]_.
-
 
 Reliability
 ~~~~~~~~~~~
@@ -240,12 +246,19 @@ This also applies to software-message, although in lesser extent.
 Some examples
 -------------
 
-In the section below, we mention a few, everyday message-passing systems, to shed light on the theoretical features 
+In the section below, we mention a few, everyday message-passing systems, to shed light on the theoretical features. 
 
 Pipes
 ~~~~~
 
-Unix Pipes are 
+The famous *Unix Pipes* are unidirectional, reliable, blocking, asynchronous, buffered, non-networking **data-only**
+messages. The (“stdout”) output of one process is fed as input to (one) other process. It’s data only, in one direction
+-- but the controll can in two directions: when the second (receiving) process can’t process the data (and the buffers
+becoming full), the first process can be slowed down (although this a not well know feature).
+
+It’s also an example of a quite implicit channel: the programmer (of both programs) have nothing (to little) to do
+extra, to make it possible.
+
 
 ------------------------
 
