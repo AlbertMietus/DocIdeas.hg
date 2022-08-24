@@ -91,3 +91,8 @@ div.GAM-extra li.ablog-cloud {
     text-decoration: underline;
     text-decoration-color: #000066;
 }
+aside.sidebar  { line-height: inherit; }
+aside.sidebar .rubric {
+    margin-bottom: 0;
+    color: #000066;
+}

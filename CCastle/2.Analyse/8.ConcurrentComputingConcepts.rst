@@ -19,15 +19,13 @@ Concurrent Computing Concepts (BUSY)
    :category: Castle DesignStudy
    :tags: Castle, Concurrency, DRAFT
 
-   Shortly, more and more cores will become available alike I described in “:ref:`BusyCores`”. Castle should
-   make it easy to write code for all of them: not to keep them busy, but to maximize speed up [useCase:
-   :need:`U_ManyCore`].
+   Shortly, more and more cores will become available alike I described in “:ref:`BusyCores`”. Castle should make it
+   easy to write code for all of them: not to keep them busy, but to maximize speed up [useCase: :need:`U_ManyCore`].
+   We also discussed threads_: they do not scale well for CPU-bound (embedded) systems. And, I introduced some (other)
+   concurrency abstractions; which do not always fit nicely in existing languages.
    |BR|
-   We also discussed threads_: they do not scale well for CPU-bound (embedded) systems. And, I introduced some
-   (other) concurrency abstractions; which do not always fit nicely in existing languages.
-
    As Castle is a new language we have the opportunity to select such a concept and incorporate it into the language ...
-   |BR|
+
    In this blog, we explore a bit of theory. I will focus on semantics and the possibilities to implement them
    efficiently. The exact syntax will come later.
 
@@ -87,6 +85,7 @@ A special form of parallelisme is Distributed-Computing_: compute on many comput
 as an independent field of expertise; still --as Multi-Core_ is basically “many computers on a chips”-- its there is an
 analogy [#DistributedDiff]_, and we should use the know-how that is available, to design out “best ever language”.
 
+.. include:: CCC-sidebar-CS.irst
 
 Efficient Communication
 ***********************
@@ -116,28 +115,6 @@ single access to such a shared variable is not protected by a Critical-Section_,
 The advantage of shared memory is the short communication-time. The wall-time and CPU-time are roughly the same: the
 time to write & read the variable, added to the (overhead) time for the critical section --  which is typical the
 bigger part.
-
-About Critical Sections
------------------------
-For those, who are not familiar with Critical-Sections_ and/or Semaphores, a very short intro.
-|BR|
-Unlike some developers presume “code-lines” are not *‘atomic’*: they can be interrupted. When using (e.g) threads_, the
-“computer” can pause one thread halfway an statement, to run another one temporally and continue a millisecond later. When
-that happens when writing or reading a variable and the other thread also access the same shared-memory, the result is
-unpredictable. To prevent that, we need to controle the handling that variable: make it a Critical-Section_.
-
-In essense, we have to tell the “computer” that a line (of a few lines) are *atomic*; to make access exclusive  The
-the compiler will add some extra fundamental instructions (specific for that CPU-type) to assure this. A check is
-inserted just before the section is entered, and the thread will be suspended when another task is using it. When
-granted acces, a bit of bookkeeping is done -- so the “check” in other thread is halted). That bookkeeping is updated
-and when leaving. Along with more bookkeeping to un-pauze the suspended threads.
-
-As you can imagen, this “bookkeeping” is extra complicated on a Multi-Core_ system; some global data structure is
-needed; which is a Critical-Sections in itself.
-|BR|
-There are many algorithms to solve this. All with the same disadvantage: it takes a bit of time -- possible by
-“Spinlocking_” all other cores (for a few nanoseconds). As Critical-Sections a usually short (e.g a assignment, or a
-few lines) the overhead can be (relatively) huge [#timesCPU]_!
 
 
 Messages
@@ -246,7 +223,7 @@ This also applies to software-message, although in lesser extent.
 Some examples
 -------------
 
-In the section below, we mention a few, everyday message-passing systems, to shed light on the theoretical features. 
+In the section below, we mention a few, everyday message-passing systems, to shed light on the theoretical features.
 
 Pipes
 ~~~~~
@@ -258,6 +235,7 @@ becoming full), the first process can be slowed down (although this a not well k
 
 It’s also an example of a quite implicit channel: the programmer (of both programs) have nothing (to little) to do
 extra, to make it possible.
+
 
 
 ------------------------
