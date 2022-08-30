@@ -1,4 +1,4 @@
-.. -*- rst -*-
+.. -*-rst-*-
    included in  `8.BusyCores-concepts.rst`
 
 .. sidebar::
@@ -15,7 +15,7 @@
            for n in L1:
               L2.append(power(n))
 
-        .. note:: As ``power()`` could have side-effects, the compiler **must** keep the defined order!
+        .. note:: As ``power()`` could have side effects, the compiler **must** keep the defined order!
 
      .. tab::  Concurrent
 
@@ -28,8 +28,8 @@
         .. note::
 
            Although (current) python-compilers will run it sequentially, it is *allowed* to distribute it; even when
-           ``power()`` has side-effects!
+           ``power()`` has side effects!
            |BR|
            As long as *python* put the results in the correct order in list ``L2`` **any order** is allowed.  “Out of
-           order” side-effects are allowed by this code.
+           order” side effects are allowed by this code.
 

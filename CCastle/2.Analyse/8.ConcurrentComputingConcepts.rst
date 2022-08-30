@@ -1,13 +1,4 @@
-.. .. include:: /std/localtoc.irst
-
-.. sidebar:: On this page (override:4)
-   :class: localtoc
-
-   .. contents::
-      :depth: 4
-      :local:
-      :backlinks: none
-
+.. include:: /std/localtoc.irst
 
 .. _ConcurrentComputingConcepts:
 
@@ -19,13 +10,15 @@ Concurrent Computing Concepts (BUSY)
    :category: Castle DesignStudy
    :tags: Castle, Concurrency, DRAFT
 
-   Shortly, more and more cores will become available alike I described in “:ref:`BusyCores`”. Castle should make it
-   easy to write code for all of them: not to keep them busy, but to maximize speed up [useCase: :need:`U_ManyCore`].
-   We also discussed threads_: they do not scale well for CPU-bound (embedded) systems. And, I introduced some (other)
-   concurrency abstractions; which do not always fit nicely in existing languages.
-   |BR|
-   As Castle is a new language we have the opportunity to select such a concept and incorporate it into the language ...
+   Sooner as we may realize even embedded systems will have many, many cores; as I described in
+   “:ref:`BusyCores`”. Castle should make it easy to write code for all of them: not to keep them busy, but to maximize
+   speed up [useCase: :need:`U_ManyCore`]. There I also showed that threads_ do not scale well for CPU-bound (embedded)
+   systems. Last, I introduced some (more) concurrency abstractions. Some are great, but they often do not fit
+   nicely in  existing languages.
 
+   Still, as Castle is a new language we have the opportunity to select such a concept and incorporate it into the
+   language ...
+   |BR|
    In this blog, we explore a bit of theory. I will focus on semantics and the possibilities to implement them
    efficiently. The exact syntax will come later.
 
@@ -33,10 +26,10 @@ Basic terminology
 *****************
 
 There are many theories available and some more practical expertise but they hardly share a common vocabulary.
-For that reason, let describe some basic terms, that will be used in these blogs. As always, we use Wikipedia as common
-ground, and add links for a deep-dive.
+For that reason, let’s describe some basic terms, that will be used in these blogs. As always, we use Wikipedia as common
+ground and add links for a deep dive.
 |BR|
-Again, we use ‘task’ as the most generic term of work-to-be-executed; that can be (in) a process, (on) a thread, (by) a
+Again, we use ‘task’ as the most generic term for work-to-be-executed; that can be (in) a process, (on) a thread, (by) a
 computer, etc.
 
 .. include:: CCC-sidebar-concurrency.irst
@@ -46,18 +39,17 @@ Concurrent
 
 Concurrency_ is the **ability** to “compute” multiple *tasks* at the same time.
 |BR|
-Designing concurrent software isn’t that complicated but; demands another mindset the when we write software that does
-one tasks afer the other.
+Designing concurrent software isn’t that complicated but; demands another mindset than when we write software that does
+one task after the other.
 
 A typical example is a loop: suppose we have a sequence of numbers and we like to compute the square of each one. Most
 developers will loop over those numbers, get one number, calculate the square, store it in another list, and continue.
-It works, but we have also instructed the computer to do it in sequence — especially when the
-task is bit more complicated, the compiler does know whether the ‘next task’ depends on the current one, and can’t
-optimise it.
+It works, but we have also instructed the computer to do it in sequence. Especially when the task is a bit more
+complicated, the compiler does know whether the ‘next task’ depends on the current one, and can’t optimize it.
 
-A better plan is to tell the compiler about the tasks; most are independently: square a number. There is also one that
-has to be run at the end: combine the results into a new list. And one is bit funny: distribute the sequence-elements
-over the “square-tasks” — clearly, one has to start with this one, but it can be concurrent with many others too.
+A better plan is to tell the compiler about different tasks. Most are independent: square a number. There is also one
+that has to be run at the end: combine the results into a new list. And one is a bit funny: distribute the elements over
+the “square tasks”. Clearly one has to start with this one, but it can be concurrent with many others too.
 |BR|
 This is *not* a parallel algorithm. When not specifying the order, we allow parallel execution. We do not demand it,
 sequential execution is allowed too.
@@ -66,54 +58,54 @@ sequential execution is allowed too.
 Parallelism
 ===========
 
-Parallelism_ is about executing multiple tasks (seemingly) at the same time. We will focus running multiple concurrent
-task (of the same program) on *“as many cores as possible”*.  When we assume a thousand cores, we need a thousand
-independent tasks (at least) to gain maximal speed up. A thousand at any moment!
+Parallelism_ is about executing multiple tasks (seemingly) at the same time. We will on focus running many multiple
+concurrent tasks (of the same program) on *“as many cores as possible”*.  When we assume a thousand cores, we need a
+thousand independent tasks (at least) to gain maximal speed up. A thousand at any moment!
 |BR|
-It’s not only about doing a thousand tasks at the same time (that is not to complicated, for a computer), but also —
+It’s not only about doing a thousand tasks at the same time (that is not too complicated, for a computer) but also —
 probably: mostly — about finishing a thousand times faster…
 
-With many cores, multiple program-steps can be executed at the same time: from changing the same variable,  acces the
-same memory, or compete for new memory. And when solving that, we introduce new hazards: like deadlocks_ and even
-livelocks_.
+With many cores, multiple “program lines” can be executed at the same time, which can introduce unforeseen effects:
+changing the same variable, accessing the same memory, or competing for new, “free” memory. And when solving that, we
+introduce new hazards: like deadlocks_ and even livelocks_.
 
 
 Distributed
 -----------
 
-A special form of parallelisme is Distributed-Computing_: compute on many computers. Many experts consider this
-as an independent field of expertise; still --as Multi-Core_ is basically “many computers on a chips”-- its there is an
-analogy [#DistributedDiff]_, and we should use the know-how that is available, to design out “best ever language”.
+A special form of parallelism is Distributed-Computing_: computing on many computers. Many experts consider this
+an independent field of expertise. Still --as Multi-Core_ is basically “many computers on a chip”-- it’s an
+available, adjacent [#DistributedDiff]_ theory, and we should use it, to design our “best ever language”.
 
 .. include:: CCC-sidebar-CS.irst
 
 Efficient Communication
 ***********************
 
-When multiple tasks run in concurrently, they have to communicate to pass data and to controll progress. Unlike in a
-sequential program -- where the controll is trivial, as is sharing data-- this needs a bit of extra effort.
+When multiple tasks run concurrently, they have to communicate to pass data and control progress. Unlike in a
+sequential program -- where the control is trivial, as is sharing data-- this needs a bit of extra effort.
 |BR|
-There are two main approches: shared-data of message-passing; we will introduce them below.
+There are two main approaches: shared-data of message-passing; we will introduce them below.
 
-Communication takes time, especially *wall-time* [#wall-time]_ (or real time) and may slow down computing. Therefore
-communication has to be efficient. This is a hard problem and becomes harder when we have more communication, more
-concurrently (& parallel) tasks, and/or those task are shorter living. Or better: is depends on the ratio
-communication-time over time-between-two-communications.
+Communication takes time, especially *wall time* [#wall-time]_ (or clock time) and may slow down computing. Therefore
+communication has to be efficient. This is an arduous problem and becomes harder when we have more communication, more
+concurrency, more parallelism, and/or those tasks are short(er)living. Or better: it depends on the ratio between the
+communication-time and the time-between-two-communications.
 
 
 Shared Memory
 =============
 
-In this model all tasks (usually threads or process) have some shared/common memory; typically “variables”. As the acces
-is asynchronous, the risk exist the data is updated “at the same time” by two or more tasks. This can lead to invalid
+In this model all tasks (usually threads or processes) have some shared/common memory; typically “variables”. As the access
+is asynchronous, the risk exists the data is updated “at the same time” by two or more tasks. This can lead to invalid
 data and so Critical-Sections_ are needed.
 
-This is a very basic model which assumes that there is physically memory that can be shared. In distributed systems this
-is uncommon; but for threads it’s straightforward. As disadvantage of this model is that is hazardous: Even when a
-single access to such a shared variable is not protected by a Critical-Section_, the whole system can break [#OOCS]_.
+This is a very basic model which assumes that there is physical memory that can be shared. In distributed systems this
+is uncommon, but for threads it’s straightforward. A disadvantage of this model is that is hazardous: Even when a
+single modifier of a shared variable is not protected by a Critical-Section_, the whole system can break [#OOCS]_.
 
-The advantage of shared memory is the short communication-time. The wall-time and CPU-time are roughly the same: the
-time to write & read the variable, added to the (overhead) time for the critical section --  which is typical the
+The advantage of shared memory is the fast *communication-time*. The wall-time and CPU-time are roughly the same: the
+time to write & read the variable added to the (overhead) time for the critical section --  which is typically the
 bigger part.
 
 
@@ -122,29 +114,29 @@ Messages
 
 A more modern approach is Message-Passing_: a task sends some information to another; this can be a message, some data,
 or an event. In all cases, there is a distinct sender and receiver -- and apparently no common/shared memory-- so no
-Critical-Sections [#MPCS]_ are needed; at least not explicitly. Messages can be used by all kind of task; even in a
-distributed system -- then the message (and it data) is serialised, transmitted over a network and deserialised. Which
-can introduce some overhead and delay.
+Critical-Sections [#MPCS]_ are needed; at least not explicitly. Messages are easier to use and more generic: they can be
+used in single-, multi-, and many-core systems. Even distributed systems are possible -- then the message (and its data)
+is serialised, transmitted over a network, and deserialised.
 
-As you may have noticed, there is an analogy between Message-Passing_ and Events_ (in an the event-loop). They have
-separate history, but are quite similar in nature. Like a “message”, the “event” is also used to share data (& controll)
-to isolated “tasks”.
+As you may have noticed, there is an analogy between Message-Passing_ and Events_ (in an event-loop). They have separate
+histories but are quite similar in nature. Like a “message”, the “event” is also used to share data (& control) to
+isolated “tasks”.
 
 .. warning::
 
-   Many people use the networking mental model when they thing about Message-Passing_, and *wrongly* assume there is
+   Many people use the networking mental model when they think about Message-Passing_, and *wrongly* assume there is
    always serialisation (and network) overhead. This is not needed for parallel cores as they typically have shared
    (physical) memory.
 
-   Then, we can use the message abstraction at developer-level, and let the compiler will translate that it into shared
-   memory instructions at processor level.
+   Then, we can use the message abstraction at developer-level, and let the compiler translate that into shared
+   memory instructions for the processor level.
    |BR|
    Notice: As the compiler will insert the (low level) Semaphores_, the risk that a developer forgets one is gone!
 
-Aspects
--------
+Messaging Aspects
+-----------------
 
-There are many variant on messaging, mostly combinations some fundamental aspects
+There are many variant on messaging, mostly combinations some fundamental aspects. Let mentions some basic ones.
 
 .. include:: CCC-sidebar-async.irst
 
@@ -196,14 +188,46 @@ Uni/Bi-Directional, Broadcast
 Messages --or actually the channel that transport them-- can be *unidirectional*: from sender to receiver only;
 *bidirectional*: both sides can send and receive; or *broadcasted*: one message is send to many receivers [#anycast]_.
 
-Reliability
-~~~~~~~~~~~
+Reliability & Order
+~~~~~~~~~~~~~~~~~~~
 
-Especially when studying “network messages”, we have to consider Reliability_ too: Will a send message always be
-received (and will they be received in the same order, and/or only once. This has advantages, but disadvantages too: a
-reliable connection (over an unreliable network) needs more overhead and has more delay.
+Especially when studying “network messages”, we have to consider Reliability_ too. Many developers assume that a send
+message is always received and that when multiple messages are sent, they are received in the same order. In most,
+traditional --single-core-- applications this is always true. With networking applications, this is not always
+the case. Messages can get lost, received out of order, or even read twice. Although it is always possible to add a
+“reliability layer”.
+|BR|
+Such a layer makes writing the application easier but introduces overhead. And therefore not always the right solution.
 
-This also applies to software-message, although in lesser extent.
+In Castle, we have “active components”: many cores are running parallel, all doing a part of the overall (concurrent)
+program. This resembles a networking application -- even while there is no real network -- where at least three nodes
+are active.
+
+This is a bit more complicated, so let us start with an example. Say, we have 3 components ``A``, ``B1``, and
+``B2``. All are connected to all others. We assume that messages are unbuffered, non-blocking, never got lost, and that
+two messages over the same channel are never out-of-order. Sound simple, isn’t it?
+|BR|
+Now state that ``A`` send a message (`m1`) to ``B1`` and then one (`m2`) to ``B1``. The “B components”  will --on
+receiving a message from ``A`` -- send a short message to the other one (`m3` and `m4`). And that message triggers
+(again both in ``B1`` and ``B2``) to send an answer to ``A``; so `m5` and `m6`.
+
+Now the question is: in which order those answers (in ``A``) are received?
+|BR|
+The real answer is: you don’t know!
+|BR|
+It’s clear that ``A`` will get `m5` and `m6` -- given that all messages (aka channels) are reliable. But there are many
+ways those messages may receive in the opposite order. Presumably, even in more ways, than you can imagine. For example,
+``B1`` might processes `m4` before it process `m1`! This can happen when channel ``A->B1`` is *slow*, or when ``B2``
+gets CPU-time before ``B1``, or...
+
+When we add buffering, more connected components, etc this *“network”* acts less reliable than we might aspect (even
+though each message is reliable). When we add some real-time demands (see below), the ability to use/model a solution
+using an unreliable message becomes attractive ...
+|BR|
+It’s not that you should always favor unreliable, out-of-order messages. Without regard, No! We are designing a new
+language, however --one that should run efficiently on thousands of core, in a real-time embedded system-- then the
+option to utilize them may be beneficial.
+
 
 .. hint::
 

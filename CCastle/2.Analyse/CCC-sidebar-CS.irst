@@ -3,29 +3,29 @@
 
 .. sidebar:: About Critical Sections
 
-   For those, who are not familiar with Critical-Sections_ and/or Semaphores_, a short intro.
+   For those, who are not familiar with Critical-Sections_ or Semaphores_, here is a short intro.
 
-   .. rubric:: Dilemma: Statements are  not atomic
+   .. rubric:: Dilemma: Statements are  not atomic.
 
-   Unlike some developers presume “code-lines” are not *‘atomic’*: they can be interrupted. When using (e.g) threads_,
-   the “computer” can pause one thread halfway a statement, to run another one temporally and continue a millisecond
-   later. When that happens when writing or reading a variable and the other thread also access the same shared-memory,
-   the result is unpredictable. To prevent that, we need to controle the handling that variable: make it a
+   Unlike some developers presume, *“code lines”* are not *‘atomic’*: they can be interrupted. When using (e.g.) threads_,
+   the “computer” can pause one thread halfway through a statement to run another one temporally and continue a millisecond
+   later. When it happens during writing or reading a variable, and the other thread also accesses the same shared-memory,
+   the result is unpredictable. To prevent that, we need to control the handling of that variable: make it a
    Critical-Section_.
 
-   .. rubric:: Solve it by marking Sections as exclusive
+   .. rubric:: Solve it by marking sections *‘exclusive’*.
 
-   In essense, we have to tell the “computer” that a line (of a few lines) are *atomic*; to make access exclusive The
-   the compiler will add some extra fundamental instructions (specific for that CPU-type) to assure this. A check is
+   In essence, we have to tell the “computer” that a line (or a few lines) is *atomic*. To enforce the access exclusive,
+   the compiler will add some extra fundamental instructions (specific for that type of CPU) to assure this. A check is
    inserted just before the section is entered, and the thread will be suspended when another task is using it. When
-   granted acces, a bit of bookkeeping is done -- so the “check” in other thread is halted). That bookkeeping is updated
-   and when leaving. Along with more bookkeeping to un-pauze the suspended threads.
+   access is granted, a bit of bookkeeping is done -- so that the “check” in other threads will halt). That bookkeeping
+   is updated when leaving. Along with more bookkeeping to un-pause the suspended threads.
 
-   .. rubric:: Complication: overhead
+   .. rubric:: Complication: overhead!
 
    As you can imagen, this “bookkeeping” is extra complicated on a Multi-Core_ system; some global data structure is
    needed; which is a Critical-Sections in itself.
    |BR|
    There are many algorithms to solve this. All with the same disadvantage: it takes a bit of time -- possible by
-   “Spinlocking_” all other cores (for a few nanoseconds). As Critical-Sections a usually short (e.g a assignment, or a 
-   few lines) the overhead can be (relatively) huge [#timesCPU]_!
+   “Spinlocking_” all other cores (for a few nanoseconds). As Critical-Sections a usually short (e.g. one assignment, or
+   a few lines) the overhead can be (relatively) huge [#timesCPU]_!
