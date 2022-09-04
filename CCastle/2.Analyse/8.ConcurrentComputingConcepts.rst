@@ -133,6 +133,7 @@ isolated “tasks”.
    |BR|
    Notice: As the compiler will insert the (low level) Semaphores_, the risk that a developer forgets one is gone!
 
+
 Messaging Aspects
 -----------------
 
@@ -160,14 +161,35 @@ of the initial messages to keep track -- often that is the query itself.
 (Un)Buffered
 ~~~~~~~~~~~~
 
-Despide it’s is not truly a characteristic of the messages itself, messages can be *buffered*, or not. This about the
-channel that transports the messages: How many messages can be stored ‘in’ the channel (often depicted a a queue). When
-there is no storage at all, the writer and reader needs to rendezvous: send and receive at the same (wall) time.
-
-This is not needed when a buffer is available. Depending on the size of the buffer, some messages can be send before
-the are picked-up by the receiver.
+Despide it’s is not truly a characteristic of the messages itself, messages can be *buffered*, or not. It is about
+piping, transporting the message: can this “connection” (see below) *contain/save/store* messages?  When there is no
+storage at all the writer and reader needs to rendezvous: send and receive at the same (wall) time.
 |BR|
+With a buffer (often depicted as a queue) multiple messages may be sent, before they need to be picked-up by the
+receiver; the number depends on the size of the buffer.
+
 Note: this is always asymmetric; messages need to be send before the can be read.
+
+Connected Channels (or not)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Messages can be send over (pre-) *connected channels* or to freely addressable end-points. Some people use the term “connection
+oriented” for those connected-channels, others use the term “channel” more generic and for any medium that is
+transporting messages. I try to use “*connected-channel”*  when is a *pre connected* channel.
+
+When using connected-channels, one writes the message to the channel; there is no need to add the receiver to the
+message. Also when reading, the sender is clear.
+|BR|
+Clearly, the channel has to be set-up before it can be used.
+
+Without connected-channels, each message needs a recipient; often that receiver is added (“carried”) to the message
+itself.
+|BR|
+A big advantage is, that one does not need to create channels and end-points first -- which especially count when a low
+number (possible one) of messages are send to the same receiver, and/or many receivers exist (which would lead to a huge
+number of channels).
+
+
 
 (Non-) Blocking
 ~~~~~~~~~~~~~~~
@@ -182,22 +204,26 @@ When the call is non-blocking, the call will return without waiting and yield a 
 Then, the developer will commonly “cycle” to poll for a profitable call; and let the task do some other/background work
 as well.
 
+
+
 Uni/Bi-Directional, Broadcast
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Messages --or actually the channel that transport them-- can be *unidirectional*: from sender to receiver only;
+Messages --or actually the channel [#channelDir]_ that transport them-- can be *unidirectional*: from sender to receiver only;
 *bidirectional*: both sides can send and receive; or *broadcasted*: one message is send to many receivers [#anycast]_.
+
 
 Reliability & Order
 ~~~~~~~~~~~~~~~~~~~
 
 Especially when studying “network messages”, we have to consider Reliability_ too. Many developers assume that a send
-message is always received and that when multiple messages are sent, they are received in the same order. In most,
-traditional --single-core-- applications this is always true. With networking applications, this is not always
-the case. Messages can get lost, received out of order, or even read twice. Although it is always possible to add a
+message is always received and that when multiple messages are sent, they are received in the same order. In most
+traditional --single-core-- applications this is always the chase. With networking applications, this is not always
+true.  Messages can get lost, received out of order, or even read twice. Although it is always possible to add a
 “reliability layer”.
 |BR|
-Such a layer makes writing the application easier but introduces overhead. And therefore not always the right solution.
+Such a layer makes writing the application easier but introduces overhead too. And therefore not always the right
+solution. 
 
 In Castle, we have “active components”: many cores are running parallel, all doing a part of the overall (concurrent)
 program. This resembles a networking application -- even while there is no real network -- where at least three nodes
@@ -211,9 +237,7 @@ Now state that ``A`` send a message (`m1`) to ``B1`` and then one (`m2`) to ``B1
 receiving a message from ``A`` -- send a short message to the other one (`m3` and `m4`). And that message triggers
 (again both in ``B1`` and ``B2``) to send an answer to ``A``; so `m5` and `m6`.
 
-Now the question is: in which order those answers (in ``A``) are received?
-|BR|
-The real answer is: you don’t know!
+Now the question is: in which order those answers (in ``A``) are received? The real answer is: **You don’t know!**
 |BR|
 It’s clear that ``A`` will get `m5` and `m6` -- given that all messages (aka channels) are reliable. But there are many
 ways those messages may receive in the opposite order. Presumably, even in more ways, than you can imagine. For example,
@@ -235,13 +259,16 @@ option to utilize them may be beneficial.
    connection, that is not 100% reliable.
    |BR|
    When we use it “as is”, there will be a bit of noise, and even some hick-ups. For most people this is acceptable,
-   when needed they will use phrases  as “can you repeat that?”.
+   when needed they will use phrases  as *“Can you repeat that?”*.
 
-   To make that connection reliable, we need checksums, low-level conformation message, and once in a while send a
-   message again. To make it an audio-stream all messages will be delayed a bit --so that an automatically resend
-   messages can be inserted. This is common in a (unidirectional) POD-cast kind of connection.
+   To make that connection reliable, we need checksums, low-level conformation message, and once in a while have to sent
+   a message again. This implies some buffering (at both sides), and so the audio-stream will have a bit of delay.
+   This is a  common solution for unidirectional POD-casts, and such.
 
-   For a (bidirectional) conversation, this buffering is often not satisfactory. As it makes the connection *slow*.
+   For a bidirectional conversation however this buffering is not satisfactory. It makes the *slow*, people have to wait
+   on each-other and will interrupted one-other.
+   |BR|
+   Then, a *faster* conversation with a bit of noise is commonly preferred.a
 
 
 Some examples
@@ -323,6 +350,10 @@ END
    And the overhead will grow when we add more cores. Firstly while more “others” have to wait (or spin), and secondly
    that the number of communications will grow with the number of cores too.  As described in the :ref:`sidebar
    <Threads-in-CPython>` in :ref:`BusyCores`, solving this can give more overhead then the speed we are aiming for.
+
+.. [#channelDir]
+   Strictly speaking, one should not use  “channel” here. Non the less, the “direction of a medium”, that is not a
+   (connected) channel sounds void. Although we do not exclude it, we use a pragmatic way of writing.
 
 .. [#anycast]
    Broadcasting_ is primarily know from “network messages”; where is has many variants -- mostly related to the
