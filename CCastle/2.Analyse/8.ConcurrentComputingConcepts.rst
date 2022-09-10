@@ -8,7 +8,7 @@ Concurrent Computing Concepts (BUSY)
 
 .. post::	
    :category: Castle DesignStudy
-   :tags: Castle, Concurrency, DRAFT
+   :tags: Castle, Concurrency, DRAFT§
 
    Sooner as we may realize even embedded systems will have many, many cores; as I described in
    “:ref:`BusyCores`”. Castle should make it easy to write code for all of them: not to keep them busy, but to maximize
@@ -23,7 +23,7 @@ Concurrent Computing Concepts (BUSY)
    efficiently. The exact syntax will come later.
 
 Basic terminology
-*****************
+=================
 
 There are many theories available and some more practical expertise but they hardly share a common vocabulary.
 For that reason, let’s describe some basic terms, that will be used in these blogs. As always, we use Wikipedia as common
@@ -35,7 +35,7 @@ computer, etc.
 .. include:: CCC-sidebar-concurrency.irst
 
 Concurrent
-==========
+----------
 
 Concurrency_ is the **ability** to “compute” multiple *tasks* at the same time.
 |BR|
@@ -56,7 +56,7 @@ sequential execution is allowed too.
 
 
 Parallelism
-===========
+-----------
 
 Parallelism_ is about executing multiple tasks (seemingly) at the same time. We will on focus running many multiple
 concurrent tasks (of the same program) on *“as many cores as possible”*.  When we assume a thousand cores, we need a
@@ -71,16 +71,17 @@ introduce new hazards: like deadlocks_ and even livelocks_.
 
 
 Distributed
------------
+~~~~~~~~~~~
 
 A special form of parallelism is Distributed-Computing_: computing on many computers. Many experts consider this
 an independent field of expertise. Still --as Multi-Core_ is basically “many computers on a chip”-- it’s an
 available, adjacent [#DistributedDiff]_ theory, and we should use it, to design our “best ever language”.
 
+
 .. include:: CCC-sidebar-CS.irst
 
-Efficient Communication
-***********************
+Communication Efficiently
+=========================
 
 When multiple tasks run concurrently, they have to communicate to pass data and control progress. Unlike in a
 sequential program -- where the control is trivial, as is sharing data-- this needs a bit of extra effort.
@@ -94,7 +95,7 @@ communication-time and the time-between-two-communications.
 
 
 Shared Memory
-=============
+-------------
 
 In this model all tasks (usually threads or processes) have some shared/common memory; typically “variables”. As the access
 is asynchronous, the risk exists the data is updated “at the same time” by two or more tasks. This can lead to invalid
@@ -110,7 +111,7 @@ bigger part.
 
 
 Messages
-========
+--------
 
 A more modern approach is Message-Passing_: a task sends some information to another; this can be a message, some data,
 or an event. In all cases, there is a distinct sender and receiver -- and apparently no common/shared memory-- so no
@@ -133,16 +134,19 @@ isolated “tasks”.
    |BR|
    Notice: As the compiler will insert the (low level) Semaphores_, the risk that a developer forgets one is gone!
 
+.. _MPA:
 
 Messaging Aspects
------------------
+=================
 
 There are many variant on messaging, mostly combinations some fundamental aspects. Let mentions some basic ones.
+|BR| In :ref:`MPA-examples` some existing messaging passing systems are classified in those therms, for those that do
+prefer a more practical characterisation.
 
 .. include:: CCC-sidebar-async.irst
 
 (A)Synchronous
-~~~~~~~~~~~~~~
+--------------
 
 **Synchronous** messages resembles normal function-calls. Typically a “question” is send, the call awaits the 
 answer-messages, and that answer is returned. This can be seen as a layer on top of the more fundamental send/receive
@@ -159,7 +163,7 @@ of the initial messages to keep track -- often that is the query itself.
 
 
 (Un)Buffered
-~~~~~~~~~~~~
+------------
 
 Despide it’s is not truly a characteristic of the messages itself, messages can be *buffered*, or not. It is about
 piping, transporting the message: can this “connection” (see below) *contain/save/store* messages?  When there is no
@@ -171,7 +175,7 @@ receiver; the number depends on the size of the buffer.
 Note: this is always asymmetric; messages need to be send before the can be read.
 
 Connected Channels (or not)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------
 
 Messages can be send over (pre-) *connected channels* or to freely addressable end-points. Some people use the term “connection
 oriented” for those connected-channels, others use the term “channel” more generic and for any medium that is
@@ -190,9 +194,8 @@ number (possible one) of messages are send to the same receiver, and/or many rec
 number of channels).
 
 
-
 (Non-) Blocking
-~~~~~~~~~~~~~~~
+---------------
 
 Both the writer and the reader can be *blocking* (or not); which is a facet of the function-call. A blocking reader it
 will always return when a messages is available -- and will pauze until then.
@@ -205,16 +208,15 @@ Then, the developer will commonly “cycle” to poll for a profitable call; and
 as well.
 
 
-
 Uni/Bi-Directional, Broadcast
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------
 
 Messages --or actually the channel [#channelDir]_ that transport them-- can be *unidirectional*: from sender to receiver only;
 *bidirectional*: both sides can send and receive; or *broadcasted*: one message is send to many receivers [#anycast]_.
 
 
 Reliability & Order
-~~~~~~~~~~~~~~~~~~~
+-------------------
 
 Especially when studying “network messages”, we have to consider Reliability_ too. Many developers assume that a send
 message is always received and that when multiple messages are sent, they are received in the same order. In most
@@ -271,37 +273,13 @@ option to utilize them may be beneficial.
    Then, a *faster* conversation with a bit of noise is commonly preferred.a
 
 
-Some examples
--------------
-
-In the section below, we mention a few, everyday message-passing systems, to shed light on the theoretical features.
-
-Pipes
-~~~~~
-
-The famous *Unix Pipes* are unidirectional, reliable, blocking, asynchronous, buffered, non-networking **data-only**
-messages. The (“stdout”) output of one process is fed as input to (one) other process. It’s data only, in one direction
--- but the controll can in two directions: when the second (receiving) process can’t process the data (and the buffers
-becoming full), the first process can be slowed down (although this a not well know feature).
-
-It’s also an example of a quite implicit channel: the programmer (of both programs) have nothing (to little) to do
-extra, to make it possible.
-
-
-
 ------------------------
 
-.. todo::
+.. todo:: All below is draft and needs work!!!!
 
 
-   * Pipe : kind of data messages 
-
-
- .. todo:: All below is draft and needs work!!!!
-
-
-Models
-******
+Process calculus
+================
 
 Probably the oldest model to described concurrency is the
 (all tokens move at the same timeslot) -- which is a hard to implement (efficiently) on Multi-Core_.
@@ -379,3 +357,4 @@ END
 .. _RPC:			https://en.wikipedia.org/wiki/Remote_procedure_call
 .. _Broadcasting:		https://en.wikipedia.org/wiki/Broadcasting_(networking)
 .. _Reliability:		https://en.wikipedia.org/wiki/Reliability_(computer_networking)
+.. _Process-Calculus:		https://en.wikipedia.org/wiki/Process_calculus
