@@ -134,6 +134,8 @@ isolated “tasks”.
    |BR|
    Notice: As the compiler will insert the (low level) Semaphores_, the risk that a developer forgets one is gone!
 
+
+.. include:: CCC-sidebar-MA-links.irst
 .. _MPA:
 
 Messaging Aspects
@@ -143,7 +145,7 @@ There are many variant on messaging, mostly combinations some fundamental aspect
 |BR| In :ref:`MPA-examples` some existing messaging passing systems are classified in those therms, for those that do
 prefer a more practical characterisation.
 
-.. include:: CCC-sidebar-async.irst
+
 
 (A)Synchronous
 --------------
