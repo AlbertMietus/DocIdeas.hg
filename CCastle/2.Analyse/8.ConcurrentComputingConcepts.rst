@@ -10,14 +10,14 @@ Concurrent Computing Concepts (BUSY)
    :category: Castle DesignStudy
    :tags: Castle, Concurrency, DRAFT§
 
-   Sooner as we may realize even embedded systems will have many, many cores; as I described in
+   Sooner as we realize, even embedded systems will have piles & heaps of cores, as I described in
    “:ref:`BusyCores`”. Castle should make it easy to write code for all of them: not to keep them busy, but to maximize
-   speed up [useCase: :need:`U_ManyCore`]. There I also showed that threads_ do not scale well for CPU-bound (embedded)
+   speed up [useCase: :need:`U_ManyCore`]. I also showed that threads_ do not scale well for CPU-bound (embedded)
    systems. Last, I introduced some (more) concurrency abstractions. Some are great, but they often do not fit
    nicely in  existing languages.
 
-   Still, as Castle is a new language we have the opportunity to select such a concept and incorporate it into the
-   language ...
+   Still, as Castle is a new language, we have the opportunity to select such a concept and incorporate it into the
+   language.
    |BR|
    In this blog, we explore a bit of theory. I will focus on semantics and the possibilities to implement them
    efficiently. The exact syntax will come later.
@@ -25,9 +25,9 @@ Concurrent Computing Concepts (BUSY)
 Basic terminology
 =================
 
-There are many theories available and some more practical expertise but they hardly share a common vocabulary.
-For that reason, let’s describe some basic terms, that will be used in these blogs. As always, we use Wikipedia as common
-ground and add links for a deep dive.
+Many theories are available, as is some more practical expertise, and hardly non of them share a common vocabulary.  For
+that reason,I first describe some basic terms, and how they are used in these blogs. As always, we use Wikipedia
+as common ground and add links for a deep dive.
 |BR|
 Again, we use ‘task’ as the most generic term for work-to-be-executed; that can be (in) a process, (on) a thread, (by) a
 computer, etc.
@@ -88,10 +88,10 @@ sequential program -- where the control is trivial, as is sharing data-- this ne
 |BR|
 There are two main approaches: shared-data of message-passing; we will introduce them below.
 
-Communication takes time, especially *wall time* [#wall-time]_ (or clock time) and may slow down computing. Therefore
+Communication takes time, especially *wall time* [#wall-time]_ (or clock time), and may slow down computing. Therefore
 communication has to be efficient. This is an arduous problem and becomes harder when we have more communication, more
-concurrency, more parallelism, and/or those tasks are short(er)living. Or better: it depends on the ratio between the
-communication-time and the time-between-two-communications.
+concurrency, more parallelism, and/or those tasks are short living. Or better: it depends on the ratio of
+time-between-communications and the time-between-two-communications. 
 
 
 Shared Memory
@@ -141,58 +141,60 @@ isolated “tasks”.
 Messaging Aspects
 =================
 
-There are many variant on messaging, mostly combinations some fundamental aspects. Let mentions some basic ones.
-|BR| In :ref:`MPA-examples` some existing messaging passing systems are classified in those therms, for those that do
-prefer a more practical characterisation.
+There are many variants of messaging, mostly combinations of some fundamental aspects. Let mentions some basic ones.
+|BR|
+In :ref:`MPA-examples` some existing messaging passing systems are classified in those terms, for those that do prefer
+a more practical characterisation.
 
 
 
 (A)Synchronous
 --------------
 
-**Synchronous** messages resembles normal function-calls. Typically a “question” is send, the call awaits the 
-answer-messages, and that answer is returned. This can be seen as a layer on top of the more fundamental send/receive
-calls. An famous example is RPC_: the Remote Procedure Call.
+**Synchronous** messages resemble normal function calls. Typically a “question” is sent, the call awaits the
+answer message, and that answer is returned. This can be seen as a layer on top of the more fundamental send/receive
+calls. A famous example is RPC_: the Remote Procedure Call.
 
-**Asynchronous** messages are more basic: a task send a messages (to somebody else) and continues. That message can be
-“data”, an “event:, a “commands” or a “query”. Only in the latter case some responds is essental. With async messages,
-there is no desire that to get the answer immediately.
+**Asynchronous** messages are more basic: a task sends a message and continues. That message can be “data”, an “event”,
+a “command”, or a “query”. Only in the latter case, some response is essential. With async messages, there is no desire
+to get the answer immediately.
 
 As an example: A task can send many queries (and/or other messages) to multiple destinations at once, then go into
-*listen-mode*, and handle the replies in the order the are received (which can be different then send-order). Typically,
-this speeds-up (wall) time, and is only possible with async messages. Notice: the return messages need to carry an “ID”
+*listen-mode*, and handle the replies in the order they are received (which can be different than as sent). Typically,
+this speeds up (wall) time, and is only possible with async messages. Notice: the return messages need to carry an “ID”
 of the initial messages to keep track -- often that is the query itself.
 
 
 (Un)Buffered
 ------------
 
-Despide it’s is not truly a characteristic of the messages itself, messages can be *buffered*, or not. It is about
-piping, transporting the message: can this “connection” (see below) *contain/save/store* messages?  When there is no
-storage at all the writer and reader needs to rendezvous: send and receive at the same (wall) time.
+Despite it is not truly a characteristic of the message itself, messages can be *buffered*, or not. It is about
+the plumbing to transport the message: can this “connection” (see below) *contain/save/store* messages?  When there is no
+storage at all the writer and reader need to rendezvous: send and receive at the same (wall) time.
 |BR|
-With a buffer (often depicted as a queue) multiple messages may be sent, before they need to be picked-up by the
+With a buffer (often depicted as a queue) multiple messages may be sent before they need to be picked up by the
 receiver; the number depends on the size of the buffer.
 
-Note: this is always asymmetric; messages need to be send before the can be read.
+Note: this is always asymmetric; messages need to be sent before they can be read.
 
 Connected Channels (or not)
 ---------------------------
 
-Messages can be send over (pre-) *connected channels* or to freely addressable end-points. Some people use the term “connection
-oriented” for those connected-channels, others use the term “channel” more generic and for any medium that is
-transporting messages. I try to use “*connected-channel”*  when is a *pre connected* channel.
+Messages can be sent over (pre-) *connected channels* or to freely addressable end-points. Some people use the term
+“connection-oriented” for those connected channels, others use the term “channel” more generic and for any medium that
+is 
+transporting messages. I try to use “*connected-channel”*  when is a *pre-connected* channel.
 
-When using connected-channels, one writes the message to the channel; there is no need to add the receiver to the
+When using connected channels, one writes the message to the channel; there is no need to add the receiver to the
 message. Also when reading, the sender is clear.
 |BR|
-Clearly, the channel has to be set-up before it can be used.
+Clearly, the channel has to be set up before it can be used.
 
-Without connected-channels, each message needs a recipient; often that receiver is added (“carried”) to the message
+Without connected channels, each message needs a recipient; often that receiver is added (“carried”) to the message
 itself.
 |BR|
-A big advantage is, that one does not need to create channels and end-points first -- which especially count when a low
-number (possible one) of messages are send to the same receiver, and/or many receivers exist (which would lead to a huge
+A big advantage is, that one does not need to create channels and end-points first -- which especially counts when a low
+number (possible one) of messages are sent to the same receiver, and/or many receivers exist (which would lead to a huge
 number of channels).
 
 
@@ -200,12 +202,12 @@ number of channels).
 ---------------
 
 Both the writer and the reader can be *blocking* (or not); which is a facet of the function-call. A blocking reader it
-will always return when a messages is available -- and will pauze until then.
+will always return when a message is available -- and will pauze until then.
 |BR|
-Also the write-call can be blocking: it will pauze until the message can be send -- e.g. the reader is available
-(rendezvous) or a message-buffer is free.
+Also, the write-call can be blocked: it will pauze until the message can be sent -- e.g. the reader is available
+(rendezvous) or a message buffer is free.
 
-When the call is non-blocking, the call will return without waiting and yield a flag whether is was successful or not.
+When the call is non-blocking, the call will return without waiting and yield a flag whether it was successful or not.
 Then, the developer will commonly “cycle” to poll for a profitable call; and let the task do some other/background work
 as well.
 
@@ -213,8 +215,8 @@ as well.
 Uni/Bi-Directional, Broadcast
 -----------------------------
 
-Messages --or actually the channel [#channelDir]_ that transport them-- can be *unidirectional*: from sender to receiver only;
-*bidirectional*: both sides can send and receive; or *broadcasted*: one message is send to many receivers [#anycast]_.
+Messages --or the channel [#channelDir]_ that transports them-- can be *unidirectional*: from sender to receiver only;
+*bidirectional*: both sides can send and receive; or *broadcasted*: one message is sent to many receivers [#anycast]_.
 
 
 Reliability & Order
@@ -245,7 +247,7 @@ Now the question is: in which order those answers (in ``A``) are received? The r
 |BR|
 It’s clear that ``A`` will get `m5` and `m6` -- given that all messages (aka channels) are reliable. But there are many
 ways those messages may receive in the opposite order. Presumably, even in more ways, than you can imagine. For example,
-``B1`` might processes `m4` before it process `m1`! This can happen when channel ``A->B1`` is *slow*, or when ``B2``
+``B1`` might process `m4` before it processes `m1`! This can happen when channel ``A->B1`` is *slow*, or when ``B2``
 gets CPU-time before ``B1``, or...
 
 When we add buffering, more connected components, etc this *“network”* acts less reliable than we might aspect (even
@@ -259,20 +261,20 @@ option to utilize them may be beneficial.
 
 .. hint::
 
-   As a simple example to demonstrate the advantage of a “unreliable connection”, lets consider an audio (bidirectional)
+   As a simple example to demonstrate the advantage of an “unreliable connection”, let us consider an audio (bidirectional)
    connection, that is not 100% reliable.
    |BR|
-   When we use it “as is”, there will be a bit of noise, and even some hick-ups. For most people this is acceptable,
-   when needed they will use phrases  as *“Can you repeat that?”*.
+   When we use it “as is”, there will be a bit of noise, and even some hick-ups. For most people, this is acceptable,
+   when needed they will use phrases such as *“Can you repeat that?”*.
 
-   To make that connection reliable, we need checksums, low-level conformation message, and once in a while have to sent
-   a message again. This implies some buffering (at both sides), and so the audio-stream will have a bit of delay.
-   This is a  common solution for unidirectional POD-casts, and such.
+   To make that connection reliable, we need checksums, low-level confirmation messages, and once in a while have to send
+   a message again. This implies some buffering (at both sides), and so the audio stream will have a bit of delay.
+   This is a  common solution for unidirectional PODcasts, and such.
 
-   For a bidirectional conversation however this buffering is not satisfactory. It makes the *slow*, people have to wait
-   on each-other and will interrupted one-other.
+   For a bidirectional conversation, however, this buffering is not satisfactory. It makes the *slow*, people have to wait
+   on each other and will interrupt one other.
    |BR|
-   Then, a *faster* conversation with a bit of noise is commonly preferred.a
+   Then, a *faster* conversation with a bit of noise is commonly preferred.
 
 
 ------------------------
