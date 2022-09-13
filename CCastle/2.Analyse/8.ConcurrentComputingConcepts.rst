@@ -25,8 +25,8 @@ Concurrent Computing Concepts (BUSY)
 Basic terminology
 =================
 
-Many theories are available, as is some more practical expertise, and hardly non of them share a common vocabulary.  For
-that reason,I first describe some basic terms, and how they are used in these blogs. As always, we use Wikipedia
+Many theories are available, as are some more practical expertises, regrettably hardly non of them share a common
+vocabulary.  For that reason,I first describe some basic terms, and how they are used in these blogs. As always, we use Wikipedia
 as common ground and add links for a deep dive.
 |BR|
 Again, we use ‘task’ as the most generic term for work-to-be-executed; that can be (in) a process, (on) a thread, (by) a
