@@ -15,10 +15,10 @@ Concurrent Computing Concepts (BUSY)
    speed up [useCase: :need:`U_ManyCore`]. I also showed that threads_ do not scale well for CPU-bound (embedded)
    systems. Last, I introduced some (more) concurrency abstractions. Some are great, but they often do not fit
    nicely in  existing languages.
-
+   |BR|
    Still, as Castle is a new language, we have the opportunity to select such a concept and incorporate it into the
    language.
-   |BR|
+
    In this blog, we explore a bit of theory. I will focus on semantics and the possibilities to implement them
    efficiently. The exact syntax will come later.
 
@@ -202,21 +202,42 @@ number of channels).
 ---------------
 
 Both the writer and the reader can be *blocking* (or not); which is a facet of the function-call. A blocking reader it
-will always return when a message is available -- and will pauze until then.
-|BR|
-Also, the write-call can be blocked: it will pauze until the message can be sent -- e.g. the reader is available
-(rendezvous) or a message buffer is free.
+will always return when a message is available -- and will pauze until then.  Equally, the write-call can block: pauze
+until the message can be sent -- e.g. the reader is available (rendezvous) or a message buffer is free.
 
 When the call is non-blocking, the call will return without waiting and yield a flag whether it was successful or not.
 Then, the developer will commonly “cycle” to poll for a profitable call; and let the task do some other/background work
 as well.
 
+Futures (or promises)
+~~~~~~~~~~~~~~~~~~~~~
 
-Uni/Bi-Directional, Broadcast
------------------------------
+A modern variant of non-blocking makes uses of “Futures_”. The call will always return this opaque data-structure
+immediately. It may be a blank -- but the procedure can continue. Eventually, that data will be filled in “by the
+background”. It also contains a flag (like ``done``), so the programmer can check (using an if) [#future-CS]_ whether
+the data is processes.
 
-Messages --or the channel [#channelDir]_ that transports them-- can be *unidirectional*: from sender to receiver only;
-*bidirectional*: both sides can send and receive; or *broadcasted*: one message is sent to many receivers [#anycast]_.
+
+Uni/Bi-Directional, Many/Broad-cast
+-----------------------------------
+
+Message can be sent to one receiver, to many, or even to everybody. Usually this is modeled as an characteristic of the
+channel. And at the same time, that channel can be used to send message in oneway, or in two-ways.
+
+It depends on the context on the exact intent. By example in (TCP/IP) networking, `Broadcasting
+<https://en.wikipedia.org/wiki/Broadcasting_(networking)>`_ (and al variants that are not point-to-point) focus on
+reducing the amount of data on the network itself. In distributed computing `Broadcasting
+<https://en.wikipedia.org/wiki/Broadcast_(parallel_pattern)>`_ is a parallel Design pattern. Whereas the `Broadcast flag
+<https://en.wikipedia.org/wiki/Broadcast_flag>`_  in TV steaming is a complete other idea: is it allowed to save
+(record) a TV broadcast...
+
+We use those teams on the functional aim. We consider the above mentioned RCP connection as **Unidirectional** -- even
+the channel can carry the answer. When both endpoints can take the initiative to sent messages, we call it
+**Bidirectional**.
+|BR|
+With only 2 endpoints, we call the connection **Point-to-Point** (*p2p*). When more endpoints are concerned, it’s
+**Broadcast** when a message is send to all other (on that channel), and **Manycast** when the user (the programmer) can
+(somehow) select a subset.
 
 
 Reliability & Order
@@ -229,7 +250,7 @@ true.  Messages can get lost, received out of order, or even read twice. Althoug
 “reliability layer”.
 |BR|
 Such a layer makes writing the application easier but introduces overhead too. And therefore not always the right
-solution. 
+solution.
 
 In Castle, we have “active components”: many cores are running parallel, all doing a part of the overall (concurrent)
 program. This resembles a networking application -- even while there is no real network -- where at least three nodes
@@ -333,9 +354,10 @@ END
    that the number of communications will grow with the number of cores too.  As described in the :ref:`sidebar
    <Threads-in-CPython>` in :ref:`BusyCores`, solving this can give more overhead then the speed we are aiming for.
 
-.. [#channelDir]
-   Strictly speaking, one should not use  “channel” here. Non the less, the “direction of a medium”, that is not a
-   (connected) channel sounds void. Although we do not exclude it, we use a pragmatic way of writing.
+.. [#future-CS]
+   Remember: to be able to “fill in” that Future-object “by the background” some other thread or so is needed. And so, a
+   Critical-Section_ is needed. For the SW-developer the interface is simple: read a flag (e.g. ``.done()``. But using
+   that to often can result is in a slow system.
 
 .. [#anycast]
    Broadcasting_ is primarily know from “network messages”; where is has many variants -- mostly related to the
@@ -362,3 +384,4 @@ END
 .. _Broadcasting:		https://en.wikipedia.org/wiki/Broadcasting_(networking)
 .. _Reliability:		https://en.wikipedia.org/wiki/Reliability_(computer_networking)
 .. _Process-Calculus:		https://en.wikipedia.org/wiki/Process_calculus
+.. _Futures: 			https://en.wikipedia.org/wiki/Futures_and_promises
