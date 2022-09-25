@@ -1,4 +1,4 @@
-.. include:: /std/localtoc.irst
+.. include:: /std/localtoc2.irst
 
 .. _ConcurrentComputingConcepts:
 
@@ -8,7 +8,7 @@ Concurrent Computing Concepts (BUSY)
 
 .. post::	
    :category: Castle DesignStudy
-   :tags: Castle, Concurrency, DRAFT§
+   :tags: Castle, Concurrency, DRAFT
 
    Sooner as we realize, even embedded systems will have piles & heaps of cores, as I described in
    “:ref:`BusyCores`”. Castle should make it easy to write code for all of them: not to keep them busy, but to maximize
@@ -91,7 +91,7 @@ There are two main approaches: shared-data of message-passing; we will introduce
 Communication takes time, especially *wall time* [#wall-time]_ (or clock time), and may slow down computing. Therefore
 communication has to be efficient. This is an arduous problem and becomes harder when we have more communication, more
 concurrency, more parallelism, and/or those tasks are short living. Or better: it depends on the ratio of
-time-between-communications and the time-between-two-communications. 
+time-between-communications and the time-between-two-communications.
 
 
 Shared Memory
@@ -100,14 +100,17 @@ Shared Memory
 In this model all tasks (usually threads or processes) have some shared/common memory; typically “variables”. As the access
 is asynchronous, the risk exists the data is updated “at the same time” by two or more tasks. This can lead to invalid
 data and so Critical-Sections_ are needed.
-
+|BR|
 This is a very basic model which assumes that there is physical memory that can be shared. In distributed systems this
-is uncommon, but for threads it’s straightforward. A disadvantage of this model is that is hazardous: Even when a
-single modifier of a shared variable is not protected by a Critical-Section_, the whole system can break [#OOCS]_.
+is uncommon, but for threads it’s straightforward.
 
-The advantage of shared memory is the fast *communication-time*. The wall-time and CPU-time are roughly the same: the
+An advantage of shared memory is the fast *communication-time*. The wall-time and CPU-time are roughly the same: the
 time to write & read the variable added to the (overhead) time for the critical section --  which is typically the
 bigger part.
+|BR|
+The big disadvantage of this model is that is hazardous: The programmer needs to insert Critical_Sections into his code
+at all places that *variable* is used. Even a single acces to a shared variable, that is not protected by a
+Critical-Section_, can (will) break the whole system [#OOCS]_.
 
 
 Messages
@@ -224,11 +227,11 @@ Uni/Bi-Directional, Many/Broad-cast
 Message can be sent to one receiver, to many, or even to everybody. Usually this is modeled as an characteristic of the
 channel. And at the same time, that channel can be used to send message in oneway, or in two-ways.
 
-It depends on the context on the exact intent. By example in (TCP/IP) networking, `Broadcasting
-<https://en.wikipedia.org/wiki/Broadcasting_(networking)>`_ (and al variants that are not point-to-point) focus on
-reducing the amount of data on the network itself. In distributed computing `Broadcasting
-<https://en.wikipedia.org/wiki/Broadcast_(parallel_pattern)>`_ is a parallel Design pattern. Whereas the `Broadcast flag
-<https://en.wikipedia.org/wiki/Broadcast_flag>`_  in TV steaming is a complete other idea: is it allowed to save
+It depends on the context on the exact intent. By example in (TCP/IP) `networking, ‘Broadcasting’
+<https://en.wikipedia.org/wiki/Broadcasting_(networking)>`__ (all not point-to-point variants) focus on reducing the
+amount of data on the network itself. In `distributed computing ‘Broadcasting’
+<https://en.wikipedia.org/wiki/Broadcast_(parallel_pattern)>`__ is a parallel Design pattern. Whereas the `’Broadcast’ 
+flag <https://en.wikipedia.org/wiki/Broadcast_flag>`_ in TV steaming is a complete other idea: is it allowed to save
 (record) a TV broadcast...
 
 We use those teams on the functional aim. We consider the above mentioned RCP connection as **Unidirectional** -- even
@@ -298,27 +301,52 @@ option to utilize them may be beneficial.
    Then, a *faster* conversation with a bit of noise is commonly preferred.
 
 
-------------------------
 
-.. todo:: All below is draft and needs work!!!!
 
 
 Process calculus
 ================
 
-Probably the oldest model to described concurrency is the
-(all tokens move at the same timeslot) -- which is a hard to implement (efficiently) on Multi-Core_.
+.. todo:: All below is draft and needs work!!!!
 
-Actors
+After studying many concurrent concept, we need to adress one more, before we can *design* the Castle-language. That is
+“*How do we determine what is ‘best’ (ever)*”?  Can we *calculate* the performance of every aspect? The answer is no;
+but there are formal systems that can help: Process-Calculus_ (or -Algebra).
+|BR|
+Unfortunately, there are many of them. And I like to avoid the recursions-trap: study them all, to find a meta-calculus
+to determine the best, etc.
 
-Actor-Model_
-Actor-Model-Theory_
+So lets give a quick overview. And recall, the term ‘process’ is pretty general: it denotes on the ‘behaviour of a
+system’, not the more limited practice most software-developers use.
 
-A very introduce
+Traditional ones
+----------------
 
---------
+Many Process-Calculus_\es are invented around 1980. As often, those traditional ones focus on the issues that where actual
+back them. And although the are still useful, they might be unaware of moderen aspects of computing -- like huge code
+bases, and over thousand of cores.
 
-END
+Communicating sequential processes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+CSP_ is probably the oldest and best known *formal* language to describe (patterns in) concurrent systems. I started in
+1978 as a kind of programming language, and has evolved since them.  Occam_ --the language to program the one famous
+Transputer_-- is based on CSP_.
+
+Also ‘Go_’ (the language) is influenced by CSP_. A sign the CSP_ isn’t to old.
+
+
+Calculus of Communicating Systems
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+CCS_ is also quite old (1980) and quite useful to calculate  deadlocks_ and livelocks_
+
+Algebra of Communicating Processes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Also ACP_ dates back from 1982 and is a real algebra -- it probably contrive the general term Process-Calculus_ 
+
+aaa
 
 ----------
 
@@ -343,7 +371,9 @@ END
 .. [#OOCS]
    The brittleness of Critical-Sections_ can be reduced by embedding (the) (shared-) variable in an OO abstraction. By
    using *getters and *setters*, that controll the access, the biggest risk is (mostly) gone. That does not, however,
-   prevent deadlocks_ nor livelocks_. Also see the note below.
+   prevent deadlocks_ nor livelocks_.
+   |BR|
+   And still, all developers has be disciplined to use that abstraction ... always.
 
 .. [#MPCS]
    This is not completely correct; Message-Passing_ can be implemented on top of shared-memory. Then, the implementation
@@ -378,10 +408,14 @@ END
 .. _Distributed-Computing:	https://en.wikipedia.org/wiki/Distributed_computing
 .. _Message-Passing:		https://en.wikipedia.org/wiki/Message_passing
 .. _Events:			https://en.wikipedia.org/wiki/Event_(computing)
-.. _Actor-Model:		https://en.wikipedia.org/wiki/Actor_model
-.. _Actor-Model-Theory:		https://en.wikipedia.org/wiki/Actor_model_theory
 .. _RPC:			https://en.wikipedia.org/wiki/Remote_procedure_call
 .. _Broadcasting:		https://en.wikipedia.org/wiki/Broadcasting_(networking)
 .. _Reliability:		https://en.wikipedia.org/wiki/Reliability_(computer_networking)
 .. _Process-Calculus:		https://en.wikipedia.org/wiki/Process_calculus
 .. _Futures: 			https://en.wikipedia.org/wiki/Futures_and_promises
+.. _CSP:			https://en.wikipedia.org/wiki/Communicating_sequential_processes
+.. _Occam: 			https://en.wikipedia.org/wiki/Occam_(programming_language)
+.. _Transputer:			https://en.wikipedia.org/wiki/Transputer
+.. _Go:                         https://en.wikipedia.org/wiki/Go_(programming_language)
+.. _CCS:                        https://en.wikipedia.org/wiki/Calculus_of_communicating_systems
+.. _ACP: https://en.wikipedia.org/wiki/Algebra_of_communicating_processes

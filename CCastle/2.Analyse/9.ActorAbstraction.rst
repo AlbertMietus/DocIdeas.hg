@@ -16,7 +16,10 @@ Actor Abstractions (IDEA)
 
    As an abstraction, those active actors are similar to the :ref:`”Many Core” concept<CC>` we use for CCastle. Hence, we study this model a bit  more
 
+----------------------
 
+Actor-Model_
+Actor-Model-Theory_
 
 
 
@@ -31,3 +34,6 @@ Actor Abstractions (IDEA)
 .. _Actor-Model:		https://en.wikipedia.org/wiki/Actor_model
 .. _Actor-Model-Theory:		https://en.wikipedia.org/wiki/Actor_model_theory
 .. _Distributed-Computing:	https://en.wikipedia.org/wiki/Distributed_computing
+
+.. _Actor-Model:		https://en.wikipedia.org/wiki/Actor_model
+.. _Actor-Model-Theory:		https://en.wikipedia.org/wiki/Actor_model_theory

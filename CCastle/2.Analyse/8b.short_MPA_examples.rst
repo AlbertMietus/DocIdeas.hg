@@ -1,5 +1,6 @@
 .. _MPA-examples:
 
+========================================
 Everyday Message Passing examples (ToDo)
 ========================================
 

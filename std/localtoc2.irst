@@ -1,0 +1,11 @@
+.. -*- rst -*-
+   USE AS:
+   .. include:: /std/localtoc2.irst
+
+.. sidebar:: On this page
+   :class: localtoc
+
+   .. contents::
+      :depth: 2
+      :local:
+      :backlinks: none
