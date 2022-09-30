@@ -318,8 +318,10 @@ to determine the best, etc.
 So lets give a quick overview. And recall, the term ‘process’ is pretty general: it denotes on the ‘behaviour of a
 system’, not the more limited practice most software-developers use.
 
-Traditional ones
-----------------
+.. include:: CCC-sidebar-calc-demo.irst
+
+Mathematical models
+-------------------
 
 Many Process-Calculus_\es are invented around 1980. As often, those traditional ones focus on the issues that where actual
 back them. And although the are still useful, they might be unaware of moderen aspects of computing -- like huge code
@@ -343,11 +345,10 @@ Communicating sequential processes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 CSP_ is probably the best known *formal* language to describe (patterns in) concurrent systems. I started in 1978 as a
-kind of programming language, and has evolved since them.  Occam_ --the language to program the one famous Transputer_--
+kind of programming language, and has evolved since them.  Occam_ --the language to program the once famous Transputer_--
 is based on CSP_.
 
 Also ‘Go_’ (the language) is influenced by CSP_. A sign the CSP_ isn’t to old.
-
 
 Calculus of Communicating Systems
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -364,7 +365,26 @@ By those *rules* one can convert (“transform”) a processes of concurent and/
 processes -- and prove the are the same (or nor). And look for patterns that should not (never) happen; like deadlocks_
 and livelocks_.
 
+I like this algebra aspect, as we can use inside some Castle-Tool.
 
+Π-calculus
+~~~~~~~~~~
+
+Pi-Calculus_ is a more recent (1992) addition to the family of Process-Calculus_\es. It allow some dynamic behaviour;
+like transmitting the names of channel -- which facilitates the grow & reconfiguration of the network during execution.
+|BR|
+That expect, by example is needed for the :ref:`standard-Sieve` example.
+|BR|
+It also show some of the shortcoming of “traditional” models, as hinted above.
+
+As it is a small (but expressive) “language”, that resembles λ-calculus a bit, it has some omissions too: no numbers,
+no functions, not even an `if-statement` (all quite fundamental for a programming language).  It is bases on **names**,
+which mirrors both *variables* and *channels*.
+
+Actor Models
+------------
+
+Calculus-vs-Actors_
 
 ----------
 
@@ -442,3 +462,5 @@ and livelocks_.
 .. _CCS:			https://en.wikipedia.org/wiki/Calculus_of_communicating_systems
 .. _ACP:			https://en.wikipedia.org/wiki/Algebra_of_communicating_processes
 .. _Petri-Net:			https://en.wikipedia.org/wiki/Petri_net
+.. _Calculus-vs-Actors:		https://en.wikipedia.org/wiki/Actor_model_and_process_calculi
+.. _Pi-Calculus: 		https://en.wikipedia.org/wiki/Π-calculus
