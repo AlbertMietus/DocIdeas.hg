@@ -227,8 +227,8 @@ should be designed to enable this.
    gain maximal speed up.
 
 Distributing tasks over multiple cores (or even distributed computers) [#web]_ is not new. In
-:ref:`ConcurrentComputingConcepts` we describe some (common, theoretical) concepts, and in :ref:`ActorAbstractions`
-we analyse a powerfull approach. That we like to use for CCastle.
+:ref:`ConcurrentComputingConcepts` we describe some (common, theoretical) concepts, especially the
+:ref:`CCC-Actors`. What we like to use for CCastle.
 
 ----------
 

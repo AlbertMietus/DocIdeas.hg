@@ -301,8 +301,6 @@ option to utilize them may be beneficial.
    Then, a *faster* conversation with a bit of noise is commonly preferred.
 
 
-.. todo:: All below is draft and needs work!!!!
-
 Process calculus & more
 =======================
 
@@ -379,6 +377,8 @@ As it is a small (but expressive) “language”, that resembles λ-calculus a b
 no functions, not even an `if-statement` (all quite fundamental for a programming language).  It is bases on **names**,
 which mirrors both *variables* and *channels*.
 
+.. _CCC-Actors:
+
 The Actor Model
 ---------------
 
@@ -406,9 +406,11 @@ Another interesting dissimilarity is that the Actor-Model_, and the Actor-Model-
 SW-Enginering and there languages. Which probably made is also convenient to design new programming-languages on this
 theory.
 
+.. resolution:: Castle will use Actors is main Concurent Computing Concept
+   :ID: R_CCC-Actors
+   :links: U_ManyCore
 
-
-.. hint:: Unlike Process-Calculus_\es, there is only one Actor-Model_
+.. tip:: Unlike Process-Calculus_\es, there is only one Actor-Model_
 
 ----------
 
