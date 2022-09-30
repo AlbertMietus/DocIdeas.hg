@@ -303,11 +303,10 @@ option to utilize them may be beneficial.
 
 
 
-
-Process calculus
-================
-
 .. todo:: All below is draft and needs work!!!!
+
+Process calculus & more
+=======================
 
 After studying many concurrent concept, we need to adress one more, before we can *design* the Castle-language. That is
 “*How do we determine what is ‘best’ (ever)*”?  Can we *calculate* the performance of every aspect? The answer is no;
@@ -326,12 +325,26 @@ Many Process-Calculus_\es are invented around 1980. As often, those traditional 
 back them. And although the are still useful, they might be unaware of moderen aspects of computing -- like huge code
 bases, and over thousand of cores.
 
+Petri Net
+~~~~~~~~~
+
+Probably the oldest mathematical model to describe distributed systems is the Petri-Net_, invented in 1962 -- some claim
+it even started in 1939(!).  In its graphical representation it looks like a network of circles (‘places’), bars
+(‘action’) connected by with arrows (arcs). It also contains ‘tokens’ -- zero or more dots inside a circle. They can
+flow though the network and kind of represent state.
+|BR|
+There is a extensive, complex mathematical model behind this. Which makes Petri-Net_\s very powerfull.
+
+A drawback however is, that all tokens have move to the next place at the same time. When using Petri-Net_\s as a
+calculus, this is not an issue. But it becomes impossible to execute that in a distributed (or Multi-Core) environment,
+or a base of a language.
+
 Communicating sequential processes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-CSP_ is probably the oldest and best known *formal* language to describe (patterns in) concurrent systems. I started in
-1978 as a kind of programming language, and has evolved since them.  Occam_ --the language to program the one famous
-Transputer_-- is based on CSP_.
+CSP_ is probably the best known *formal* language to describe (patterns in) concurrent systems. I started in 1978 as a
+kind of programming language, and has evolved since them.  Occam_ --the language to program the one famous Transputer_--
+is based on CSP_.
 
 Also ‘Go_’ (the language) is influenced by CSP_. A sign the CSP_ isn’t to old.
 
@@ -344,9 +357,14 @@ CCS_ is also quite old (1980) and quite useful to calculate  deadlocks_ and live
 Algebra of Communicating Processes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Also ACP_ dates back from 1982 and is a real algebra -- it probably contrive the general term Process-Calculus_ 
+Also ACP_ dates back from 1982 and is a real algebra -- it probably contrived the general term Process-Calculus_. Like
+any algebra, it has (transformation) “rules”.  So that one actually calculate [#bool-algebra]_.
 
-aaa
+By those *rules* one can convert (“transform”) a processes of concurent and/or sequential actions into other, equivalent
+processes -- and prove the are the same (or nor). And look for patterns that should not (never) happen; like deadlocks_
+and livelocks_.
+
+
 
 ----------
 
@@ -394,6 +412,10 @@ aaa
    physical network abilities, and the need to save bandwith. As an abstraction, they can be used in “software messages”
    (aka message passing) too.
 
+.. [#bool-algebra]
+   Those ‘rules’ resembles the boolean algebra, that most developers know: `NOT(x OR y) == NOT(x) AND NOT(y)`. See
+   wikipedia for examples on ACP_.
+
 .. _Concurrency:		https://en.wikipedia.org/wiki/Concurrency_(computer_science)
 .. _parallelism:		https://en.wikipedia.org/wiki/Parallel_computing
 .. _pthreads: 			https://en.wikipedia.org/wiki/Pthreads
@@ -416,6 +438,7 @@ aaa
 .. _CSP:			https://en.wikipedia.org/wiki/Communicating_sequential_processes
 .. _Occam: 			https://en.wikipedia.org/wiki/Occam_(programming_language)
 .. _Transputer:			https://en.wikipedia.org/wiki/Transputer
-.. _Go:                         https://en.wikipedia.org/wiki/Go_(programming_language)
-.. _CCS:                        https://en.wikipedia.org/wiki/Calculus_of_communicating_systems
-.. _ACP: https://en.wikipedia.org/wiki/Algebra_of_communicating_processes
+.. _Go:				https://en.wikipedia.org/wiki/Go_(programming_language)
+.. _CCS:			https://en.wikipedia.org/wiki/Calculus_of_communicating_systems
+.. _ACP:			https://en.wikipedia.org/wiki/Algebra_of_communicating_processes
+.. _Petri-Net:			https://en.wikipedia.org/wiki/Petri_net
