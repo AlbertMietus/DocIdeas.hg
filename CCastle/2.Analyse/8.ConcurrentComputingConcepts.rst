@@ -301,8 +301,6 @@ option to utilize them may be beneficial.
    Then, a *faster* conversation with a bit of noise is commonly preferred.
 
 
-
-
 .. todo:: All below is draft and needs work!!!!
 
 Process calculus & more
@@ -365,7 +363,7 @@ By those *rules* one can convert (“transform”) a processes of concurent and/
 processes -- and prove the are the same (or nor). And look for patterns that should not (never) happen; like deadlocks_
 and livelocks_.
 
-I like this algebra aspect, as we can use inside some Castle-Tool.
+I like this algebra aspect, as we can use inside some Castle-Tool to validate the design is sound.
 
 Π-calculus
 ~~~~~~~~~~
@@ -381,10 +379,36 @@ As it is a small (but expressive) “language”, that resembles λ-calculus a b
 no functions, not even an `if-statement` (all quite fundamental for a programming language).  It is bases on **names**,
 which mirrors both *variables* and *channels*.
 
-Actor Models
-------------
+The Actor Model
+---------------
 
-Calculus-vs-Actors_
+The Actor-Model_ is strictly speaking not a Process-Calculus_, but it has many similarities. A big dissimilarity is the
+inspiration; where a Process-Calculus_ are based on mathematics, the Actor-Model_ is inspirited by physics. See
+Calculus-vs-Actors_ for more on there (dis)similarities.
+|BR|
+The Actor-Model_ begun in 1973, matured in the 80’s, and become fashionable when “cloud computing” started. There are
+many “bold-on” actor-packages for almost all populair languages. They focus mostly on *robust, scalable, distributed
+applications*; less on the speed-up of a single programm.  Still, the :ref:`”Many Core” concept<CC>` we use for CCastle
+is closely related.
+
+Being inspired by physics, which is concurent by nature, the perception differs. An *actor* is local, “active”, and
+independent. It can only act on message that it receives, sent new messages, and/or create new actors. It (typically)
+has internal state, but that is completely internal (or *private*, as developers call it).
+|BR|
+There is no global state, no central synchronisation, no “shared memory”, no (overal) orchestration. Everything is
+decentral.
+
+One can model many well-known software-systems as an Actor-Model_: like email, SOAP, and other web-services. But also
+interrupt-handling can modeled with actors: An extern message triggers the “*interrupt-handler* actor” --async of the
+main-code; another *actor*-- which has to sent data (aka a message) to the main actor.
+
+Another interesting dissimilarity is that the Actor-Model_, and the Actor-Model-Theory_, is also influent by
+SW-Enginering and there languages. Which probably made is also convenient to design new programming-languages on this
+theory.
+
+
+
+.. hint:: Unlike Process-Calculus_\es, there is only one Actor-Model_
 
 ----------
 
@@ -436,31 +460,33 @@ Calculus-vs-Actors_
    Those ‘rules’ resembles the boolean algebra, that most developers know: `NOT(x OR y) == NOT(x) AND NOT(y)`. See
    wikipedia for examples on ACP_.
 
+.. _ACP:			https://en.wikipedia.org/wiki/Algebra_of_communicating_processes
+.. _Actor-Model-Theory:		https://en.wikipedia.org/wiki/Actor_model_theory
+.. _Actor-Model:		https://en.wikipedia.org/wiki/Actor_model
+.. _Broadcasting:		https://en.wikipedia.org/wiki/Broadcasting_(networking)
+.. _CCS:			https://en.wikipedia.org/wiki/Calculus_of_communicating_systems
+.. _CSP:			https://en.wikipedia.org/wiki/Communicating_sequential_processes
+.. _Calculus-vs-Actors:		https://en.wikipedia.org/wiki/Actor_model_and_process_calculi
 .. _Concurrency:		https://en.wikipedia.org/wiki/Concurrency_(computer_science)
-.. _parallelism:		https://en.wikipedia.org/wiki/Parallel_computing
-.. _pthreads: 			https://en.wikipedia.org/wiki/Pthreads
-.. _Threads:			https://en.wikipedia.org/wiki/Thread_(computing)
-.. _Multi-Core:			https://en.wikipedia.org/wiki/Multi-core_processor
-.. _deadlocks:			https://en.wikipedia.org/wiki/Deadlock
-.. _livelocks:			https://en.wikipedia.org/wiki/Deadlock#Livelock
 .. _Critical-Section:		https://en.wikipedia.org/wiki/Critical_section
 .. _Critical-Sections:		Critical-Section_
+.. _Distributed-Computing:	https://en.wikipedia.org/wiki/Distributed_computing
+.. _Events:			https://en.wikipedia.org/wiki/Event_(computing)
+.. _Futures: 			https://en.wikipedia.org/wiki/Futures_and_promises
+.. _Go:				https://en.wikipedia.org/wiki/Go_(programming_language)
+.. _Message-Passing:		https://en.wikipedia.org/wiki/Message_passing
+.. _Multi-Core:			https://en.wikipedia.org/wiki/Multi-core_processor
+.. _Occam: 			https://en.wikipedia.org/wiki/Occam_(programming_language)
+.. _Petri-Net:			https://en.wikipedia.org/wiki/Petri_net
+.. _Pi-Calculus: 		https://en.wikipedia.org/wiki/Π-calculus
+.. _Process-Calculus:		https://en.wikipedia.org/wiki/Process_calculus
+.. _RPC:			https://en.wikipedia.org/wiki/Remote_procedure_call
+.. _Reliability:		https://en.wikipedia.org/wiki/Reliability_(computer_networking)
 .. _Semaphores:			https://en.wikipedia.org/wiki/Semaphore_(programming)
 .. _Spinlocking:		https://en.wikipedia.org/wiki/
-.. _Distributed-Computing:	https://en.wikipedia.org/wiki/Distributed_computing
-.. _Message-Passing:		https://en.wikipedia.org/wiki/Message_passing
-.. _Events:			https://en.wikipedia.org/wiki/Event_(computing)
-.. _RPC:			https://en.wikipedia.org/wiki/Remote_procedure_call
-.. _Broadcasting:		https://en.wikipedia.org/wiki/Broadcasting_(networking)
-.. _Reliability:		https://en.wikipedia.org/wiki/Reliability_(computer_networking)
-.. _Process-Calculus:		https://en.wikipedia.org/wiki/Process_calculus
-.. _Futures: 			https://en.wikipedia.org/wiki/Futures_and_promises
-.. _CSP:			https://en.wikipedia.org/wiki/Communicating_sequential_processes
-.. _Occam: 			https://en.wikipedia.org/wiki/Occam_(programming_language)
+.. _Threads:			https://en.wikipedia.org/wiki/Thread_(computing)
 .. _Transputer:			https://en.wikipedia.org/wiki/Transputer
-.. _Go:				https://en.wikipedia.org/wiki/Go_(programming_language)
-.. _CCS:			https://en.wikipedia.org/wiki/Calculus_of_communicating_systems
-.. _ACP:			https://en.wikipedia.org/wiki/Algebra_of_communicating_processes
-.. _Petri-Net:			https://en.wikipedia.org/wiki/Petri_net
-.. _Calculus-vs-Actors:		https://en.wikipedia.org/wiki/Actor_model_and_process_calculi
-.. _Pi-Calculus: 		https://en.wikipedia.org/wiki/Π-calculus
+.. _deadlocks:			https://en.wikipedia.org/wiki/Deadlock
+.. _livelocks:			https://en.wikipedia.org/wiki/Deadlock#Livelock
+.. _parallelism:		https://en.wikipedia.org/wiki/Parallel_computing
+.. _pthreads: 			https://en.wikipedia.org/wiki/Pthreads
