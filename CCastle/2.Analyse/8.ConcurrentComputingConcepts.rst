@@ -145,11 +145,6 @@ Messaging Aspects
 =================
 
 There are many variants of messaging, mostly combinations of some fundamental aspects. Let mentions some basic ones.
-|BR|
-In :ref:`MPA-examples` some existing messaging passing systems are classified in those terms, for those that do prefer
-a more practical characterisation.
-
-
 
 (A)Synchronous
 --------------
@@ -304,47 +299,47 @@ option to utilize them may be beneficial.
 Process calculus & more
 =======================
 
-After studying many concurrent concept, we need to adress one more, before we can *design* the Castle-language. That is
+After studying many concurrent concepts, we need to address one more, before we can *design* the Castle language. That is
 “*How do we determine what is ‘best’ (ever)*”?  Can we *calculate* the performance of every aspect? The answer is no;
 but there are formal systems that can help: Process-Calculus_ (or -Algebra).
 |BR|
-Unfortunately, there are many of them. And I like to avoid the recursions-trap: study them all, to find a meta-calculus
+Unfortunately, there are many of them. And I like to avoid the recursions-trap: study them all, find a meta-calculus
 to determine the best, etc.
 
-So lets give a quick overview. And recall, the term ‘process’ is pretty general: it denotes on the ‘behaviour of a
-system’, not the more limited practice most software-developers use.
+So let us give a quick overview. And recall, the term ‘process’ is pretty general: it denotes the *behavior of a
+system*, not the more limited practice most software developers use.
 
 .. include:: CCC-sidebar-calc-demo.irst
 
 Mathematical models
 -------------------
 
-Many Process-Calculus_\es are invented around 1980. As often, those traditional ones focus on the issues that where actual
-back them. And although the are still useful, they might be unaware of moderen aspects of computing -- like huge code
-bases, and over thousand of cores.
+Many Process-Calculus_\es are invented around 1980. As often, those traditional ones focus on the issues that were current
+back then. And although they are still useful, they might be unaware of modern aspects of computing -- like huge code
+bases, and over a thousand cores.
 
-Petri Net
+Petri Ne
 ~~~~~~~~~
 
 Probably the oldest mathematical model to describe distributed systems is the Petri-Net_, invented in 1962 -- some claim
-it even started in 1939(!).  In its graphical representation it looks like a network of circles (‘places’), bars
-(‘action’) connected by with arrows (arcs). It also contains ‘tokens’ -- zero or more dots inside a circle. They can
-flow though the network and kind of represent state.
+it even started in 1939(!).  In its graphical representation, it looks like a network of circles (‘places’) and bars,
+(‘actions’) connected by arrows (‘arcs’). It also contains ‘tokens’ -- zero or more dots inside a circle. They can
+flow through the network and kind of represent state.
 |BR|
-There is a extensive, complex mathematical model behind this. Which makes Petri-Net_\s very powerfull.
+There is an extensive, complex mathematical model behind this. Which makes Petri-Net_\s very powerful.
 
-A drawback however is, that all tokens have move to the next place at the same time. When using Petri-Net_\s as a
+A drawback however is, that all tokens have to move to the next place at the same time. When using Petri-Net_\s as a
 calculus, this is not an issue. But it becomes impossible to execute that in a distributed (or Multi-Core) environment,
 or a base of a language.
 
 Communicating sequential processes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-CSP_ is probably the best known *formal* language to describe (patterns in) concurrent systems. I started in 1978 as a
-kind of programming language, and has evolved since them.  Occam_ --the language to program the once famous Transputer_--
+CSP_ is probably the best-known *formal* language to describe (patterns in) concurrent systems. It started in 1978 as a
+kind of programming language and has evolved since then.  Occam_ --the language to program the once famous Transputer_--
 is based on CSP_.
 
-Also ‘Go_’ (the language) is influenced by CSP_. A sign the CSP_ isn’t to old.
+Also ‘Go_’ (the language) is influenced by CSP_. A sign the CSP_ isn’t too old.
 
 Calculus of Communicating Systems
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -354,27 +349,28 @@ CCS_ is also quite old (1980) and quite useful to calculate  deadlocks_ and live
 Algebra of Communicating Processes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Also ACP_ dates back from 1982 and is a real algebra -- it probably contrived the general term Process-Calculus_. Like
-any algebra, it has (transformation) “rules”.  So that one actually calculate [#bool-algebra]_.
+Also, ACP_ dates back from 1982 and is a real algebra -- it probably contrived the general term Process-Calculus_. Like
+any algebra, it has (transformation) “rules”.  So that one calculates [#bool-algebra]_ and *measures* some
+characteristics.
 
-By those *rules* one can convert (“transform”) a processes of concurent and/or sequential actions into other, equivalent
-processes -- and prove the are the same (or nor). And look for patterns that should not (never) happen; like deadlocks_
+By those *rules* one can convert (“transform”) a process of concurrent and/or sequential actions into other, equivalent
+processes -- and prove they are the same (or nor). And look for patterns that should not (never) happen; like deadlocks_
 and livelocks_.
 
-I like this algebra aspect, as we can use inside some Castle-Tool to validate the design is sound.
+I like this algebra aspect, as we can use it inside some :ref:`Castle-Tools` to validate the design is sound.
 
 Π-calculus
 ~~~~~~~~~~
 
-Pi-Calculus_ is a more recent (1992) addition to the family of Process-Calculus_\es. It allow some dynamic behaviour;
-like transmitting the names of channel -- which facilitates the grow & reconfiguration of the network during execution.
+Pi-Calculus_ is a more recent (1992) addition to the family of Process-Calculus_\es. It allows some dynamic behavior;
+like transmitting the names of the channel -- which facilitates the growth & reconfiguration of the network during execution.
 |BR|
-That expect, by example is needed for the :ref:`standard-Sieve` example.
+That expect, by example is needed for the :ref:`CC-example-Sieve`.
 |BR|
-It also show some of the shortcoming of “traditional” models, as hinted above.
+It also shows some of the shortcomings of “traditional” models, as hinted above.
 
 As it is a small (but expressive) “language”, that resembles λ-calculus a bit, it has some omissions too: no numbers,
-no functions, not even an `if-statement` (all quite fundamental for a programming language).  It is bases on **names**,
+no functions, not even an `if-statement` (all quite fundamental for a programming language).  It is based on **names**,
 which mirrors both *variables* and *channels*.
 
 .. _CCC-Actors:
