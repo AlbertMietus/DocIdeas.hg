@@ -195,7 +195,7 @@ the kind of event(s) they should active them. This was new, completely different
 names as ``OnButton_XXX_Press(event)``, and where called “automagically”.
 
 You can imagen the implementation now: a queue and an event-loop. But this concept shows something else too, as a
-side-effect: (virtual) concurent programming.
+side-effect: (virtual) concurrent programming.
 
 Event- (handlers) are small “task alike” independent routines, that become active when needed: when some input-data becomes
 available. All those “tasks” are atomic (short living) and where the controll-flow is not specified. It appears as if

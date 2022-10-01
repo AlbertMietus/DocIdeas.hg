@@ -324,7 +324,7 @@ Petri Ne
 Probably the oldest mathematical model to describe distributed systems is the Petri-Net_, invented in 1962 -- some claim
 it even started in 1939(!).  In its graphical representation, it looks like a network of circles (‘places’) and bars,
 (‘actions’) connected by arrows (‘arcs’). It also contains ‘tokens’ -- zero or more dots inside a circle. They can
-flow through the network and kind of represent state.
+flow through the network and kind of represent the (global) state.
 |BR|
 There is an extensive, complex mathematical model behind this. Which makes Petri-Net_\s very powerful.
 
@@ -350,10 +350,9 @@ Algebra of Communicating Processes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Also, ACP_ dates back from 1982 and is a real algebra -- it probably contrived the general term Process-Calculus_. Like
-any algebra, it has (transformation) “rules”.  So that one calculates [#bool-algebra]_ and *measures* some
-characteristics.
-
-By those *rules* one can convert (“transform”) a process of concurrent and/or sequential actions into other, equivalent
+any algebra, it has (transformation) “rules” [#bool-algebra]_.
+|BR|
+By those *rules*, one can convert (“transform”) a process of concurrent and/or sequential actions into other, equivalent
 processes -- and prove they are the same (or nor). And look for patterns that should not (never) happen; like deadlocks_
 and livelocks_.
 
@@ -365,44 +364,44 @@ I like this algebra aspect, as we can use it inside some :ref:`Castle-Tools` to 
 Pi-Calculus_ is a more recent (1992) addition to the family of Process-Calculus_\es. It allows some dynamic behavior;
 like transmitting the names of the channel -- which facilitates the growth & reconfiguration of the network during execution.
 |BR|
-That expect, by example is needed for the :ref:`CC-example-Sieve`.
+That expect, for example, is needed for the :ref:`CC-example-Sieve`.
 |BR|
 It also shows some of the shortcomings of “traditional” models, as hinted above.
 
 As it is a small (but expressive) “language”, that resembles λ-calculus a bit, it has some omissions too: no numbers,
 no functions, not even an `if-statement` (all quite fundamental for a programming language).  It is based on **names**,
-which mirrors both *variables* and *channels*.
+which mirror both *variables* and *channels*.
 
 .. _CCC-Actors:
 
 The Actor Model
 ---------------
 
-The Actor-Model_ is strictly speaking not a Process-Calculus_, but it has many similarities. A big dissimilarity is the
+The Actor-Model_ is strictly speaking not a Process-Calculus_, but it has many similarities. A big dissimilarity is its
 inspiration; where a Process-Calculus_ are based on mathematics, the Actor-Model_ is inspirited by physics. See
-Calculus-vs-Actors_ for more on there (dis)similarities.
+Calculus-vs-Actors_ for more on their (dis)similarities.
 |BR|
-The Actor-Model_ begun in 1973, matured in the 80’s, and become fashionable when “cloud computing” started. There are
-many “bold-on” actor-packages for almost all populair languages. They focus mostly on *robust, scalable, distributed
-applications*; less on the speed-up of a single programm.  Still, the :ref:`”Many Core” concept<CC>` we use for CCastle
+The Actor-Model_ began in 1973, matured in the '80s, and become fashionable when “cloud computing” started. There are
+many “bold-on” actor packages for almost all popular languages. They focus mostly on *robust, scalable, distributed
+applications*; less on the speed-up of a single program.  Still, the :ref:`”Many-Core” concept<CC>` we use for Castle
 is closely related.
 
-Being inspired by physics, which is concurent by nature, the perception differs. An *actor* is local, “active”, and
-independent. It can only act on message that it receives, sent new messages, and/or create new actors. It (typically)
-has internal state, but that is completely internal (or *private*, as developers call it).
+Being inspired by physics, which is concurrent by nature, the perception differs. An *actor* is local, “active”, and
+independent. It can only act on the messages that it receives, sent new messages, and/or create new actors. It (typically)
+has an internal state, but that is completely internal (or *private*, as developers call it).
 |BR|
-There is no global state, no central synchronisation, no “shared memory”, no (overal) orchestration. Everything is
+There is no global state, no central synchronisation, no “shared memory”, and no (overall) orchestration. Everything is
 decentral.
 
-One can model many well-known software-systems as an Actor-Model_: like email, SOAP, and other web-services. But also
-interrupt-handling can modeled with actors: An extern message triggers the “*interrupt-handler* actor” --async of the
-main-code; another *actor*-- which has to sent data (aka a message) to the main actor.
+One can model many well-known software systems as an Actor-Model_: like email, SOAP, and other web services. Also
+interrupt-handling can be modeled with actors: An extern message triggers the “*interrupt-handler* actor” --async of the
+main code; another *actor*-- which has to send data (aka a message) to the main actor.
 
-Another interesting dissimilarity is that the Actor-Model_, and the Actor-Model-Theory_, is also influent by
-SW-Enginering and there languages. Which probably made is also convenient to design new programming-languages on this
+Another interesting dissimilarity is that the Actor-Model_, and the Actor-Model-Theory_, are also influent by
+SW-Engineering and their languages. This probably made is also convenient to design new programming languages on this
 theory.
 
-.. resolution:: Castle will use Actors is main Concurent Computing Concept
+.. resolution:: Castle will use Actors as the main Concurrent Computing Concept
    :ID: R_CCC-Actors
    :links: U_ManyCore
 
