@@ -54,4 +54,4 @@ Needs (index)
 .. needtable::
    :style: table
    :sort: title
-
+   :columns: id;title;incoming;outgoing;type
