@@ -15,16 +15,16 @@
 
    .. rubric:: Solve it by marking sections *‘exclusive’*.
 
-   In essence, we have to tell the “computer” that a line (or a few lines) is *atomic*. To enforce the access exclusive,
-   the compiler will add some extra fundamental instructions (specific for that type of CPU) to assure this. A check is
-   inserted just before the section is entered, and the thread will be suspended when another task is using it. When
-   access is granted, a bit of bookkeeping is done -- so that the “check” in other threads will halt). That bookkeeping
-   is updated when leaving. Along with more bookkeeping to un-pause the suspended threads.
+   Essentially, we need to tell the “computer” that a line (or a few lines) is *atomic*. To enforce the access is
+   exclusive, the compiler will add some fundamental instructions (specific for that type of CPU) to assure this. A
+   check is inserted just before the section, which can suspend the thread when another task is in the CS. When access
+   is granted, a bit of bookkeeping is needed -- so that the “check” in other threads will halt). That bookkeeping is
+   updated when leaving, along with more bookkeeping to un-pause the suspended threads.
 
    .. rubric:: Complication: overhead!
 
-   As you can imagen, this “bookkeeping” is extra complicated on a Multi-Core_ system; some global data structure is
-   needed; which is a Critical-Sections in itself.
+   As you can imagine, this “bookkeeping” is extra complicated on a Multicore system; some global data structure is
+   needed, which is a Critical-Section_ in itself.
    |BR|
    There are many algorithms to solve this. All with the same disadvantage: it takes a bit of time -- possible by
    “Spinlocking_” all other cores (for a few nanoseconds). As Critical-Sections a usually short (e.g. one assignment, or

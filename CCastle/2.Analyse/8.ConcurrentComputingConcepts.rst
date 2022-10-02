@@ -2,13 +2,13 @@
 
 .. _ConcurrentComputingConcepts:
 
-====================================
-Concurrent Computing Concepts (BUSY)
-====================================
+=============================
+Concurrent Computing Concepts
+=============================
 
-.. post::	
+.. post:: 2022/09/30
    :category: Castle DesignStudy
-   :tags: Castle, Concurrency, DRAFT
+   :tags: Castle, Concurrency
 
    Sooner as we realize, even embedded systems will have piles & heaps of cores, as I described in
    “:ref:`BusyCores`”. Castle should make it easy to write code for all of them: not to keep them busy, but to maximize
@@ -25,8 +25,8 @@ Concurrent Computing Concepts (BUSY)
 Basic terminology
 =================
 
-Many theories are available, as are some more practical expertises, regrettably hardly non of them share a common
-vocabulary.  For that reason,I first describe some basic terms, and how they are used in these blogs. As always, we use Wikipedia
+Many theories are available, as are some more practical expertise, regrettably hardly non of them share a common
+vocabulary.  For that reason, I first describe some basic terms, and how they are used in these blogs. As always, we use Wikipedia
 as common ground and add links for a deep dive.
 |BR|
 Again, we use ‘task’ as the most generic term for work-to-be-executed; that can be (in) a process, (on) a thread, (by) a
@@ -109,7 +109,7 @@ time to write & read the variable added to the (overhead) time for the critical 
 bigger part.
 |BR|
 The big disadvantage of this model is that is hazardous: The programmer needs to insert Critical_Sections into his code
-at all places that *variable* is used. Even a single acces to a shared variable, that is not protected by a
+at all places that *variable* is used. Even a single access to a shared variable, that is not protected by a
 Critical-Section_, can (will) break the whole system [#OOCS]_.
 
 
@@ -200,7 +200,7 @@ number of channels).
 ---------------
 
 Both the writer and the reader can be *blocking* (or not); which is a facet of the function-call. A blocking reader it
-will always return when a message is available -- and will pauze until then.  Equally, the write-call can block: pauze
+will always return when a message is available -- and will pause until then.  Equally, the write-call can block: pause
 until the message can be sent -- e.g. the reader is available (rendezvous) or a message buffer is free.
 
 When the call is non-blocking, the call will return without waiting and yield a flag whether it was successful or not.
@@ -210,31 +210,31 @@ as well.
 Futures (or promises)
 ~~~~~~~~~~~~~~~~~~~~~
 
-A modern variant of non-blocking makes uses of “Futures_”. The call will always return this opaque data-structure
+A modern variant of non-blocking makes use of “Futures_”. The call will always return this opaque data structure
 immediately. It may be a blank -- but the procedure can continue. Eventually, that data will be filled in “by the
 background”. It also contains a flag (like ``done``), so the programmer can check (using an if) [#future-CS]_ whether
-the data is processes.
+the data is processed.
 
 
 Uni/Bi-Directional, Many/Broad-cast
 -----------------------------------
 
-Message can be sent to one receiver, to many, or even to everybody. Usually this is modeled as an characteristic of the
-channel. And at the same time, that channel can be used to send message in oneway, or in two-ways.
+Messages can be sent to one receiver, to many, or even to everybody. Usually, this is modeled as a characteristic of the
+channel. At the same time, that channel can be used to send messages in one or two directions.
 
-It depends on the context on the exact intent. By example in (TCP/IP) `networking, ‘Broadcasting’
+It depends on the context of the exact intent. For example in (TCP/IP) `networking, ‘Broadcasting’
 <https://en.wikipedia.org/wiki/Broadcasting_(networking)>`__ (all not point-to-point variants) focus on reducing the
 amount of data on the network itself. In `distributed computing ‘Broadcasting’
-<https://en.wikipedia.org/wiki/Broadcast_(parallel_pattern)>`__ is a parallel Design pattern. Whereas the `’Broadcast’ 
-flag <https://en.wikipedia.org/wiki/Broadcast_flag>`_ in TV steaming is a complete other idea: is it allowed to save
-(record) a TV broadcast...
+<https://en.wikipedia.org/wiki/Broadcast_(parallel_pattern)>`__ is a parallel design pattern. Whereas the `‘Broadcast’
+flag <https://en.wikipedia.org/wiki/Broadcast_flag>`_ in TV steaming is completely different: is it allowed to save
+(record) a broadcast...
 
-We use those teams on the functional aim. We consider the above mentioned RCP connection as **Unidirectional** -- even
-the channel can carry the answer. When both endpoints can take the initiative to sent messages, we call it
+We use those teams with a functional aim. We consider the above-mentioned RCP connection as **Unidirectional** -- even
+the channel can carry the answer. When both endpoints can take the initiative to send messages, we call it
 **Bidirectional**.
 |BR|
 With only 2 endpoints, we call the connection **Point-to-Point** (*p2p*). When more endpoints are concerned, it’s
-**Broadcast** when a message is send to all other (on that channel), and **Manycast** when the user (the programmer) can
+**Broadcast** when a message is sent to all others (on that channel), and **Manycast** when the user (the programmer) can
 (somehow) select a subset.
 
 
@@ -393,7 +393,7 @@ has an internal state, but that is completely internal (or *private*, as develop
 There is no global state, no central synchronisation, no “shared memory”, and no (overall) orchestration. Everything is
 decentral.
 
-One can model many well-known software systems as an Actor-Model_: like email, SOAP, and other web services. Also
+One can model many well-known software systems as an Actor-Model_: like email, SOAP, and other web services. Also,
 interrupt-handling can be modeled with actors: An extern message triggers the “*interrupt-handler* actor” --async of the
 main code; another *actor*-- which has to send data (aka a message) to the main actor.
 
@@ -413,49 +413,49 @@ theory.
 
 .. [#DistributedDiff]
    There a two (main) differences between Distributed-Computing_ and Multi-Core_. Firstly, all “CPUs” in
-   Distributed-Computing_ are active, independent and asynchronous. There is no option to share a “core” (as
+   Distributed-Computing_ are active, independent, and asynchronous. There is no option to share a “core” (as
    commonly/occasionally done in Multi-process/Threaded programming); nor is there “shared memory” (one can only send
    messages over a network).
    |BR|
-   Secondly, collaboration with (network based) messages is a few orders slower then (shared) memory communication. This
-   makes it harder to speed-up; the delay of messaging shouldn't be bigger as the acceleration do doing thing in
+   Secondly, collaboration with (network-based) messages is a few orders slower than (shared) memory communication. This
+   makes it harder to speed up; the delay of messaging shouldn't be bigger than the acceleration when doing things in
    parallel.
    |BR|
    But that condition does apply to Multi-Core_ too. Although the (timing) numbers do differ.
 
 .. [#wall-time]
-   As reminder: We speak about *CPU-time* when we count the cycles that a core us busy; so when a core is waiting, no
-   CPU-time is used. And we use *wall-time* when we time according the “the clock on the wall”.
+   As a reminder: We speak about *CPU-time* when we count the cycles that make a core busy; so when a core is waiting, no
+   CPU-time is used. And we use *wall-time* when we time according to  “the clock on the wall”.
 
 .. [#OOCS]
    The brittleness of Critical-Sections_ can be reduced by embedding (the) (shared-) variable in an OO abstraction. By
-   using *getters and *setters*, that controll the access, the biggest risk is (mostly) gone. That does not, however,
-   prevent deadlocks_ nor livelocks_.
+   using *getters and *setters*, that control the access, the biggest risk is (mostly) gone. That does not, however,
+   prevent deadlocks_ or livelocks_.
    |BR|
-   And still, all developers has be disciplined to use that abstraction ... always.
+   And still, all developers have to  be disciplined to use that abstraction ... *always*.
 
 .. [#MPCS]
-   This is not completely correct; Message-Passing_ can be implemented on top of shared-memory. Then, the implementation
+   This is not completely correct; Message-Passing_ can be implemented on top of shared memory. Then, the implementation
    of this (usually) OO-abstraction contains the Critical-Sections_; a bit as described in the footnote above.
 
 .. [#timesCPU]
    And the overhead will grow when we add more cores. Firstly while more “others” have to wait (or spin), and secondly
    that the number of communications will grow with the number of cores too.  As described in the :ref:`sidebar
-   <Threads-in-CPython>` in :ref:`BusyCores`, solving this can give more overhead then the speed we are aiming for.
+   <Threads-in-CPython>` within :ref:`BusyCores` solving this can give more overhead than the speed we are aiming for.
 
 .. [#future-CS]
    Remember: to be able to “fill in” that Future-object “by the background” some other thread or so is needed. And so, a
    Critical-Section_ is needed. For the SW-developer the interface is simple: read a flag (e.g. ``.done()``. But using
-   that to often can result is in a slow system.
+   that too often can result in a slow system.
 
 .. [#anycast]
-   Broadcasting_ is primarily know from “network messages”; where is has many variants -- mostly related to the
-   physical network abilities, and the need to save bandwith. As an abstraction, they can be used in “software messages”
+   Broadcasting_ is primarily known for “network messages”; where it has many variants -- mostly related to the
+   physical network abilities, and the need to save bandwidth. As an abstraction, they can be used in “software messages”
    (aka message passing) too.
 
 .. [#bool-algebra]
    Those ‘rules’ resembles the boolean algebra, that most developers know: `NOT(x OR y) == NOT(x) AND NOT(y)`. See
-   wikipedia for examples on ACP_.
+   Wikipedia for examples of ACP_.
 
 .. _ACP:			https://en.wikipedia.org/wiki/Algebra_of_communicating_processes
 .. _Actor-Model-Theory:		https://en.wikipedia.org/wiki/Actor_model_theory
