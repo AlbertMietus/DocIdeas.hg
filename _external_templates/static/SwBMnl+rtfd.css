@@ -73,3 +73,26 @@ div.GAM-extra li.ablog-cloud {
 .rst-content .localtoc.sidebar {
     max-width:40%; width: auto;
 }
+.rst-content h5,
+.rst-content h6 {
+    margin-bottom: 0;
+    color: #000066;
+}
+
+.rst-content a.external {
+    color: inherit;
+    border: 0.5px solid  #d6d6d6;
+    text-decoration: underline;
+    text-decoration-color: #d6d6d6;
+}
+.rst-content a.external:visited { color:inherit;}
+.rst-content a.external:hover   {
+    color:#000066;
+    text-decoration: underline;
+    text-decoration-color: #000066;
+}
+aside.sidebar  { line-height: inherit; }
+aside.sidebar .rubric {
+    margin-bottom: 0;
+    color: #000066;
+}

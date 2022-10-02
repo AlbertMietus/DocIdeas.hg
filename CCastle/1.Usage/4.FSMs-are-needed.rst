@@ -178,12 +178,12 @@ So the :const:`on` state is kind of split into :const:`booting`, :const:`warming
 event *TurnOff* will turn-off the system -- but you only need to add one rule!
 
 
-Concurent states (Orthogonal regions)
---------------------------------------
-Concurent states are more complex as super/subs-states. It are kind of local states are active
+Concurrent states (Orthogonal regions)
+---------------------------------------
+Concurrent states are more complex as super/subs-states. It are kind of local states are active
 *simultaneously*. `Wikipedia <https://en.wikipedia.org/wiki/UML_state_machine#Orthogonal_regions>`__ has a nice example
 with the num-lock and caps-lock key: both change ``state`` -- one to select capital on/of, and one to prefer arrow over
-number -- but those ``states`` are *independent* and **concurent**.
+number -- but those ``states`` are *independent* and **concurrent**.
 
 Again, the advantage is it makes the “FSM table” shorter and better to maintain.
 
@@ -242,7 +242,7 @@ should behave; the computer can fill in the details -- all theory does exit (for
    #. Epsilon transitions
    #. *‘Instantly’* transitions (see above: a special kind of :math:`\epsilon`\-transition)
    #. Hierarchically superstates (or sub-states)
-   #. Concurent states (Orthogonal regions)
+   #. Concurrent states (Orthogonal regions)
    #. Moore_ and Mealy_ transitions
    #. Entry and Leave transitions
 

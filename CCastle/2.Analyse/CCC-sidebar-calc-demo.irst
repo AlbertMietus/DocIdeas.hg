@@ -1,0 +1,48 @@
+.. -*-rst-*-
+   included in  `8.BusyCores-concepts.rst`
+
+.. sidebar:: Some examples/Demos
+
+   .. tabs::
+
+     .. tab:: Petri Net
+
+        .. figure:: Wikipedia-PetriNet.gif
+
+           A trivail PetriNet; image by `Wikipedia <https://commons.wikimedia.org/wiki/File:Animated_Petri_net_commons.gif>`__
+
+     .. tab:: ACP
+
+        .. rubric:: Basic rules
+
+        .. math::
+
+           x + y &=& y + x
+
+           (x+y)+z&=& x+(y+z)
+
+           x+x&=&x
+
+           (x+y)\cdot z &=& (x\cdot z) + (y\cdot z)
+
+           (x \cdot y)\cdot z &=& x \cdot (y \cdot z)
+
+        .. rubric:: Deadlock
+
+        .. math::
+
+           \delta + x &=& x
+
+           \delta \cdot x &=& \delta
+
+        All formulas from `wikipedia <https://en.wikipedia.org/wiki/Algebra_of_communicating_processes>`__
+
+     .. tab:: Π-calculus
+
+        .. rubric:: Creation of a name
+
+        Create the *name* ``x`` that acts as a (new) communication channel. This is done *process* ``P``.
+
+        .. math:: \left(\nu x\right)P
+
+

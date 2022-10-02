@@ -1,0 +1,311 @@
+.. include:: /std/localtoc.irst
+
+.. _BusyCores:
+
+======================
+Keep those cores busy!
+======================
+
+.. post::  2022/07/06
+   :category: Castle, Usage
+   :tags: Castle, Concurrency
+
+   I always claim that most computers will have 1024 or more cores before my retirement. And that most embedded systems
+   will have even more, a decade later. However, it’s not easy to write technical software for those “massive-parallel
+   embedded computers”, not with the current languages -- simple because a developer has to put in too many details.
+   Accordingly, the “best, ever” programming language should facilitate and support “natural concurrency”.
+
+   In Castle, you can easily write code that can run efficiently on thousands of cores.
+
+Why do we get more and more cores?
+==================================
+
+Moore `observed already in 1965 <https://en.wikipedia.org/wiki/Moore's_law>`_ that the number of transistors on a chip
+doubles every 2 years. That made memory cheaper and computers faster. For years we have seen that: CPUs have grown from
+4-bit to 8, 16, 32, and now 64-bit; and the ‘clock-frequently’ has risen into the giga-hertz. This comes (almost) for
+free when the *‘gate-size’ dropped* -- roughly, a ‘gate’ is the smallest “pixel” when a chip is manufactured. By
+shrinking the gates one can put more transistors on a chip and at the same time those chips become faster and use less
+power --this comes automatically; as you may remember from your (advanced) physics lessons.
+
+But there are limits: transistors can’t switch much faster than a few billion times a second. When we crossed that
+border, just making gates smaller didn't increase the CPU’s speed. But there are other tricks; like huge caches very
+close to (or ‘in’) the CPU. Again it made computers faster, without much work for the SW developer.
+Another limit is the number of transistors you can utilize in a CPU (or the cache). One can double the number of
+transistors almost without limit, but does it again double your CPU-speed? *No*, not anymore, that threshold is passed a
+few years back.
+
+A new trick was needed: put more CPUs onto *one* chip. Essentially that is what Multi-Core_ does: every core is
+fundamentally an independent CPU - but as we used that word already, we use ‘core’ for those copies. The amount of work
+a chip can do with two cores doubles — at least potentially. Using Moore’s low, the number of cores will double be every
+18-24 months; or 30 times more in a decade. Currently, many (mobile phone) SoCs already have more than 10 cores — when
+counting both GPUs & CPUs. That is 300 in 10 years, and 9-thousand in 20 years!
+
+Programming many cores
+======================
+
+Although the promise of Multi-Core_ is an unlimited expansion of speed, it requires us to adapt our programming
+abilities. Transitional “sequential” programs take for granted that the CPU can do only one thing at a time; at many
+levels. With Multi-Core_ this fundamentally changed. There is no speed up when we don’t use all cores. This is not much
+of an issue for a low number of cores; there are plenty of other/background tasks. Even ‘single threaded’ code will
+run faster when “your core” isn’t interrupted; when those auxiliary processes can run in parallel on another core.
+
+When the number of cores rises this does not scale; more and more cores become idle. Now, your code has to use both
+concurrency_ and parallelism_. But also handle Critical-Sections_, Semaphores_ (and friends) to  synchronise  tasks.
+
+
+.. include:: BusyCores-sidebar-CPython_threads.irst
+
+Threading
+---------
+
+Threads_ have become popular to accomplish parallelism_ but have drawbacks too. They originated (long, long back) in
+“real-time & embedded” programming; -- those systems didn't have an OS nor processes and used a concept that resembles
+threads.  Other computers (mostly Unix/Posix) used “processes” to run many tasks --Windows/Dos wasn't relevant; it was
+(mostly) single-user. Mid 199x threads_ become available as “real-time extensions”; initially within a single process —
+and so running on a single core. Al this was long before Multi-Core_ hardware was accessible, and studies started on how
+to combine threads & processes — should the kernel handle that or not, and how to avoid overhead. This all changed with
+Multi-Core_; need threads_ that can run in parallel on multiple cores.
+
+Still, it is not trivial to programming with (raw) threads.
+
+Bugs
+~~~~
+A lot of new bugs popped up when developers started to use threads_. One had to learn about concurrency_, parallelism_,
+and their difference. And that two threads can be intertwined in not foreseen ways; multiple threads_ can access
+the same variable. A single line became suddenly not atomic anymore -- even a single assignment is not.
+|BR|
+We mastered that today, at least mostly. There are still many quizzes about that, and many do not pass the tricky
+ones. More bothersome is that no one knows how to compose tests to verify the absents of this kind of Heisenbugs_
+
+Overhead
+~~~~~~~~
+Threads_ have more handicaps: it is hard to gain the speed up aiming for. Partly because threads_ themself have a lot of
+overhead (especially to start/stop them). But it is also hard to “get” the right number of threads_. Many opinions on
+this exist -- like one thread per core [#wrong]_ -- but hardly (or non) theory on this.
+
+A bigger factor is indirect overhead; especially in CPU-bound (see below) systems. Then, the outcome of a calculation in
+one thread is routinely needed for an algorithm in another thread -- if not, why use threads? That involves sharing data [#share]_
+
+Scaling
+~~~~~~~
+When we get more and more cores, we need more and more concurrent task to get the speed up we like. With (raw) threads_
+this becomes more and more an issue. More threads_ may imply more bugs; notably hard to find Heisenbugs_. More threads_
+make is harder to limit the overhead.
+
+To summaries: Threads_ do no scale well; there is a limit to the number of threads we can manage as a
+software-developers. So, a new “trick” is needed.
+
+
+IO vs CPU Bound
+---------------
+
+Another --often overlooked, but important-- aspect is ‘how & why’ threads are used. Many applications interact with a
+user and/or have lots of other IO. Input & output is slow compared with (the GigaHertz of) the CPU itself. The result is that
+“the computer” has to wait on the user, on the network or disk [#SDD]_; this is called *IO-bound*
+|BR|
+With threads_, it’s easy to speed up IO-bound systems. Then (only) a single thread is waiting; all other threads can
+continue. This works even on a single-core. This IO-bound aspect was (one of) the primary ambitions when introducing
+“real-time” threads. With Multi-Core_ this scales quite well; peculiarly when most threads do about the same. As in a
+web server for instance.
+
+Technical, embedded applications generally differ. They are mostly *CPU-bound*; as there is nothing to be waiting on. In
+the extreme case, the processor is constantly busy, say doing calculations.
+|BR|
+Then, just adding threads will not lead to speed up; as the processor is busy anyhow; more processor power is
+needed! Along with a gentle distribution of the work gently over the available cores. Ideally, all cores should do an
+even part of that calculation.
+
+Using threads_ with CPU-bound systems is much harder. It is complicated to split the work, it’s backbreaking to allot
+the tasks over the cores equally, and troublesome to minimize the overhead. But easy to introduce flaw ...
+|BR|
+The center of attraction in this blog(s) is those knotty, “mostly CPU-bound”, technical, modern-embedded systems, as
+you already expected.
+
+
+Alternatives
+============
+
+Raw threads_, as in pthreads_, are not the only option; there are contemporary alternatives. For the most part,
+they use threads to implement a more abstract interface; to unburden developers for those technicalities.
+
+We introduce a few but leave the details to the next blog: the study on :ref:`ConcurrentComputingConcepts`.
+
+Thread-Pools
+------------
+
+Starting & stopping a thread is relatively costly; this makes them less suited for short-running tasks --then the relative
+overhard is big. The Thread-Pool_ design pattern tackles this by creating (long-running) “worker threads” and a “task
+queue(s)”. Running many (small) tasks in the same thread reduces the overhead. Also, the task will start (and end)
+a bit earlier; as threads are pre-created
+
+.. tip::
+
+   I have given a “Design Workshop” on the `“ThreadPoolExecutor”
+   <http://mess.softwarebetermaken.nl/en/latest/SoftwareCompetence/DesignWorkShops/TPE/>`_, in another series,
+   Have a look when you like to learn more about this pattern.
+
+Some languages support this concept naturally; in others, it is more like an add-on option on threads. Besides
+depending on the language implementation (compiler and runtime libraries), it may or *may not* have the speeding-up
+benefit when using many cores.  For example, the python “ThreadPoolExecutor” is a likable, sound example; but as
+(C)Python can’t run multiple threads simultaneously, you will not gain a speed up on CPU-bound systems. Still, we can
+use it as inspiration.
+
+The Thread-Pool_ pattern gives us a simple alternative to (raw) threads; especially when the thread-part is buried and
+not visible to the developer. Then the programmer can focus on defining small (concurrent) tasks and the “computer”
+can add details such as how many threads, on which core(s), and manage them.
+
+GCD (LibDispatch)
+-----------------
+
+Grand Central Dispatch, or GCD_, is a technology invented by Apple add developed as open-source, that takes the idea of
+Thread-Pools a step further. Therefore they added an extension to the C-language too: “blocks_” -- A kind of anonymously (unnamed),
+inline, nested functions, that act as a closure. It sounds a bit complicated, but most developers find it easy to use
+[#bold-on]_.
+
+A “block” is like a function, that can be dispatched (scheduled) for independent execution. Typical a block is
+small --so we have lots of capability for simultaneous execution-- without introducing much overhead [#one-percent]_.
+
+.. seealso::
+
+   * The GCD “scheduler” is available as `libdispatch <https://github.com/apple/swift-corelibs-libdispatch>`_.
+   * The blocks_ extension is available for LLVM. Apparently, GCC is not supporting it (anymore).
+
+GCD_ also supports Objective-C, C++, and Swift. Then, the language semantics differ a bit (making it
+easier to use); but the concept is the same: Store the “environment” (see: closure_) of the lexical scope of the nested
+function-block in a task-object, and put them on (FIFO) queue. And have some long-running (raw, invisible) threads
+processing those task-objects. As those tasks are isolated, running them is easy.
+|BR|
+The developer is hidden from the threads -- (s)he is not even aware of them! Or actually, there is just this general
+understanding the “raw threads” are used in the background, but that is not required. Any “scheduler” will do!
+
+
+.. _BC-events:
+
+Events (interrupts)
+-------------------
+
+Events are a completely contrasting approach, avoiding threads at all. They are also known as *interrupts* for low-level
+close-to-hardware developers. Events are primarily introduced for “Windowing programming [#Windowing]_. Up to then, a
+program stared at ``main()``, jumping to subroutines in the order the programmers has written them. For GUIs (or
+Windowing-application, as we called them), that was inconvenient -- the user should be in control. When “pressing a
+button (or “Widget”) the system generated an “event”.
+|BR|
+The developers had to write “event-handlers” --functions, but with a predefined signature-- and register each, passing
+the kind of event(s) they should active them. This was new, completely different (and strange, back then). A function got
+names as ``OnButton_XXX_Press(event)``, and where called “automagically”.
+
+You can imagen the implementation now: a queue and an event-loop. But this concept shows something else too, as a
+side-effect: (virtual) concurrent programming.
+
+Event- (handlers) are small “task alike” independent routines, that become active when needed: when some input-data becomes
+available. All those “tasks” are atomic (short living) and where the controll-flow is not specified. It appears as if
+all those small, little task can run concurrent -- as the user can quickly trigger many event “at once”. In modern
+systems the results of the events emerge even “asynchronous” -- then we often call it “reactive”.
+|BR|
+This really happens for “hardware interrupts”. Those interrupts truly are asynchronous of the “main code”. And one has
+to handle them immediacy (or the input is gone, and a result will be wrong!). An “interrupt-handler” is very alike an
+event-loop-handler; albeit at another scale.
+
+Both variants shows in there function-names how many developers would like to deal with asynchronous, concurrent “tasks”:
+:samp:`On {EventType} Run {{Code}}`.
+
+
+Castle activates all cores
+==========================
+
+An “*ideal language*” should make it easy to distribute the load over many processors. That should come
+automatically; without the developer has to put a load of effort in. That is also one of the aspect :ref:`CC` is
+enabling --and as Castle supports :ref:`CC` (and is the best language, ever -- so quite close to “ideal”)-- the language
+should be designed to enable this.
+
+.. use:: In Castle is easy to use thousands of cores
+   :ID: U_ManyCore
+
+   A “CC Castle” program can run on many cores, without the developer needs to describe “manually” how to do that.
+
+   At the same time it should run efficiently. The goals is **not** to keep all cores *busy*, but to use (all) cores to
+   gain maximal speed up.
+
+Distributing tasks over multiple cores (or even distributed computers) [#web]_ is not new. In
+:ref:`ConcurrentComputingConcepts` we describe some (common, theoretical) concepts, especially the
+:ref:`CCC-Actors`. What we like to use for CCastle.
+
+----------
+
+.. rubric:: Footnotes
+
+.. [#python27-outdated]
+   Both the Jython and Iron-Python implementations are effectively dead as there is only support for Python-2.7. That
+   however is ortogonal on the (alternative) way it handles threads.
+
+.. [#GIL-speed]
+   Using the GIL was not a bad option. It made code fast, both for non-threading as for threading!
+   |BR|
+   Many attempt have made to “remove the GIL”: all failed. Not because removing the GIL (itself) is hard, but as the
+   replacements made the code slower. Always for single-threaded applications; but sometimes the extra overhead was even
+   bigger then the speed up when using all cores. And even that was mainly in the “first tackle”, let it be a lesson
+   for “Busy Cores”:
+
+   *It not about using all cores, it about the speed up!*
+
+.. [#CS-link]
+   See :ref:`ConcurrentComputingConcepts` for more on Critical-Sections_ and other well-know concepts and how they relate.
+
+
+.. [#web]
+   A trivial example of dividing work over multiple computers (and so cores) is the “Web”. You have at least two
+   concurrent (active) components: the server and the brouwer. Usually there a more. By example, the server-side run’s
+   the application- a web-, and database-server. And “the web itself” has many active components, like routers, ect. And
+   all are programmed in a style that the developer doesn't need to know all those details(!).
+
+.. [#wrong]
+   Having a 1:1 relation is very populair point of view, at some places. But most probably wrong -- although that is an
+   assumption too. In addition, it does not scale (what when the number of core double?), and hard to manage.
+   |BR|
+   Also see: the section about IO- vs CPU bound.
+
+.. [#share]
+   Sharing can be done by a shared-data or by sending messages. For the developer the latter has the advantage that no
+   (synchronised) shared, variables are needed. But that us just an abstraction; at a lower level there is some memory
+   that is written by one an read by another thread -- and so need synchronisation and exclusiveness.
+
+.. [#SDD]
+   Even the fasterst “SSD-disks” are slow. Although they are a hundred times faster them *platters*, with accesstimes in
+   the *micro-seconds range*. That is a thousand times slower as the *nano-seconds* a processors is working in.
+
+.. [#bold-on]
+   This “C-blocks” concept however is common in other language; its very common java-script code. For C feels a bit as
+   “bolded-on” on the existing language -- and it is. When using it in Objective-C (and C++), it is still “bold-on”, but
+   more natural due the OO-aspect. And in Swift, which is designed with this concept from day 1, is just a part of the
+   language.
+   |BR|
+   Something similar will apply to Castle too: by design a language with fine-grained concurrency, we can learn from
+   existing concepts, combine them and make it trivial to use.
+
+.. [#one-percent]
+   By hearsay, GCD_ introduces a about a dozen instruction per dispatched “block”. So, when the blocks are about a
+   thousand instructions, that results in about 1%; which is acceptable.
+   Still, when googling, you will find people that try to dispatch a hand-full on instructions (like a single
+   statement); it works (as the result is correct), but doesn't (as it is slowish). Although, when you would do that
+   with raw-threads (create/stop a pthreads pro statement) you will really notice the slow-down!
+
+.. [#Windowing]
+   Both `X-Window <https://en.wikipedia.org/wiki/X_Window_System>`_ (or “X11”) and `MS-Windows
+   <https://en.wikipedia.org/wiki/Windows_1.0x>`_ heavily depend on this (then new, 1984 resp 1985) concept of an
+   “event-loop”. 
+   
+   application be
+
+.. _Multi-Core:			https://en.wikipedia.org/wiki/Multi-core_processor
+.. _Concurrency:		https://en.wikipedia.org/wiki/Concurrency_(computer_science)
+.. _parallelism:		https://en.wikipedia.org/wiki/Parallel_computing
+.. _Critical-Sections:		https://en.wikipedia.org/wiki/Critical_section
+.. _Semaphores:			https://en.wikipedia.org/wiki/Semaphore_(programming)
+.. _Threads:			https://en.wikipedia.org/wiki/Thread_(computing)
+.. _Heisenbugs:			https://en.wikipedia.org/wiki/Heisenbug
+.. _pthreads: 			https://en.wikipedia.org/wiki/Pthreads
+.. _Thread-Pool:		https://en.wikipedia.org/wiki/Thread_pool
+.. _GCD:			https://en.wikipedia.org/wiki/Grand_Central_Dispatch
+.. _blocks:			https://en.wikipedia.org/wiki/Blocks_(C_language_extension)
+.. _closure:			https://en.wikipedia.org/wiki/Closure_(computer_programming)
+.. _

@@ -10,8 +10,8 @@ My ambition:
 
    --ALbert Mietus
 
-It’s also the first programming-language that support **CC**: Connected Components. Where `CC` is kind of of the
-successor of OO: active ‘things’ that communicate (solely) by input *and* output ports ...
+It’s also the first programming-language that support **CC**: Connected Components (or *Concurrent  Components*). Where
+`CC` is kind of of the successor of OO: active ‘things’ that communicate (solely) by input *and* output ports ...
 |BR|
 *(Yes, I know, ambition and reality are not always aligned...)*
 
@@ -32,7 +32,7 @@ This section contains a set of pages & blog-post on this topic. Some a design-st
 ‘One day’ the pages will be incorporated into the (docs of, the source of) `CCastle2 <https://osdn.net/users/albertmietus/pf/CCastle2>`_
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :titlesonly:
    :glob:
 
@@ -46,4 +46,12 @@ This section contains a set of pages & blog-post on this topic. Some a design-st
    <http://docideas.mietus.nl/en/ccastle-busy/CCastle/index.html>`__ currently support only an old version (*1.2017.15*;
    **2017**). which has no theme and other support to make it more nice-looking. Therefore all those “lines” are comment
    out (or rewritten)
+
+
+Needs (index)
+==============
+
+.. needtable::
+   :style: table
+   :sort: title
 

@@ -47,7 +47,7 @@ some languages solve this by factor-out `states` and/or `events`.
 
    FSM’s can be huge in code but do not need a lot of computer-power. For every *step* --one input-- one state-variable
    has to be updated, and the action has to be triggered. That action can be “big” (an can need concurrency), the FSM
-   itself not. Therefore, the syntax of the FSM doesn't need special attention to make the FSM concurent.
+   itself not. Therefore, the syntax of the FSM doesn't need special attention to make the FSM concurrent.
 
 
 Languages that support the state-pattern
@@ -60,7 +60,7 @@ FSM-support.
 PlantUML
 ========
 
-.. include:: sidebar-plantUML.irst
+.. include:: FSM-sidebar-plantUML.irst
 
 The design-tool plantUML support the UML-FSM_ State diagram with a quite compact syntax. The focus however is on
 *drawing* [#plantUML-arrows]_. As one can add text ‘on’ the arrows and ‘in’ the states, events and actions can be
@@ -71,7 +71,7 @@ convention to add them to a state, with prefixes as **E:** and **L:**.
 So using this syntax directly isn’t possible. By adding a bit or (formal) grammar is easy.
 
 PlantUML support all aspects of the UML-FSM_, including super/sub-states (plantUML calles them ‘Composite state’) and
-concurent states. As ‘drawing’ is the main goal, support for :math:`\epsilon`\-transaction, all kind of actions, etc is
+concurrent states. As ‘drawing’ is the main goal, support for :math:`\epsilon`\-transaction, all kind of actions, etc is
 solved as described above: by text.
 
 Super/Sub-states
@@ -96,7 +96,7 @@ and other *modern* features however.
 SMC (State Machine Compiler) & friends
 ======================================
 
-.. include:: sidebar-SMC.irst
+.. include:: FSM-sidebar-SMC.irst
 
 There are many versions of the “State Machine Compiler”. Most use a text-input-file to specify a FSM_ and *’compile’*
 that into programm-code first. Then the normal compiler is used to compile it “asis”.
@@ -179,7 +179,7 @@ And again, for castle we like to be able to “distribute” details over multip
 State Chart XML (SCXML): State Machine Notation for Control Abstraction
 =======================================================================
 
-.. include:: sidebar-SCXML.irst
+.. include:: FSM-sidebar-SCXML.irst
 
 SCXML is a (XML-based) standard “language” [#voice]_ to describe (more-or-less) an UML-FSM_.
 |BR|
@@ -191,15 +191,15 @@ This format treads *events* as attributes of a transition. See the disadvantage 
 Harel StateCharts (aka UML-FSM_) are supported. Both by being able to nest states; using the power of XML: Any
 ``<state>`` elements may have (other) ``state`` elements as children. And by having ``<parallel>`` elements, that can
 contain (multiple) ``<state>`` elements -- here, each of those parallel states act as a “small FSMs” that are all active
-when the parent state is active. This is an elegant way to describe “Orthogonal regions” (aka “Concurent states”).
+when the parent state is active. This is an elegant way to describe “Orthogonal regions” (aka “Concurrent states”).
 
-Concurent sub-states
---------------------
+Concurrent sub-states
+---------------------
 
 Like a regulair ``<state>``, a ``<parallel>`` element has an ID (attribute), that act as name -- showing a bit of
-similarity between normal states and concurent-substates. This approach can be usable for Castle.
+similarity between normal states and concurrent-substates. This approach can be usable for Castle.
 
-Possible, two concurent states can also be seen in a hierarchical way. At the top level is just one state, that is
+Possible, two concurrent states can also be seen in a hierarchical way. At the top level is just one state, that is
 active or not. And when we dive into de details, it *can* have substates (like normal a hierarchy); only here some
 states can be active concurrently. As SCXML describes it, the “upper” state (nor the rest of the FSM) does not have to
 know about this concurrency.

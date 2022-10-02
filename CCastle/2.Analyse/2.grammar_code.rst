@@ -179,6 +179,7 @@ Castle: rules are functions
 
 .. resolution:: In Castle each rule act as a *callable*
    :ID: R_GrammerCallables
+   :links: U_Grammers
 
    Each parse-rule that is defined in Castle is a kind of function; more accurately it’s a “callable”
 
@@ -190,6 +191,9 @@ directly? It easier to generate the AST, that would be the result of parsing the
 
 But the effect is the same. You create a set of function with this generic “text to tree” signature, by writing some
 simle rule. Castle does the rest for you. Easy!
+
+And in case you are wondering how to use actions is in e.g. YACC: You don’t (need them). See :ref:`G2C-actions` for why
+there are outdated and both :ref:`matching-statements`, and :ref:`CyclicWoods`
 
 
 ----------

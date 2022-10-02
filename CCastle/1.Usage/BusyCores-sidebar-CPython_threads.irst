@@ -1,0 +1,35 @@
+.. -*- rst -*-
+   included in  `4.FSMs-are-needed.rst`
+
+.. _Threads-in-CPython:
+.. sidebar:: Threads in CPython
+
+   Python_ was conceived in early 198X when the word was single-core. And even though there were already debates on very
+   advanced `M:N <https://en.wikipedia.org/wiki/Thread_(computing)#M:N_(hybrid_threading)>`__ models, threads_ were
+   singular. When one thread is running, “all cores” are busy...
+   |BR|
+   Back then, CPython_ made the design choice to use the now-famous GIL_ [#GIL-speed]_ to implement Critical-Sections_
+   [#CS-link]_.
+
+   In hindsight, that was maybe not the best approach. Although the Python developer can use sound threads, and
+   CPython_ implements them using a pthreads_\-thread for every python-thread, this GIL results in no speed-up on a
+   Multi-Core_ system. As many studies show: all cores will be used(!) but only one at a time. At any moment, only one
+   core is active.
+   |BR|
+   A clear example, showing that *“keeping the cores busy”* is not trivial.
+
+   And remember: it’s not a flaw of Python_. Other implementations --like, Jython_ [#python27-outdated]_ using the
+   JAVA-VM runtime and IronPython_ [#python27-outdated]_ that uses the .Net environment-- use another (more modern)
+   design; in both cases, we get the Multi-Core_ speed-up that we expect.
+
+
+
+
+
+
+.. _CPython:		https://en.wikipedia.org/wiki/CPython
+.. _Python:		https://en.wikipedia.org/wiki/Python_(programming_language)#History
+.. _pthreads: 		https://en.wikipedia.org/wiki/Pthreads
+.. _GIL:		https://en.wikipedia.org/wiki/Global_interpreter_lock
+.. _Jython:		https://en.wikipedia.org/wiki/Jython
+.. _IronPython:		https://en.wikipedia.org/wiki/IronPython

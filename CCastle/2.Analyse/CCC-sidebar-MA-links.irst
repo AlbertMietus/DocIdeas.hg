@@ -1,0 +1,56 @@
+.. -*-rst-*-
+   included in  `8.BusyCores-concepts.rst`
+
+.. sidebar:: More on Messages
+
+   There are two ways to look at messages: *“vertically”* [#V]_ or *“horizontally”* [#H]_. The first concentrates on the
+   endpoint: How does a programmer use the (API) interface? Alternatively, one can concentrate on the channel between the
+   endpoints --ignoring lower implementation details.
+
+   More in this, and all kinds of aspects, and many more views can be found --as usual-- on Wikipedia.
+
+   .. tabs::
+
+      .. tab:: Endpoints
+
+         Words such as *synchronous*, *asynchronous* (and the popular ``async`` keyword) can have many intents -- all more or less
+         related (on basic fundamental theories) but can be very dissimilar in practical applications. Besides, most theories assume a
+         *communication* background, not a (software) engineering one, and certainly not an abstraction -- but still, it is a sound base.
+
+         * `Asynchrony Computer Programming 	<https://en.wikipedia.org/wiki/Asynchrony_(computer_programming)>`_
+         * `Asynchronous communication 		<https://en.wikipedia.org/wiki/Asynchronous_communication>`_
+         * `Synchronous serial communication 	<https://en.wikipedia.org/wiki/Synchronous_serial_communication>`_
+         * `Synchronisation (as a generic term)	<https://en.wikipedia.org/wiki/Synchronization>`_
+
+      .. tab:: Channels
+
+         Some aspects are more related to the *channel* used to transmit the message than how end-points act.
+
+         Traditionally, *blocking* used to be applied to I/O operations.  Nowadays, it’s more generic: how to behave
+         when immediate execution is impossible. Although often, IO is involved deep down -- ``printf`` is an example;
+         it will *pauze* until the line can be published, ot there is space in a buffer.
+
+         * `Communication channel		<https://en.wikipedia.org/wiki/Communication_channel>`_
+         * `Blocking				<https://en.wikipedia.org/wiki/Blocking_(computing)>`_
+         * `Buffers				<https://en.wikipedia.org/wiki/Data_buffer>`_
+         * `Reliable				<https://en.wikipedia.org/wiki/Reliability_(computer_networking)>`_
+         * `Connection-Oriented			<https://en.wikipedia.org/wiki/Connection-oriented_communication>`_
+         * `Packet-Oriented			<https://en.wikipedia.org/wiki/Packet_switching>`_
+
+      .. tab:: disambiguation
+
+         Wikipedia has more; even pages that collect pages with more:
+
+         * `Async	      				<https://en.wikipedia.org/wiki/Asynchrony>`_
+         * `Sync      					<https://en.wikipedia.org/wiki/Sync>`_
+         * `Synchronization (disambiguation)      	<https://en.wikipedia.org/wiki/Synchronization_(disambiguation)>`_
+
+
+
+   .. [#V]
+      It is called “vertical” as this interface/function will use other functions, deeper in the
+      communication-stack. So, the flow is downwards (or upwards on the other side).
+
+   .. [#H]
+      The “horizontal” direction does not follow the call-stack, but (virtually) connects two stack-levels in different
+      environments.

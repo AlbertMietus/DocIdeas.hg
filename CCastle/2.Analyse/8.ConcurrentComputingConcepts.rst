@@ -1,0 +1,489 @@
+.. include:: /std/localtoc2.irst
+
+.. _ConcurrentComputingConcepts:
+
+=============================
+Concurrent Computing Concepts
+=============================
+
+.. post:: 2022/09/30
+   :category: Castle DesignStudy
+   :tags: Castle, Concurrency
+
+   Sooner as we realize, even embedded systems will have piles & heaps of cores, as I described in
+   “:ref:`BusyCores`”. Castle should make it easy to write code for all of them: not to keep them busy, but to maximize
+   speed up [useCase: :need:`U_ManyCore`]. I also showed that threads_ do not scale well for CPU-bound (embedded)
+   systems. Last, I introduced some (more) concurrency abstractions. Some are great, but they often do not fit
+   nicely in  existing languages.
+   |BR|
+   Still, as Castle is a new language, we have the opportunity to select such a concept and incorporate it into the
+   language.
+
+   In this blog, we explore a bit of theory. I will focus on semantics and the possibilities to implement them
+   efficiently. The exact syntax will come later.
+
+Basic terminology
+=================
+
+Many theories are available, as are some more practical expertise, regrettably hardly non of them share a common
+vocabulary.  For that reason, I first describe some basic terms, and how they are used in these blogs. As always, we use Wikipedia
+as common ground and add links for a deep dive.
+|BR|
+Again, we use ‘task’ as the most generic term for work-to-be-executed; that can be (in) a process, (on) a thread, (by) a
+computer, etc.
+
+.. include:: CCC-sidebar-concurrency.irst
+
+Concurrent
+----------
+
+Concurrency_ is the **ability** to “compute” multiple *tasks* at the same time.
+|BR|
+Designing concurrent software isn’t that complicated but; demands another mindset than when we write software that does
+one task after the other.
+
+A typical example is a loop: suppose we have a sequence of numbers and we like to compute the square of each one. Most
+developers will loop over those numbers, get one number, calculate the square, store it in another list, and continue.
+It works, but we have also instructed the computer to do it in sequence. Especially when the task is a bit more
+complicated, the compiler does know whether the ‘next task’ depends on the current one, and can’t optimize it.
+
+A better plan is to tell the compiler about different tasks. Most are independent: square a number. There is also one
+that has to be run at the end: combine the results into a new list. And one is a bit funny: distribute the elements over
+the “square tasks”. Clearly one has to start with this one, but it can be concurrent with many others too.
+|BR|
+This is *not* a parallel algorithm. When not specifying the order, we allow parallel execution. We do not demand it,
+sequential execution is allowed too.
+
+
+Parallelism
+-----------
+
+Parallelism_ is about executing multiple tasks (seemingly) at the same time. We will on focus running many multiple
+concurrent tasks (of the same program) on *“as many cores as possible”*.  When we assume a thousand cores, we need a
+thousand independent tasks (at least) to gain maximal speed up. A thousand at any moment!
+|BR|
+It’s not only about doing a thousand tasks at the same time (that is not too complicated, for a computer) but also —
+probably: mostly — about finishing a thousand times faster…
+
+With many cores, multiple “program lines” can be executed at the same time, which can introduce unforeseen effects:
+changing the same variable, accessing the same memory, or competing for new, “free” memory. And when solving that, we
+introduce new hazards: like deadlocks_ and even livelocks_.
+
+
+Distributed
+~~~~~~~~~~~
+
+A special form of parallelism is Distributed-Computing_: computing on many computers. Many experts consider this
+an independent field of expertise. Still --as Multi-Core_ is basically “many computers on a chip”-- it’s an
+available, adjacent [#DistributedDiff]_ theory, and we should use it, to design our “best ever language”.
+
+
+.. include:: CCC-sidebar-CS.irst
+
+Communication Efficiently
+=========================
+
+When multiple tasks run concurrently, they have to communicate to pass data and control progress. Unlike in a
+sequential program -- where the control is trivial, as is sharing data-- this needs a bit of extra effort.
+|BR|
+There are two main approaches: shared-data of message-passing; we will introduce them below.
+
+Communication takes time, especially *wall time* [#wall-time]_ (or clock time), and may slow down computing. Therefore
+communication has to be efficient. This is an arduous problem and becomes harder when we have more communication, more
+concurrency, more parallelism, and/or those tasks are short living. Or better: it depends on the ratio of
+time-between-communications and the time-between-two-communications.
+
+
+Shared Memory
+-------------
+
+In this model all tasks (usually threads or processes) have some shared/common memory; typically “variables”. As the access
+is asynchronous, the risk exists the data is updated “at the same time” by two or more tasks. This can lead to invalid
+data and so Critical-Sections_ are needed.
+|BR|
+This is a very basic model which assumes that there is physical memory that can be shared. In distributed systems this
+is uncommon, but for threads it’s straightforward.
+
+An advantage of shared memory is the fast *communication-time*. The wall-time and CPU-time are roughly the same: the
+time to write & read the variable added to the (overhead) time for the critical section --  which is typically the
+bigger part.
+|BR|
+The big disadvantage of this model is that is hazardous: The programmer needs to insert Critical_Sections into his code
+at all places that *variable* is used. Even a single access to a shared variable, that is not protected by a
+Critical-Section_, can (will) break the whole system [#OOCS]_.
+
+
+Messages
+--------
+
+A more modern approach is Message-Passing_: a task sends some information to another; this can be a message, some data,
+or an event. In all cases, there is a distinct sender and receiver -- and apparently no common/shared memory-- so no
+Critical-Sections [#MPCS]_ are needed; at least not explicitly. Messages are easier to use and more generic: they can be
+used in single-, multi-, and many-core systems. Even distributed systems are possible -- then the message (and its data)
+is serialised, transmitted over a network, and deserialised.
+
+As you may have noticed, there is an analogy between Message-Passing_ and Events_ (in an event-loop). They have separate
+histories but are quite similar in nature. Like a “message”, the “event” is also used to share data (& control) to
+isolated “tasks”.
+
+.. warning::
+
+   Many people use the networking mental model when they think about Message-Passing_, and *wrongly* assume there is
+   always serialisation (and network) overhead. This is not needed for parallel cores as they typically have shared
+   (physical) memory.
+
+   Then, we can use the message abstraction at developer-level, and let the compiler translate that into shared
+   memory instructions for the processor level.
+   |BR|
+   Notice: As the compiler will insert the (low level) Semaphores_, the risk that a developer forgets one is gone!
+
+
+.. include:: CCC-sidebar-MA-links.irst
+.. _MPA:
+
+Messaging Aspects
+=================
+
+There are many variants of messaging, mostly combinations of some fundamental aspects. Let mentions some basic ones.
+
+(A)Synchronous
+--------------
+
+**Synchronous** messages resemble normal function calls. Typically a “question” is sent, the call awaits the
+answer message, and that answer is returned. This can be seen as a layer on top of the more fundamental send/receive
+calls. A famous example is RPC_: the Remote Procedure Call.
+
+**Asynchronous** messages are more basic: a task sends a message and continues. That message can be “data”, an “event”,
+a “command”, or a “query”. Only in the latter case, some response is essential. With async messages, there is no desire
+to get the answer immediately.
+
+As an example: A task can send many queries (and/or other messages) to multiple destinations at once, then go into
+*listen-mode*, and handle the replies in the order they are received (which can be different than as sent). Typically,
+this speeds up (wall) time, and is only possible with async messages. Notice: the return messages need to carry an “ID”
+of the initial messages to keep track -- often that is the query itself.
+
+
+(Un)Buffered
+------------
+
+Despite it is not truly a characteristic of the message itself, messages can be *buffered*, or not. It is about
+the plumbing to transport the message: can this “connection” (see below) *contain/save/store* messages?  When there is no
+storage at all the writer and reader need to rendezvous: send and receive at the same (wall) time.
+|BR|
+With a buffer (often depicted as a queue) multiple messages may be sent before they need to be picked up by the
+receiver; the number depends on the size of the buffer.
+
+Note: this is always asymmetric; messages need to be sent before they can be read.
+
+Connected Channels (or not)
+---------------------------
+
+Messages can be sent over (pre-) *connected channels* or to freely addressable end-points. Some people use the term
+“connection-oriented” for those connected channels, others use the term “channel” more generic and for any medium that
+is 
+transporting messages. I try to use “*connected-channel”*  when is a *pre-connected* channel.
+
+When using connected channels, one writes the message to the channel; there is no need to add the receiver to the
+message. Also when reading, the sender is clear.
+|BR|
+Clearly, the channel has to be set up before it can be used.
+
+Without connected channels, each message needs a recipient; often that receiver is added (“carried”) to the message
+itself.
+|BR|
+A big advantage is, that one does not need to create channels and end-points first -- which especially counts when a low
+number (possible one) of messages are sent to the same receiver, and/or many receivers exist (which would lead to a huge
+number of channels).
+
+
+(Non-) Blocking
+---------------
+
+Both the writer and the reader can be *blocking* (or not); which is a facet of the function-call. A blocking reader it
+will always return when a message is available -- and will pause until then.  Equally, the write-call can block: pause
+until the message can be sent -- e.g. the reader is available (rendezvous) or a message buffer is free.
+
+When the call is non-blocking, the call will return without waiting and yield a flag whether it was successful or not.
+Then, the developer will commonly “cycle” to poll for a profitable call; and let the task do some other/background work
+as well.
+
+Futures (or promises)
+~~~~~~~~~~~~~~~~~~~~~
+
+A modern variant of non-blocking makes use of “Futures_”. The call will always return this opaque data structure
+immediately. It may be a blank -- but the procedure can continue. Eventually, that data will be filled in “by the
+background”. It also contains a flag (like ``done``), so the programmer can check (using an if) [#future-CS]_ whether
+the data is processed.
+
+
+Uni/Bi-Directional, Many/Broad-cast
+-----------------------------------
+
+Messages can be sent to one receiver, to many, or even to everybody. Usually, this is modeled as a characteristic of the
+channel. At the same time, that channel can be used to send messages in one or two directions.
+
+It depends on the context of the exact intent. For example in (TCP/IP) `networking, ‘Broadcasting’
+<https://en.wikipedia.org/wiki/Broadcasting_(networking)>`__ (all not point-to-point variants) focus on reducing the
+amount of data on the network itself. In `distributed computing ‘Broadcasting’
+<https://en.wikipedia.org/wiki/Broadcast_(parallel_pattern)>`__ is a parallel design pattern. Whereas the `‘Broadcast’
+flag <https://en.wikipedia.org/wiki/Broadcast_flag>`_ in TV steaming is completely different: is it allowed to save
+(record) a broadcast...
+
+We use those teams with a functional aim. We consider the above-mentioned RCP connection as **Unidirectional** -- even
+the channel can carry the answer. When both endpoints can take the initiative to send messages, we call it
+**Bidirectional**.
+|BR|
+With only 2 endpoints, we call the connection **Point-to-Point** (*p2p*). When more endpoints are concerned, it’s
+**Broadcast** when a message is sent to all others (on that channel), and **Manycast** when the user (the programmer) can
+(somehow) select a subset.
+
+
+Reliability & Order
+-------------------
+
+Especially when studying “network messages”, we have to consider Reliability_ too. Many developers assume that a send
+message is always received and that when multiple messages are sent, they are received in the same order. In most
+traditional --single-core-- applications this is always the chase. With networking applications, this is not always
+true.  Messages can get lost, received out of order, or even read twice. Although it is always possible to add a
+“reliability layer”.
+|BR|
+Such a layer makes writing the application easier but introduces overhead too. And therefore not always the right
+solution.
+
+In Castle, we have “active components”: many cores are running parallel, all doing a part of the overall (concurrent)
+program. This resembles a networking application -- even while there is no real network -- where at least three nodes
+are active.
+
+This is a bit more complicated, so let us start with an example. Say, we have 3 components ``A``, ``B1``, and
+``B2``. All are connected to all others. We assume that messages are unbuffered, non-blocking, never got lost, and that
+two messages over the same channel are never out-of-order. Sound simple, isn’t it?
+|BR|
+Now state that ``A`` send a message (`m1`) to ``B1`` and then one (`m2`) to ``B1``. The “B components”  will --on
+receiving a message from ``A`` -- send a short message to the other one (`m3` and `m4`). And that message triggers
+(again both in ``B1`` and ``B2``) to send an answer to ``A``; so `m5` and `m6`.
+
+Now the question is: in which order those answers (in ``A``) are received? The real answer is: **You don’t know!**
+|BR|
+It’s clear that ``A`` will get `m5` and `m6` -- given that all messages (aka channels) are reliable. But there are many
+ways those messages may receive in the opposite order. Presumably, even in more ways, than you can imagine. For example,
+``B1`` might process `m4` before it processes `m1`! This can happen when channel ``A->B1`` is *slow*, or when ``B2``
+gets CPU-time before ``B1``, or...
+
+When we add buffering, more connected components, etc this *“network”* acts less reliable than we might aspect (even
+though each message is reliable). When we add some real-time demands (see below), the ability to use/model a solution
+using an unreliable message becomes attractive ...
+|BR|
+It’s not that you should always favor unreliable, out-of-order messages. Without regard, No! We are designing a new
+language, however --one that should run efficiently on thousands of core, in a real-time embedded system-- then the
+option to utilize them may be beneficial.
+
+
+.. hint::
+
+   As a simple example to demonstrate the advantage of an “unreliable connection”, let us consider an audio (bidirectional)
+   connection, that is not 100% reliable.
+   |BR|
+   When we use it “as is”, there will be a bit of noise, and even some hick-ups. For most people, this is acceptable,
+   when needed they will use phrases such as *“Can you repeat that?”*.
+
+   To make that connection reliable, we need checksums, low-level confirmation messages, and once in a while have to send
+   a message again. This implies some buffering (at both sides), and so the audio stream will have a bit of delay.
+   This is a  common solution for unidirectional PODcasts, and such.
+
+   For a bidirectional conversation, however, this buffering is not satisfactory. It makes the *slow*, people have to wait
+   on each other and will interrupt one other.
+   |BR|
+   Then, a *faster* conversation with a bit of noise is commonly preferred.
+
+
+Process calculus & more
+=======================
+
+After studying many concurrent concepts, we need to address one more, before we can *design* the Castle language. That is
+“*How do we determine what is ‘best’ (ever)*”?  Can we *calculate* the performance of every aspect? The answer is no;
+but there are formal systems that can help: Process-Calculus_ (or -Algebra).
+|BR|
+Unfortunately, there are many of them. And I like to avoid the recursions-trap: study them all, find a meta-calculus
+to determine the best, etc.
+
+So let us give a quick overview. And recall, the term ‘process’ is pretty general: it denotes the *behavior of a
+system*, not the more limited practice most software developers use.
+
+.. include:: CCC-sidebar-calc-demo.irst
+
+Mathematical models
+-------------------
+
+Many Process-Calculus_\es are invented around 1980. As often, those traditional ones focus on the issues that were current
+back then. And although they are still useful, they might be unaware of modern aspects of computing -- like huge code
+bases, and over a thousand cores.
+
+Petri Ne
+~~~~~~~~~
+
+Probably the oldest mathematical model to describe distributed systems is the Petri-Net_, invented in 1962 -- some claim
+it even started in 1939(!).  In its graphical representation, it looks like a network of circles (‘places’) and bars,
+(‘actions’) connected by arrows (‘arcs’). It also contains ‘tokens’ -- zero or more dots inside a circle. They can
+flow through the network and kind of represent the (global) state.
+|BR|
+There is an extensive, complex mathematical model behind this. Which makes Petri-Net_\s very powerful.
+
+A drawback however is, that all tokens have to move to the next place at the same time. When using Petri-Net_\s as a
+calculus, this is not an issue. But it becomes impossible to execute that in a distributed (or Multi-Core) environment,
+or a base of a language.
+
+Communicating sequential processes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+CSP_ is probably the best-known *formal* language to describe (patterns in) concurrent systems. It started in 1978 as a
+kind of programming language and has evolved since then.  Occam_ --the language to program the once famous Transputer_--
+is based on CSP_.
+
+Also ‘Go_’ (the language) is influenced by CSP_. A sign the CSP_ isn’t too old.
+
+Calculus of Communicating Systems
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+CCS_ is also quite old (1980) and quite useful to calculate  deadlocks_ and livelocks_
+
+Algebra of Communicating Processes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Also, ACP_ dates back from 1982 and is a real algebra -- it probably contrived the general term Process-Calculus_. Like
+any algebra, it has (transformation) “rules” [#bool-algebra]_.
+|BR|
+By those *rules*, one can convert (“transform”) a process of concurrent and/or sequential actions into other, equivalent
+processes -- and prove they are the same (or nor). And look for patterns that should not (never) happen; like deadlocks_
+and livelocks_.
+
+I like this algebra aspect, as we can use it inside some :ref:`Castle-Tools` to validate the design is sound.
+
+Π-calculus
+~~~~~~~~~~
+
+Pi-Calculus_ is a more recent (1992) addition to the family of Process-Calculus_\es. It allows some dynamic behavior;
+like transmitting the names of the channel -- which facilitates the growth & reconfiguration of the network during execution.
+|BR|
+That expect, for example, is needed for the :ref:`CC-example-Sieve`.
+|BR|
+It also shows some of the shortcomings of “traditional” models, as hinted above.
+
+As it is a small (but expressive) “language”, that resembles λ-calculus a bit, it has some omissions too: no numbers,
+no functions, not even an `if-statement` (all quite fundamental for a programming language).  It is based on **names**,
+which mirror both *variables* and *channels*.
+
+.. _CCC-Actors:
+
+The Actor Model
+---------------
+
+The Actor-Model_ is strictly speaking not a Process-Calculus_, but it has many similarities. A big dissimilarity is its
+inspiration; where a Process-Calculus_ are based on mathematics, the Actor-Model_ is inspirited by physics. See
+Calculus-vs-Actors_ for more on their (dis)similarities.
+|BR|
+The Actor-Model_ began in 1973, matured in the '80s, and become fashionable when “cloud computing” started. There are
+many “bold-on” actor packages for almost all popular languages. They focus mostly on *robust, scalable, distributed
+applications*; less on the speed-up of a single program.  Still, the :ref:`”Many-Core” concept<CC>` we use for Castle
+is closely related.
+
+Being inspired by physics, which is concurrent by nature, the perception differs. An *actor* is local, “active”, and
+independent. It can only act on the messages that it receives, sent new messages, and/or create new actors. It (typically)
+has an internal state, but that is completely internal (or *private*, as developers call it).
+|BR|
+There is no global state, no central synchronisation, no “shared memory”, and no (overall) orchestration. Everything is
+decentral.
+
+One can model many well-known software systems as an Actor-Model_: like email, SOAP, and other web services. Also,
+interrupt-handling can be modeled with actors: An extern message triggers the “*interrupt-handler* actor” --async of the
+main code; another *actor*-- which has to send data (aka a message) to the main actor.
+
+Another interesting dissimilarity is that the Actor-Model_, and the Actor-Model-Theory_, are also influent by
+SW-Engineering and their languages. This probably made is also convenient to design new programming languages on this
+theory.
+
+.. resolution:: Castle will use Actors as the main Concurrent Computing Concept
+   :ID: R_CCC-Actors
+   :links: U_ManyCore
+
+.. tip:: Unlike Process-Calculus_\es, there is only one Actor-Model_
+
+----------
+
+.. rubric:: Footnotes
+
+.. [#DistributedDiff]
+   There a two (main) differences between Distributed-Computing_ and Multi-Core_. Firstly, all “CPUs” in
+   Distributed-Computing_ are active, independent, and asynchronous. There is no option to share a “core” (as
+   commonly/occasionally done in Multi-process/Threaded programming); nor is there “shared memory” (one can only send
+   messages over a network).
+   |BR|
+   Secondly, collaboration with (network-based) messages is a few orders slower than (shared) memory communication. This
+   makes it harder to speed up; the delay of messaging shouldn't be bigger than the acceleration when doing things in
+   parallel.
+   |BR|
+   But that condition does apply to Multi-Core_ too. Although the (timing) numbers do differ.
+
+.. [#wall-time]
+   As a reminder: We speak about *CPU-time* when we count the cycles that make a core busy; so when a core is waiting, no
+   CPU-time is used. And we use *wall-time* when we time according to  “the clock on the wall”.
+
+.. [#OOCS]
+   The brittleness of Critical-Sections_ can be reduced by embedding (the) (shared-) variable in an OO abstraction. By
+   using *getters and *setters*, that control the access, the biggest risk is (mostly) gone. That does not, however,
+   prevent deadlocks_ or livelocks_.
+   |BR|
+   And still, all developers have to  be disciplined to use that abstraction ... *always*.
+
+.. [#MPCS]
+   This is not completely correct; Message-Passing_ can be implemented on top of shared memory. Then, the implementation
+   of this (usually) OO-abstraction contains the Critical-Sections_; a bit as described in the footnote above.
+
+.. [#timesCPU]
+   And the overhead will grow when we add more cores. Firstly while more “others” have to wait (or spin), and secondly
+   that the number of communications will grow with the number of cores too.  As described in the :ref:`sidebar
+   <Threads-in-CPython>` within :ref:`BusyCores` solving this can give more overhead than the speed we are aiming for.
+
+.. [#future-CS]
+   Remember: to be able to “fill in” that Future-object “by the background” some other thread or so is needed. And so, a
+   Critical-Section_ is needed. For the SW-developer the interface is simple: read a flag (e.g. ``.done()``. But using
+   that too often can result in a slow system.
+
+.. [#anycast]
+   Broadcasting_ is primarily known for “network messages”; where it has many variants -- mostly related to the
+   physical network abilities, and the need to save bandwidth. As an abstraction, they can be used in “software messages”
+   (aka message passing) too.
+
+.. [#bool-algebra]
+   Those ‘rules’ resembles the boolean algebra, that most developers know: `NOT(x OR y) == NOT(x) AND NOT(y)`. See
+   Wikipedia for examples of ACP_.
+
+.. _ACP:			https://en.wikipedia.org/wiki/Algebra_of_communicating_processes
+.. _Actor-Model-Theory:		https://en.wikipedia.org/wiki/Actor_model_theory
+.. _Actor-Model:		https://en.wikipedia.org/wiki/Actor_model
+.. _Broadcasting:		https://en.wikipedia.org/wiki/Broadcasting_(networking)
+.. _CCS:			https://en.wikipedia.org/wiki/Calculus_of_communicating_systems
+.. _CSP:			https://en.wikipedia.org/wiki/Communicating_sequential_processes
+.. _Calculus-vs-Actors:		https://en.wikipedia.org/wiki/Actor_model_and_process_calculi
+.. _Concurrency:		https://en.wikipedia.org/wiki/Concurrency_(computer_science)
+.. _Critical-Section:		https://en.wikipedia.org/wiki/Critical_section
+.. _Critical-Sections:		Critical-Section_
+.. _Distributed-Computing:	https://en.wikipedia.org/wiki/Distributed_computing
+.. _Events:			https://en.wikipedia.org/wiki/Event_(computing)
+.. _Futures: 			https://en.wikipedia.org/wiki/Futures_and_promises
+.. _Go:				https://en.wikipedia.org/wiki/Go_(programming_language)
+.. _Message-Passing:		https://en.wikipedia.org/wiki/Message_passing
+.. _Multi-Core:			https://en.wikipedia.org/wiki/Multi-core_processor
+.. _Occam: 			https://en.wikipedia.org/wiki/Occam_(programming_language)
+.. _Petri-Net:			https://en.wikipedia.org/wiki/Petri_net
+.. _Pi-Calculus: 		https://en.wikipedia.org/wiki/Π-calculus
+.. _Process-Calculus:		https://en.wikipedia.org/wiki/Process_calculus
+.. _RPC:			https://en.wikipedia.org/wiki/Remote_procedure_call
+.. _Reliability:		https://en.wikipedia.org/wiki/Reliability_(computer_networking)
+.. _Semaphores:			https://en.wikipedia.org/wiki/Semaphore_(programming)
+.. _Spinlocking:		https://en.wikipedia.org/wiki/
+.. _Threads:			https://en.wikipedia.org/wiki/Thread_(computing)
+.. _Transputer:			https://en.wikipedia.org/wiki/Transputer
+.. _deadlocks:			https://en.wikipedia.org/wiki/Deadlock
+.. _livelocks:			https://en.wikipedia.org/wiki/Deadlock#Livelock
+.. _parallelism:		https://en.wikipedia.org/wiki/Parallel_computing
+.. _pthreads: 			https://en.wikipedia.org/wiki/Pthreads
