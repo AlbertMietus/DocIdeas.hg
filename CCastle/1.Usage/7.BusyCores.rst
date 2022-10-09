@@ -292,9 +292,7 @@ Distributing tasks over multiple cores (or even distributed computers) [#web]_ i
 .. [#Windowing]
    Both `X-Window <https://en.wikipedia.org/wiki/X_Window_System>`_ (or “X11”) and `MS-Windows
    <https://en.wikipedia.org/wiki/Windows_1.0x>`_ heavily depend on this (then new, 1984 resp 1985) concept of an
-   “event-loop”. 
-   
-   application be
+   “event-loop”.
 
 .. _Multi-Core:			https://en.wikipedia.org/wiki/Multi-core_processor
 .. _Concurrency:		https://en.wikipedia.org/wiki/Concurrency_(computer_science)
@@ -308,4 +306,4 @@ Distributing tasks over multiple cores (or even distributed computers) [#web]_ i
 .. _GCD:			https://en.wikipedia.org/wiki/Grand_Central_Dispatch
 .. _blocks:			https://en.wikipedia.org/wiki/Blocks_(C_language_extension)
 .. _closure:			https://en.wikipedia.org/wiki/Closure_(computer_programming)
-.. _
+
