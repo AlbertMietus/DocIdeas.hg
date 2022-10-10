@@ -9,38 +9,44 @@ Workshop Tools
 
 .. post:: 
    :category: Castle, Usage,
-   :tags: Castle, Tools
+   :tags: Castle, Tools, DRAFT
 
-   The Castle Compiler will translate your source into executable code. But there are many more tools needed to work
-   effectively with the “Best language ever” and we are not talking about debuggers! The Castle workbench can do so
-   much more to make your code outstanding.
+   A compiler will translate your source into executable code. Yet many more tools are needed to work effectively with
+   the ‘Best-Language, Ever’ -- and we are not talking about debuggers! The Castle workbench can do so much more to make
+   your code outstanding.
 
-   Probably you have many questions about the code, like the fan-out & -in, what is connected to what, etc. You can ask
-   Castle (as a workshop) for the answer!
-
+   Probably you have many questions about the software. About its `metrics
+   <https://en.wikipedia.org/wiki/Software_metric>`__: like the `Fan-Out
+   <https://en.wikipedia.org/wiki/Fan-out_(software)>`__ of a given class or its `Cyclomatic-Complexity
+   <https://en.wikipedia.org/wiki/Cyclomatic_complexity>`__. Or merely like to know which components are connected.
+   |BR|
+   Often this isn’t too complicated. But the amount of error-prone work is dramatic. Castle comes with tools that
+   provide the answer.
 
 
 Classic tools are not sufficient
 ================================
 
-Most languages come with a compiler_ and optionally a debugger_. The compiler_ (and it’s companions: linker, loader)
+Most languages come with a compiler_ and optional a debugger_. The compiler_ (and its companions: linker, loader)
 translate files with source code into *computer code*; often called the “binaries”. Nowadays, an “optimiser_” is usually
-build-in, to unburden the developer from details that make the code more efficient. So, that (s)he can make code
-readable and maintainable; e.g.  by employing extra local, well-named variables that do not result in more memory use,
-use convenient loops, which are unrolled automatically, etc. Originally, the intent was to optimise binaries; but they
-help to improve the source for developers too.
+build-in to unburden the developer from details that make the code more efficient. So that (s)he can make code readable
+and maintainable.  For example, by employing extra local, well-named variables that do not result in more memory use;
+the use of convenient loops, which are unrolled automatically, etc.  Originally, the intent was to optimise binaries;
+but they help to improve the source for developers too.
 |BR|
-The second tool is the “source-level debugger_\”. It understands the binary, and is able to correlate that with the
-original source -- this isn’t trivial; especially not due the optimiser_. It is an awesome tool when there is a bug in
-the code; as the developer can step “line by line” through the source-code, examine in between results and even change
-some parameters on the fly. Once this was the only way to improve code. In the present-day, we have other instruments
-too; like Test-Driven-Development to prevent the most nasty flows in the first place.
+The second well-known tool is the “source-level debugger_\”. It understands the binary and can correlate that with the
+source code -- which isn’t trivial, especially not due to the optimiser_. It is an awesome tool when there is a bug in
+the code; as the developer can step “line by line” through the source code, examine in-between results, and even change
+some parameters on the fly. Once this was the only way to improve code. In the present day, we have other instruments
+too; like Test-Driven-Development to prevent the nastiest flows in the first place.
 
 
-
-
-.. _Compiler:	https://en.wikipedia.org/wiki/Compiler
-.. _Debugger:	https://en.wikipedia.org/wiki/Debugger
-.. _Optimiser:	https://en.wikipedia.org/wiki/Optimizing_compiler
-.. _TDD:	https://en.wikipedia.org/wiki/Test-driven_development
-.. _Test-Driven-Development: TDD_
+.. _Software_metric:		https://en.wikipedia.org/wiki/Software_metric
+.. _Fan-Out:			https://en.wikipedia.org/wiki/Fan-out_(software)
+.. _Cyclomatic-Complexity:	https://en.wikipedia.org/wiki/Cyclomatic_complexity
+.. _Compiler:			https://en.wikipedia.org/wiki/Compiler
+.. _Debugger:			https://en.wikipedia.org/wiki/Debugger
+.. _Optimiser:			https://en.wikipedia.org/wiki/Optimizing_compiler
+.. _TDD:			https://en.wikipedia.org/wiki/Test-driven_development
+.. _Test-Driven-Development: 	TDD_
+.. _Language_workbench:		https://en.wikipedia.org/wiki/Language_workbench
