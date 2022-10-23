@@ -32,9 +32,9 @@ Tokens
 The lexer will recognize some tokes that are specialy for python, like `INDENT` & `DEDENT`. Also some generic tokens
 like NAME (which is an ID) and `NUMBER` are know, and can be used to define the language.
 
-Unfortunally, it will also find some tokens --typical operators-- that *hardcoded* for python. By we like to use
-differently. Possible combined with other characters. Then, those will not be found; not the literal-strings as set in
-the grammar.
+Unfortunally, it will also find some tokens --typical operators-- that *hardcoded* for python. Even when we like to use
+them differently; possible combined with other characters. Then, those will not be found; not the literal-strings as set
+in the grammar.
 
 .. warning::
 
@@ -43,13 +43,13 @@ the grammar.
       Left_arrow_BAD: '<-'	## This is WRONG, as ``<`` is sees as a token
       Left_arrow_OKE: '<' '-'	## This is acceptable
 
-.. seealso:: https://docs.python.org/3/library/token.html
-             
+.. seealso:: https://docs.python.org/3/library/token.html for an overiew of the predefied tokens
+
 .. tip::
 
-   A quick trick to see how a file is split in tokens, use ``python -m tokenize [-e] filename.peg``.
+   A quick trick to see how a file is split into tokens, use ``python -m tokenize [-e] filename.peg``.
    |BR|
-   And make sure you do not use string-literals that (eg) are composed of two tokens.
+   Make sure you do not use string-literals that (eg) are composed of two tokens.
 
 
 

@@ -7,7 +7,7 @@ Workshop Tools
 ==============
 
 
-.. post:: 
+.. post::
    :category: Castle, Usage,
    :tags: Castle, Tools, DRAFT
 
@@ -18,8 +18,7 @@ Workshop Tools
    Probably you have many questions about the software. About its `metrics
    <https://en.wikipedia.org/wiki/Software_metric>`__: like the `Fan-Out
    <https://en.wikipedia.org/wiki/Fan-out_(software)>`__ of a given class or its `Cyclomatic-Complexity
-   <https://en.wikipedia.org/wiki/Cyclomatic_complexity>`__. Or merely like to know which components are connected.
-   |BR|
+   <https://en.wikipedia.org/wiki/Cyclomatic_complexity>`__. Or merely like to k
    Often this isn’t too complicated. But the amount of error-prone work is dramatic. Castle comes with tools that
    provide the answer.
 
@@ -27,19 +26,59 @@ Workshop Tools
 Classic tools are not sufficient
 ================================
 
-Most languages come with a compiler_ and optional a debugger_. The compiler_ (and its companions: linker, loader)
+Most languages come with a compiler_ and, optional a debugger_. The compiler_ (and its companions: linker, loader)
 translate files with source code into *computer code*; often called the “binaries”. Nowadays, an “optimiser_” is usually
 build-in to unburden the developer from details that make the code more efficient. So that (s)he can make code readable
-and maintainable.  For example, by employing extra local, well-named variables that do not result in more memory use;
-the use of convenient loops, which are unrolled automatically, etc.  Originally, the intent was to optimise binaries;
-but they help to improve the source for developers too.
+and maintainable.  For example, by defining extra, well-named variables that do not result in more memory use;
+the use of convenient loops, which are unrolled automatically, etc.
 |BR|
-The second well-known tool is the “source-level debugger_\”. It understands the binary and can correlate that with the
-source code -- which isn’t trivial, especially not due to the optimiser_. It is an awesome tool when there is a bug in
-the code; as the developer can step “line by line” through the source code, examine in-between results, and even change
-some parameters on the fly. Once this was the only way to improve code. In the present day, we have other instruments
-too; like Test-Driven-Development to prevent the nastiest flows in the first place.
+Originally, the intent was to optimise binaries; but they help to improve the source for developers too.
 
+The second well-known tool is the “source-level debugger_\”. It understands the binary and can correlate that with the
+source code -- which isn’t trivial, especially due to the optimiser_. It is an awesome tool when there is a bug in
+the code; as the developer can step “line by line” through the source code, examine in-between results, and even change
+some parameters on the fly.
+|BR|
+Once this was the only way to improve code. In the present day, we have other instruments too; like
+Test-Driven-Development to prevent the nastiest flows in the first place.
+
+|BR|
+-----
+
+TODO
+====
+
+* Explore
+
+  - Simulate
+
+    - https://dezyne.org/dezyne/manual/dezyne/html_node/Invoking-dzn-simulate.html
+
+  - Vizualize (show)
+
+
+* Verification & Validation (https://en.wikipedia.org/wiki/Software_verification_and_validation)
+
+  - https://dezyne.org/dezyne/manual/dezyne/html_node/Invoking-dzn-verify.html
+
+* Trace, Debug, Log/Monitor
+
+* Query/Metrics  (https://en.wikipedia.org/wiki/Software_metric)
+
+  - Cyclomatic_complexity  https://en.wikipedia.org/wiki/Cyclomatic_complexity
+
+  - ? Fan-In/Out https://en.wikipedia.org/wiki/Fan-out_(software), UncleBob
+
+
+
+
+
+----------
+
+.. rubric:: Footnotes
+
+.. [#XXXX]
+   XXXX
 
 .. _Software_metric:		https://en.wikipedia.org/wiki/Software_metric
 .. _Fan-Out:			https://en.wikipedia.org/wiki/Fan-out_(software)
