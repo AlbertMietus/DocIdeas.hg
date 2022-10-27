@@ -1,5 +1,5 @@
 ================
-Some short blogs
+Some Quick Blogs
 ================
 
 .. toctree::
