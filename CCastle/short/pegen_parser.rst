@@ -1,12 +1,14 @@
 .. include:: /std/localtoc.irst
 
+.. _QN_PEGEN:
+
 ================
 QuickNote: PEGEN
 ================
 
-.. post:: 2022/10/27
+.. post:: 2022/11/3
    :category: CastleBlogs, rough
-   :tags: Grammar, PEG, DRAFT
+   :tags: Grammar, PEG
 
    To implement CCastle we need a parser, as part of the compiler. Eventually, that parser will be writen in Castle. For
    now we kickstart it in python; which has several packages that can assist us.  As we like to use an PEG one, there
@@ -19,6 +21,7 @@ QuickNote: PEGEN
 
 This blog is writen to remember some leassons learned when playing with it. And as kind of informal docs.
 
+.. seealso:: :ref:`QN_Arpeggio`
 
 Build-In Lexer
 ==============
