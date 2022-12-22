@@ -2,59 +2,73 @@
 Modeling & Rendering Components & Friends
 =========================================
 
-.. hint:: Sources
+.. post::
+   :category: Castle, DesignStudy
+   :tags: DRAFT
 
-  * ModelMore.ipynb, which is baed on
+   Any compiler will read & parse the source, convert it into an abstract natation (like the AST) and write the result
+   back in a lower-language, or “binary format”. We have spend several posts on the parsing phase. This one focus on
+   the last part: *rendering* the model into “generated C code”.
+
+   The goal is not to design “all & everything”. We pick some details, do some experiment (typically in Jupyter/IPython
+   Notebook), and the lessons-learned are documented here.
+
+
+.. IPython Sources
+
+  * ModelMore.ipynb, which is based on
   * Model-GCD.ipynb
 
-  Currently (Dec 12, 2022), this file (`CCastle2/IPython/Components.py` is most updated one
+  They have become outdated by this (draft) post
 
 .. todo::
-   Spilt the Modeling & Rendering parts; by using delegating to a ${Any}Rendering subclasses of ${Any}
 
-.. caution:: The text below needs to converted from MD to RST
-             
+   * Spilt the Modeling & Rendering parts; by using delegating to a ${Any}Rendering subclasses of ${Any}
+   * Add (pseudo) namespaces-support, global/extern/static keyword and such (during generation)
+
+
 Overview
 =========
 
 Each component has 3 structures to fully describe the component; most are generated and/or filled by the compiler.
 
 **CC_B_ComponentInterface**
-   Describes the interface (as by the Moat file)
+   Describes the interface of a Component; more or less as by the Moat file
 **CC_B_ComponentClass**
-   Describe a component (as class) (as by the Castle-file)
+   A *directory* of the component implementation: which callables etc -- including a “dispatch (v)table”
 *CC_C_${CompName}*
-   Characterises each instance for component *${CompName}*.
+   Data-structure for each instance for component *${CompName}* -- the place to store component-local-data
 
-   This is handled by :class:`CC_Component`
+* The first two are predefined (build-in) structures, that are filled (and named) by the compiler. (so global variables)
+* The last one is defined (``#typedef``) by the compiler.
+  |BR|
+  This is handled by :class:`CC_Component`
 
-The first two are predefined (build-in) structures that are filled (and named) by the compiler.
-The last one is defined (```#typedef```) by the compiler.
+For each component that is *coded* in a Castle file, the CCastleCompiler will fill the structures :c:struct:`CC_B_ComponentInterface` and a :c:struct:`CC_B_ComponentClass`. Or more exact, it generates C-code to create a “global, read-only” variable (that will end up in de data-segment). This is part of the runtime.
+|BR|
+Those variables get names as ``cc_CI_${CompName}`` resp ``cc_C_${CompName}`` (notice the lowercase prefix)
 
-For each component that is *coded* in a Castle file, the structures `CC_B_ComponentInterface` and a
-`CC_B_ComponentClass` are filled (read: a variable of that type is instancianted); they get the name
-cc_CI_\\${*CompName*}** resp **cc_C_${*CompName*}**. 
-<br/>
-And, a new structure `CC_C_${CompName}` is defined (but not instanciated); the size of that struct depend on the component. As components do inherite, the structure-fiels of all super-components tripple down in the (top of) the new structure!  This implies all `CC_C_${CompName}` structures start by ("inherite from") the baseComponent -- which struct is called CC_**B**_Component
+The CCastleCompiler will also define a *new* structure (as a typedef), called ``CC_C_${CompName}`` (notice the uppercase prefix). They are not instantiated by the compiler. During executing of the Castle program, such a structure will be allocated for each component-instance. The size of the structure depend on the component. And as component do inherit, the structure-fiels of all super-components tripple down in the (top of) the new structure!  This implies all ``CC_C_${CompName}`` structures start by ("inherite from") the baseComponent -- which struct is called c:type:`CC_B_Component` -- Notice the **B** in the name.
 
-#### <span style="color:blue">Notes</span>
+.. Note::
 
-* The names of the structures & variables are based on the *"handCompiled"* version; they can/will change. But need to be alligned
-* The variables ("instances") start with **cc_**; in small-case
-* The structures ("classes") start in **CC_**; in captial
-* Therefore, cc_C_\\${CompName} and CC_C_\\${CompName} are not the same. The first is a instance of a CC_B_ComponentClass, the second is a generated type (for the same component
-* This can be a bit confusing. Probally I will change the name(s)
+   * The names of the structures & variables are based on the *"handCompiled"* version; they can/will change. But need to be aligned.
+   * The variables ("instances") start with **cc_**; in small-case. 
+   * The structures ("classes") start in **CC_**; in capital. 
+   * Therefore, *cc_C_${CompName}* and *CC_C_${CompName}* are not the same.
+     |BR|
+     The first is a instance of a CC_B_ComponentClass, the second is a generated type (for the same component
+   * This can be a bit confusing. Probably I will change the name(s) once ...
 
-#### Prefix/Infix/Suffix
-* Components
-  - <span style="background: lightblue;">\_CI\_</span> (infix)
-    stands for **C**omponent-**I**nterface,
-  - <span style="background: lightblue;">\_C\_</span> (infix)
-    stands for **C**omponent (implementation). 
-  - <span style="color: purple;">Probally beter abrivations will help</span>
-* The infix <span style="background: lightblue;">\_B\_</span> 
-  stands for **B**uildin
-* The prefix <span style="background: lightblue;">CC\_</span>
-  is alike CCaste
+.. hint:: Pre/In/Post-fixes
 
-Below we show the rendering of **CC_C_${CompName}** first. And them the other two; However, the need details al **`port`** & **`protocols`**; so the are defined too.
+   * Components
+
+     - **_CI_** (infix) stands for **C**\omponent-**I**\nterface,
+     - **_C_**  (infix)     stands for **C**\omponent (implementation).
+     - *Probably beter abrivations will help*
+
+   * **_B_** (infix) stands for **B**\uildin
+   * **CC_** (prefix) is alike CCaste
+
+
