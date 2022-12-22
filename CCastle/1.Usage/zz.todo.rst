@@ -1,6 +1,21 @@
 TODO (Usage)
 ************
 
+.. _Asym-Ops:
+
+The Walruss in the room (todo)
+==============================
+
+.. todo::
+
+   * Basic rules on operators:  Only when LHS and RHS are  interchangeable , the symbol is symetric
+
+     - Assignment: ‘:=’, the walrus-operators; aka Pascal’s becomes
+     - equality : ‘==’
+     - connect in/out ports: ‘=’
+
+   * Reason: the language should reduce the risk on mistakses that lead to errors. In C/C++ : ``if (a=2) ...``
+
 .. _matching-statements:
 
 Matching Statements (todo)

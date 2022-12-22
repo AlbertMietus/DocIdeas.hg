@@ -180,8 +180,7 @@ Connected Channels (or not)
 
 Messages can be sent over (pre-) *connected channels* or to freely addressable end-points. Some people use the term
 “connection-oriented” for those connected channels, others use the term “channel” more generic and for any medium that
-is 
-transporting messages. I try to use “*connected-channel”*  when is a *pre-connected* channel.
+is transporting messages. I try to use “*connected-channel”* when is a *pre-connected* channel.
 
 When using connected channels, one writes the message to the channel; there is no need to add the receiver to the
 message. Also when reading, the sender is clear.
@@ -405,7 +404,14 @@ theory.
    :ID: R_CCC-Actors
    :links: U_ManyCore
 
-.. tip:: Unlike Process-Calculus_\es, there is only one Actor-Model_
+   .. note:: This is only conceptual.
+
+      As stated in :need:`RC_Agnostic_Concurrency` for the
+      programmer, all details on how concurrency  in implemented is a detail -- that can differ in various
+      environments!
+
+
+.. tip:: Unlike Process-Calculus_\es, there is only one Actor-Model_!
 
 ----------
 

@@ -15,6 +15,8 @@ No *inline* actions
 
    Let’s see why the old concept is outdated ... And what is easier to use.
 
+.. _GrammarActions:
+
 Actions, in retrospect
 ======================
 

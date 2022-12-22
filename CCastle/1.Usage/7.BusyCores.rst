@@ -230,6 +230,16 @@ Distributing tasks over multiple cores (or even distributed computers) [#web]_ i
 :ref:`ConcurrentComputingConcepts` we describe some (common, theoretical) concepts, especially the
 :ref:`CCC-Actors`. What we like to use for CCastle.
 
+.. resolution::  Castle is agnostic to the implementation details of concurrency
+   :ID: RC_Agnostic_Concurrency
+   :links: U_ManyCore
+
+   There are many ways how one can use and implement concurrency. That however should be seen as a detail; the user
+   (Castle-programmer) should not be aware, not limited by it! This implies, that parallelism is hidden. One can write
+   code that can be executed on a “distributed system”, as well as on “multi-core system”, or a “single-core”.
+
+   It should even be possible to write code that run in kernel-mode, or on another “threadless” system.
+
 ----------
 
 .. rubric:: Footnotes
