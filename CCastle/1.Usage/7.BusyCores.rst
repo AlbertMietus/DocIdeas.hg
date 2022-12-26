@@ -154,6 +154,8 @@ The Thread-Pool_ pattern gives us a simple alternative to (raw) threads; especia
 not visible to the developer. Then the programmer can focus on defining small (concurrent) tasks and the “computer”
 can add details such as how many threads, on which core(s), and manage them.
 
+.. _BC-libdispatch:
+
 GCD (LibDispatch)
 -----------------
 
