@@ -177,7 +177,7 @@ Also Castle use a scannerless approach.
 Castle: rules are functions
 ===========================
 
-.. resolution:: In Castle each rule act as a *callable*
+.. resolution:: In Castle each rule act as a callable
    :ID: R_GrammerCallables
    :links: U_Grammers
 

@@ -10,8 +10,8 @@ My ambition:
 
    --ALbert Mietus
 
-It’s also the first programming-language that support **CC**: Connected Components (or *Concurrent  Components*). Where
-`CC` is kind of of the successor of OO: active ‘things’ that communicate (solely) by input *and* output ports ...
+It’s also the first programming-language that support CC [#CC]_. Where `CC` is kind of of the successor of OO: active
+‘things’ that communicate (solely) by input *and* output ports ... 
 |BR|
 *(Yes, I know, ambition and reality are not always aligned...)*
 
@@ -53,5 +53,21 @@ Needs (index)
 
 .. needtable::
    :style: table
-   :sort: title
+   :sort: type
    :columns: id;title;incoming;outgoing;type
+
+
+----------
+
+.. rubric:: Footnotes
+
+.. [#CC]
+   CC can stand for many things; O havedn’t decided which one is the official one ..
+   |BR|
+   Candidates are:
+
+   * Connected Components
+   * Concurrent Components
+   * Connected & Concurrent
+   * Concurrent Connections
+   * ...

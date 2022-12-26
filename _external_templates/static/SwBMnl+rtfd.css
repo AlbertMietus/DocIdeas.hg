@@ -1,4 +1,4 @@
-/*SwBMnl style on top of 'sphinx_rtd_theme'*/
+/*SwBMnl style on top of 'sphinx_rtd_theme' v221007.1 */
 
 @import url("css/theme.css"); /* The sphinx_rtd_theme */
 
@@ -73,6 +73,11 @@ div.GAM-extra li.ablog-cloud {
 .rst-content .localtoc.sidebar {
     max-width:40%; width: auto;
 }
+.rst-content .localtoc.sidebar  p {
+    margin: 0;
+    border-bottom: 1px solid #808080;
+}
+
 .rst-content h5,
 .rst-content h6 {
     margin-bottom: 0;
