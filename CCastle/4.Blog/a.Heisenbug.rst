@@ -21,7 +21,7 @@ Heisenbug (start/DRAF)
 
 
 What is e Heisenbug?
-=======================
+********************
 
 The heisenbug is named to Werner Heisenberg, who described the “observer effect”: when you look closely, the behavior
 changes. The same can happen to software (bugs). The behavior apparently changes when you study -or slightly adjust-
@@ -30,7 +30,7 @@ sequential code on slow CPU’s is less likely to have heisenbugs then concurren
 also common in threaded programs.
 
 The sieve goes wrong
---------------------
+====================
 
 Also my standard Caste demo ‘Sieve of Eratosthenes’ can suffer from this issue. The initial version did work for years,
 and failed horrible when another “machinery” was used.
