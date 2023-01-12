@@ -11,18 +11,17 @@ The sieve demo (start/DRAFT)
    :tags: Castle, DRAFT
 
 
-   To show many features of CCastle -and to verify them-, I use “the sieve”; which is short for the `Sieve of
-   Eratosthenes <https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes>`__. An old, well known algorithm to find prime
-   numbers.
-   |BR|
-   And impliciet concurrent.
+   To show some features of CCastle, I use *‘the sieve’*, short for the `Sieve of Eratosthenes
+   <https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes>`__. An old, well known, algorithm to find prime numbers. with
+   impliciet concurrency.
 
    With an almost trivial implementation, many “CC concepts” are shown. In only a handful of lines.
 
 The design
 **********
 
-We only need tree or four, simple components for this algorithm, and two protocols.
+We only need tree simple components as shown below, and a main component (not shown). We also use two protocols, that
+are given below.
 
 .. include:: ./sieve-design.irst
 
@@ -60,14 +59,27 @@ of shifts the finder to the right (aka downstream)
 In some implementations that is the responsibility of the finder (therefore sometimes calls “head”). In a variant, the
 ‘main’ component is caring that load.
 
+Communication
+=============
+
+SimpleSieve
+-----------
+
+In the basic variant,we use an event-based protocol, that just hold one event (read: a message), that carries the
+integer to be tried.
+
+StartSieve
+----------
+
+XXXX
+
 Main
-====
+****
 
 All the components (or elements) above have to created (statically or dynamically) by an top-level component, which is
 usually called “main”. However the name is not special (like in C/C++), it’s  more a convention (like in Python).
 
-Communication
-=============
+
 
 
 XXXX

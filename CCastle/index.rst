@@ -32,12 +32,23 @@ This section contains a set of pages & blog-post on this topic. Some a design-st
 ‘One day’ the pages will be incorporated into the (docs of, the source of) `CCastle2 <https://osdn.net/users/albertmietus/pf/CCastle2>`_
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
    :titlesonly:
    :glob:
 
    */index
 
+.. seealso:: The :ref:`blog-drafts` page for the *drafts* (all, including Castle ones)
+
+
+
+Needs (index)
+=============
+
+.. needtable::
+   :style: table
+   :sort: type
+   :columns: id;title;incoming;outgoing;type
 
 .. note:: Old plantUML-version on RTD
 
@@ -47,27 +58,19 @@ This section contains a set of pages & blog-post on this topic. Some a design-st
    **2017**). which has no theme and other support to make it more nice-looking. Therefore all those “lines” are comment
    out (or rewritten)
 
-
-Needs (index)
-==============
-
-.. needtable::
-   :style: table
-   :sort: type
-   :columns: id;title;incoming;outgoing;type
-
-
 ----------
 
 .. rubric:: Footnotes
 
-.. [#CC]
-   CC can stand for many things; O havedn’t decided which one is the official one ..
-   |BR|
-   Candidates are:
+.. caution::
 
-   * Connected Components
-   * Concurrent Components
-   * Connected & Concurrent
-   * Concurrent Connections
-   * ...
+   .. [#CC]
+       CC can stand for many things; I haven’t decided which one is the official one ....
+       |BR|
+       Candidates are:
+
+       * Connected Components
+       * Concurrent Components
+       * Connected & Concurrent
+       * Concurrent Connections
+       * ...

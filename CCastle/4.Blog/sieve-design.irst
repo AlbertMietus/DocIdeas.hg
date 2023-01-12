@@ -5,9 +5,14 @@
 
    ditaa
 
-   +-----------\    /-----------\    /-----------\    /-----------\    /-----------\    /-----------+
+           |
+           V
+   +-------*---\    /-----------\    /-----------\    /-----------\    /-----------\    /-----------+
    | Generator |    | Sieve(2)  |    | Sieve(3)  |    | Sieve(5)  |    :           |    | Finder    |
    |           *--->*           *--->*           *--->*           *--->*           *--->*           |
    | cBLU      |    | cGRE      |    | cGRE      |    | cGRE      |    | cGRE      |    | cPNK      |
-   +-----------/    \-----------/    \-----------/    \-----------/    \-----------/    \-----------+
-
+   +-----------/    \-----------/    \-----------/    \-----------/    \-----------/    \---------*-+
+                                                                                                  |
+   0 The shown (horizontal) connections all use the SimpleSieve protocol                          V
+   0 The Generator has a (in) port for the StartSieve protocol
+   0 The Finder has an optional (out) port for SimpleSieve protocol
