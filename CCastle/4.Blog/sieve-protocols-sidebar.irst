@@ -1,0 +1,16 @@
+.. -*-rst-*-
+   included in  `b.TheSieve.rst`
+
+.. sidebar:: Sieve Protocols
+
+   .. code-block:: ReasonML
+
+      protocol SimpleSieve : Protocol {
+           kind: event;
+           input(int:try);
+      }
+
+      protocol StartSieve : Protocol {
+           kind: event;
+           runTo(int:max);
+         }
