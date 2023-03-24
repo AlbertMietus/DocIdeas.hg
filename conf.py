@@ -28,7 +28,7 @@ def setup(app):
     app.add_css_file('../_static/SwBMnl+rtfd.css')
     app.add_css_file('../_static/std_needs.css')
 
-
+#Does not work on Safari ...
 html_static_path.append ('_static/')
 html_favicon = '_static/Bulb.ico'
 
