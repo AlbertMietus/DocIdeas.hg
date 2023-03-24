@@ -1,16 +1,33 @@
 .. -*-rst-*-
    included in  `b.TheSieve.rst`
 
+.. note: the code-tabs use ReasonML , but it Castle-code!!
+
 .. sidebar:: Sieve Protocols
 
-   .. code-block:: ReasonML
+   .. tabs::
 
-      protocol SimpleSieve : Protocol {
-           kind: event;
-           input(int:try);
-      }
+      .. code-tab:: ReasonML Original
 
-      protocol StartSieve : Protocol {
-           kind: event;
-           runTo(int:max);
+         protocol StartSieve : Protocol {
+              kind: event;
+              runTo(int:max);
          }
+
+         protocol SimpleSieve : Protocol {
+              kind: event;
+              input(int:try);
+         }
+
+      .. code-tab:: ReasonML Improved
+
+         protocol StartSieve : Protocol {
+              kind: event;
+              runTo(int:max);
+         }
+
+         protocol SimpleSieve : SlowStart(1) {
+              kind: event;
+              input(int:try);
+         }
+

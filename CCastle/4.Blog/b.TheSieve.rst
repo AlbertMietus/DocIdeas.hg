@@ -71,16 +71,6 @@ here. Two ports can be connected when both use the same protocol.
 Notice, that a *protocol* is not the same as an API in most language’s. A fundamenta concept of :ref:`CC`/CCastle is the
 strict seperation between outside and inside
 
-
-
-
-
-SimpleSieve
------------
-
-In the basic variant, we use an event-based protocol, that just hold one event (read: a message), that carries the
-integer to be tried.
-
 StartSieve
 ----------
 
@@ -88,6 +78,38 @@ The StartSieve protocol signals to start sieving (so generating numbers), and wh
 maximal number to be tried, and does not need to be a prime.
 
 Currently, the is no way to specify the number of primes to be found.
+
+
+SimpleSieve
+-----------
+
+In this variant [#sieve-variants]_, we use an event-based protocol, that just hold one event (read: a message), that
+carries the integer to be tried.
+
+In the *Original* version, it was a basic `Protocol`. Which worked fine until we studied the another :ref:`machinery
+<TheMachinery>`: :ref:`Machinery-LibDispatch`, and it become clear we had a :ref:`Castle-Heisenbug`! (See there for
+details.)
+|BR|
+Now, we use an improved version, where we use a simple push-back algorithm by inheriting from ``SlowStart``. This adds a
+queue to the model, that limits (slows down) the sender to a maximum number of (unhandled) events; in this case that is
+initially: only one event ``SlowStart(1)``.
+
+.. note::
+
+   Without going into details, it important to realize the *queue* is only added in the model! Depending on the
+   :ref:`TheMachinery` it will probably  **not** exist in the computer-code.
+   |BR|
+   For example, the :ref:`Machinery-DirectCall` machinery will never need, not use this queue
+
+   It also shows normal Castle-programmer can focus on the functional aspect of the protocol. The SimpleSieve doesn't
+   need any extra message to controll this SlowStart (or sliding windows, as is also know) algorithm. That is fully
+   handled in a generic base-protocol.
+   |BR|
+   Additionally, the even more technical aspect of how to send events between (CC) components are completely hidden. As
+   long as both components use the same protocol it will work. ref:`TheMachinery` will make sure that both components
+   use the same technical details on both ends.
+
+
 
 Main
 ****
@@ -113,6 +135,9 @@ XXXX
    |BR|
    Notice however, there a no threads in CCastle -- just concurrency and parallelism.
 
+.. [#sieve-variants]
+   There are multiple variants of ‘the Sieve’; all showing other (CC/Castle) aspects. In this one event-bases protocols
+   are used. There is also a variant with data-based protocol, variants with, and without :ref:`Castle-Heisenbug`, etc.
 
 
 ..  LocalWords:  coprime

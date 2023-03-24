@@ -6,21 +6,18 @@
 Heisenbug (start/DRAF)
 ======================
 
-
 .. post::
    :category: CastleBlogs, Castle DesignStudy
    :tags: Castle, DRAFT
 
    In Castle, one can dynamically connect components and send “events” over those connections. Typically this is done as
    an action on an incoming message (see: :ref:`CCC-Actors`). Depending on ‘:ref:`TheMachinery`’, those events can be
-   queued and result in a beautiful Heisenbug.
+   queued and this combination *can result* in a **beautiful Heisenbug**.
 
    Before we give a simple example, let’s explain the Heisenbug first.
-   |BR|
-   Later, we continue with a generic solution (todo:-)
 
 
-What is e Heisenbug?
+What is a Heisenbug?
 ********************
 
 The heisenbug is named to Werner Heisenberg, who described the “observer effect”: when you look closely, the behavior
