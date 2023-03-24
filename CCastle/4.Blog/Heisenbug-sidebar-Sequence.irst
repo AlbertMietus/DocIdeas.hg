@@ -1,0 +1,28 @@
+.. -*- rst -*-
+   included in  `a.Heisenbug.rst`
+
+.. sidebar::
+
+   .. tabs::
+
+      .. tab:: Conceptual
+
+         In this diagram, the order of the message in shown in a logical order. As we only show the integers that are
+         tested for (relative) prime, it looks simple and error-free.
+
+         .. uml:: ./sieve-Sequence-concept.puml
+
+      .. tab::  Out of order
+
+         But there is no garantie that the simple, conceptual order is used. By example, the Generator can be *“fast”*,
+         and produce the to-be-sieved integers faster than the Sieves handle them.
+
+         .. uml:: ./sieve-Sequence-OOO.puml
+
+      .. tab::  With details
+
+         Adding components-creation details (as well as  reconnecting) shows a
+         lot more details.  Here we added the
+         event/port-names. When studying carefully, we can already see there might be a problem when the order changes          ...
+
+         .. uml:: ./sieve-Sequence-details.puml

@@ -3,7 +3,7 @@ Modeling & Rendering Components & Friends
 =========================================
 
 .. post::
-   :category: Castle, DesignStudy
+   :category: Castle, DesignStudy, CC2Cpy
    :tags: DRAFT
 
    Any compiler will read & parse the source, convert it into an abstract natation (like the AST) and write the result
@@ -23,9 +23,8 @@ Modeling & Rendering Components & Friends
 
 .. todo::
 
-   * Spilt the Modeling & Rendering parts; by using delegating to a ${Any}Rendering subclasses of ${Any}
    * Add (pseudo) namespaces-support, global/extern/static keyword and such (during generation)
-
+   * Better design & describe the Pre/In/PostFixes (see XXXX)
 
 Overview
 =========

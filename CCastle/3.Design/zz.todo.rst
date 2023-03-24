@@ -34,8 +34,8 @@ possible at other places too
 
 .. _TheMachinery:
 
-The Machinery
-=============
+The Machinery (ToDo)
+====================
 
 The CC-concept has abstracted the communication between components, by using ports, connections, and protocols. A
 protocol is a  “horizontal” interface: two port can be connected when they share the same protocol.
@@ -57,7 +57,7 @@ other benefits; like the ability to “transfer over the wire”.
 Some example machineries
 ------------------------
 
-.. Machinery-DirectCall:
+.. _Machinery-DirectCall:
 
 DirectCall
 ~~~~~~~~~~
@@ -68,6 +68,7 @@ executed.
 
 It works great for simple single-threaded (small) applications
 
+.. _Machinery-LibDispatch:
 
 LibDispatch
 ~~~~~~~~~~~

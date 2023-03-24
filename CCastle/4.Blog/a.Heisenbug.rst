@@ -18,7 +18,7 @@ Heisenbug (start/DRAF)
 
 
 What is a Heisenbug?
-********************
+====================
 
 The heisenbug is named to Werner Heisenberg, who described the “observer effect”: when you look closely, the behavior
 changes. The same can happen to software (bugs). The behavior apparently changes when you study -or slightly adjust-
@@ -26,15 +26,21 @@ that code.  Often this is due (small) changes in timing; possibly even in genera
 sequential code on slow CPU’s is less likely to have heisenbugs then concurrent code on fast multi-core systems. It’s
 also common in threaded programs.
 
+.. include:: ./Heisenbug-sidebar-Sequence.irst
+
 The sieve goes wrong
 ====================
 
-Also my standard Caste demo ‘Sieve of Eratosthenes’ can suffer from this issue. The initial version did work for years,
-and failed horrible when another “machinery” was used.
+Also my standard example ‘:ref:`Castle-TheSieve`’ can suffer from this issue. The initial version did work for years,
+but failed horrible when another “machinery” was used. After studying this, the bug is simple, and easy to fix.
 
 
 
 
- https://en.wikipedia.org/wiki/Heisenbug
+
+
+========================
+
+https://en.wikipedia.org/wiki/Heisenbug
 
 ..  LocalWords:  heisenbugs, heisenbug

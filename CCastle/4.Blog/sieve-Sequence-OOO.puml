@@ -1,0 +1,45 @@
+@startuml
+hide footbox
+title OutOfOrder (Fast generator)
+
+participant "Generator"  as G
+participant "Sieve(2)"   as S2
+participant "Sieve(3)"   as S3
+participant "Sieve(5)"   as S5
+participant "Sieve(7)"   as S7
+participant "Sieve(11)"  as S11
+
+G  -[#green]> S2:  2
+G  -[#blue]>  S2:  3
+G  -[#red]>   S2:  4
+G  -[#blue]>  S2:  5
+G  -[#red]>   S2:  6
+G  -[#blue]>  S2:  7
+G  -[#red]>   S2:  8
+G  -[#blue]>  S2:  9
+G  -[#red]>   S2: 10
+G  -[#blue]>  S2: 11
+
+activate S2
+S2 -[#green]> S3:  3
+S2 -[#blue]>  S3:  5
+S2 -[#blue]>  S3:  7
+S2 -[#red]>   S3:  9
+S2 -[#blue]>  S3: 11
+
+activate S3
+S3 -[#green]> S5:  5
+S3 -[#blue]>  S5:  7
+S3 -[#blue]>  S5: 11
+
+activate S5
+S5 -[#green]> S7:  7
+S5 -[#blue]>  S7: 11
+
+activate S7
+S7 -[#green]>S11: 11
+
+activate S11
+
+== etc ==
+@enduml

@@ -1,0 +1,62 @@
+@startuml
+hide footbox
+title Sieve creation details (sequantial order)
+
+participant  Main        as  M
+participant  Finder      as  F
+participant "Generator"  as  G
+
+participant "Sieve(2)"   as S2
+participant "Sieve(3)"   as S3
+participant "Sieve(5)"   as S5
+participant "Sieve(7)"   as S7
+
+
+
+G -[#purple]\\ F: try(2)
+F -\  M: found(2)
+M -\ S2: new
+activate S2
+G \\--o M: "reconneced to Sieve(2)"
+
+
+G  -[#blue]> S2: try(3)
+S2 -\\ F: try(3)
+F -\  M: found(3)
+M -\ S3: new
+activate S3
+S2 \\--o M: "reconneced to Sieve(3)"
+
+
+G  -[#red]> S2: try(4)
+
+G  -[#blue]> S2: try(5)
+S2 -[#blue]> S3: try(5)
+S3 -\\ F: found(5)
+F -\  M: found(5)
+M -\ S5: new
+activate S5
+S3 \\--o M: "reconneced to Sieve(5)"
+
+
+G  -[#red]> S2: try(6)
+
+G  -[#blue]> S2: try(7)
+S2 -[#blue]> S3: try(7)
+S3 -[#blue]> S5: try(7)
+S5 -\ G: try(7)
+F -\  M: found(7)
+M -\ S7: new
+activate S7
+S5 \\--o M: "reconneced to Sieve(7)"
+
+G  -[#red]> S2: try(8)
+
+G  -[#blue]> S2: try(9)
+S2 -[#red]> S3: try(9)
+
+G  -[#red]> S2: try(10)
+
+
+== etc ==
+@enduml
