@@ -1,0 +1,77 @@
+@startuml
+'hide footbox
+title Wrong (Generate faster & slow Creation)
+
+participant  Main        as  M
+participant  Finder      as  F
+participant "Generator"  as  G
+participant "Sieve(2)"   as S2
+participant "Sieve(3)"   as S3
+participant "Sieve(4)"   as S4 #Red\IndianRed
+participant "Sieve(5)"   as S5
+participant "Sieve(6)"   as S6 #Red\IndianRed
+participant "Sieve(7)"   as S7
+
+... Suppose, the Generator is active first ...
+
+G -[#green]\\   F: try(2)
+G -[#purple]\\  F: try(3)
+G -[#purple]\\  F: try(4)
+G -[#purple]\\  F: try(5)
+G -[#purple]\\  F: try(6)
+G -[#purple]\\  F: try(7)
+
+... And then the Finder ...
+
+F -[#green]\  M: found(2)
+F -[#purple]\ M: found(3)
+note right: Despite 3 is a prime, it never passed //Sieve(2//. <color:red>Wrong</color>
+F -[#red]\    M: found(4)
+note right  #IndianRed/Red: Found prime: <color:white>**4**</color> -- wrong result
+F -[#purple]\ M: found(5)
+note right: Again, 5 is a prime, but it's **not** //sieved//. <color:red>Wrong</color>
+F -[#red]\    M: found(6)
+note right  #IndianRed/Red: Found prime: <color:white>**6**</color> -- wrong result
+F -[#purple]\ M: found(7)
+note right: Again, 7 is a prime, but .... <color:red>wrong</color>
+
+... And last: we create the  Sieves & reconnect ...
+
+M -\ S2: new
+activate S2
+G \\--o M: "reconneced to Sieve(2)"
+hnote right: This reconnect is to late, as sereval messages are already sent
+
+
+M -[#purple]\ S3: new
+activate S3
+S2 \\--o M: "reconneced to Sieve(3)"
+hnote right: This reconnect is to late, as sereval messages are already sent
+
+
+M -[#red]\ S4: new
+activate S4
+note right: Another flaw: We shouldn't a **Sieve(4)**
+S3 \\--o M: "reconneced to Sieve(4)"
+
+
+M -[#purple]\ S5: new
+activate S5
+hnote right: Sieve(5) never gets input; or at least to little
+S4 \\--o M: "reconneced to Sieve(4)"
+
+
+M -[#red]\ S6: new
+activate S6
+note right: Another flaw: We shouldn't a **Sieve(6)**
+S5 \\--o M: "reconneced to Sieve(6)"
+
+
+M -[#red]\ S7: new
+activate S7
+S6 \\--o M: "reconneced to Sieve(6)"
+
+
+== etc ==
+
+@enduml
