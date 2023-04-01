@@ -1,6 +1,6 @@
 @startuml
 'hide footbox
-title Wrong (Generate faster & slow Creation)
+title Wrong (Generate fast & Slow creation)
 
 participant  Main        as  M
 participant  Finder      as  F
@@ -51,26 +51,26 @@ hnote right: This reconnect is to late, as sereval messages are already sent
 
 M -[#red]\ S4: new
 activate S4
-note right: Another flaw: We shouldn't a **Sieve(4)**
+note right: Another flaw: We shouldn't have **Sieve(4)**
 S3 \\--o M: "reconneced to Sieve(4)"
 
 
 M -[#purple]\ S5: new
 activate S5
 hnote right: Sieve(5) never gets input; or at least to little
-S4 \\--o M: "reconneced to Sieve(4)"
+S4 \\--o M: "reconneced to Sieve(5)"
 
 
 M -[#red]\ S6: new
 activate S6
-note right: Another flaw: We shouldn't a **Sieve(6)**
+note right: Another flaw: We shouldn't have **Sieve(6)**
 S5 \\--o M: "reconneced to Sieve(6)"
 
 
 M -[#red]\ S7: new
 activate S7
 S6 \\--o M: "reconneced to Sieve(6)"
-
+hnote right: Again: too late
 
 == etc ==
 
