@@ -39,6 +39,7 @@
       .. tab:: Demo of use
 
          .. code-block:: ReasonML
+            :emphasize-lines: 6,10
 
             SimpleSieve.try(newPrime) on self.generator.found
             {

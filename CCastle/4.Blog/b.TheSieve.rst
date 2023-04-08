@@ -3,7 +3,7 @@
 .. _Castle-TheSieve:
 
 ============================
-The sieve demo (start/DRAFT)
+The Sieve demo (start/DRAFT)
 ============================
 
 .. post::

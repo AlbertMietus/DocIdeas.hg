@@ -2,17 +2,17 @@
 
 .. _Castle-Heisenbug:
 
-=======================
-Heisenbugs (start/DRAF)
-=======================
+==========
+Heisenbugs
+==========
 
-.. post::
+.. post:: 2023/04/08
    :category: CastleBlogs, Castle DesignStudy
    :tags: Castle, DRAFT
 
-   In Castle, one can dynamically connect components, and send “events” over those connections. Typically this is done as
-   an action on an incoming message (see: :ref:`CCC-Actors`). Depending on ‘:ref:`TheMachinery`’, those events can be
-   queued and this combination *can result* in a **beautiful Heisenbug**.
+   In Castle, one can dynamically connect components and send “events” over those connections. Typically this is done as
+   an action on an incoming message (see: :ref:`CCC-Actors`). And, depending on ‘:ref:`TheMachinery`’ those events can be
+   queued. It is this combination that *can result* in a **beautiful Heisenbug**.
 
    First, let’s explain the Heisenbug, before we give an example. Then we analyze it, show how to improve the code, and
    finally formulate a *requirement* to prevent & detect this kind of bug in Castle.
@@ -20,56 +20,58 @@ Heisenbugs (start/DRAF)
 What is a Heisenbug?
 ====================
 
-The `heisenbug <https://en.wikipedia.org/wiki/Heisenbug>`__ is named to the theoretical physics *Werner Heisenberg*, who
+The `heisenbug <https://en.wikipedia.org/wiki/Heisenbug>`__ is named after the theoretical physics *Werner Heisenberg*, who
 described the *“observer effect”*: when you look closely, the behavior changes. The same can happen to software
 (bugs). The behavior apparently changes when you study -or slightly adjust- that code.  Often this is due to (small)
-changes in timing; possibly even in generated code. Therefore old (old-fashioned), sequential code on slow CPUs is less
+changes in timing; possibly even in generated code. Therefore old (old-fashioned) sequential code on slow CPUs is less
 likely to have heisenbugs than concurrent code on fast multi-core systems. It’s also common in threaded programs.
 
 .. include:: ./Heisenbug-sidebar-Sequence.irst
 
-The sieve goes wrong
+The Sieve goes wrong
 ====================
 
-My standard example, :ref:`Castle-TheSieve`, suffered from this issue. The initial version did work for years,
+My standard example, :ref:`Castle-TheSieve`, suffered from this issue. The initial version did work for years
 but failed horribly when another “machinery” was used. After studying this, the bug is simple and easy to fix.
 
-There are two related timing issues, that (probably only together) result in the Heisenbug. First, we introduce them one
-by one and then show how the combination may fail.
+There are two related timing issues that together result in the Heisenbug. First, we introduce them, and then
+show how the combination may fail.
 
 
 Event-order
 -----------
 
-Conceptually, the `Generator` sends (events with) integers to `Sieve(2)`, which may be forwarded to `Sieve(3)`, then to
-`Sieve(5)`, etc. As shown in the **Conceptual sidebar**, we probably like to assume that each integer is fully sieved
-before the next *’int’* *starts*. This is the classic “sequential view”, we are used to.
+Conceptually, the `Generator` sends (events with) integers to `Sieve(2)`, which may forwarded them to `Sieve(3)`, then
+to `Sieve(5)`, etc. As shown in the **Conceptual sidebar**, we probably like to assume that each integer is sieved
+before the next *’int’* *starts*: the classic “sequential view” we are used to.
 
 However, that isn’t how it works. In Castle, the order of events on a connection is defined (*one by one,
-sequential*). And given the code, the integer sent by a `Sieve` comes always later than the incoming one. That is all we
+sequential*). And given the code, the integer sent by a `Sieve` is always later than the incoming one. That is all we
 may assume.
 |BR|
 The timing of unrelated events on multiple connections is not defined. That order may depend on :ref:`TheMachinery` and
-many other factors. Do not as a developer, assume any order --as I did!
+many other factors. Do not, as a developer, assume any order --as I did!
 
 As shown in the **One-by-One sidebar** diagram, this can result that the Generator is outputting all events first. Next,
 Sieve(2) filters out the even integers, then Sieve(3) processes all its input, then Sieve(5), etc.
 |BR|
-Although we aren’t using concurrency, and it needs huge buffers -- especially when finding big primes-- it does
+Although we aren’t using concurrency, and it needs tremendous buffers when finding big primes, it does
 conceptually work. And so, it is an allowed execution [#ButImprove]_.
 
 
 Reconnecting
 ------------
 
-The chain of `Sieve`\s will grow as we find more primes. When an *int* isn’t filtered-out and so reaches the `Finder` a
+The chain of `Sieve`\s will grow as we find more primes. Whenever an *int* isn’t filtered-out and reaches the `Finder` a
 *new prime* is found. Then, a new Sieve element is created and inserted into the chain.
 |BR|
-This is done by the Main component (which is signaled by the Finder) [#orVariant]_.
+Building the chain  is done by the Main component (which is signaled by the Finder) [#orVariant]_.
 
-Therefore, `Main` remembers the ``last_sieve`` and reconnects its output to the newly creates `Sieve`. And temporally
-connects that new-Sieve’s output to the Finder. For every newly found prime, this repeats.
+Therefore, `Main` remembers the ``last_sieve`` and reconnects that output to the newly creates `Sieve`.
+Which output is temporally connected to the `Finder`
 |BR|
+For every newly found prime, this is repeated.
+
 This detail is shown in the **With Details** sidebar diagram; where the `Finder` and `Main` and all its messages
 are shown too.
 
@@ -112,39 +114,56 @@ This is just **an** example. As we can’t predict (or assume) any order, we can
 How to improve?
 ===============
 
-Finding this heisenbug triggered an investigation  to improve both Castle and ‘:ref:`Castle-TheSieve`’. Where our goals
-is not (just) to improve the sieve code, but all programs. And give the programmer options to prevent heisenbugs.
+Finding this heisenbug triggered an investigation  to improve Castle as well as ‘:ref:`Castle-TheSieve`’. Where our goal
+is not just to improve the sieve code, but all programs. And give the programmer options to prevent heisenbugs.
+
+As we will see fixing ‘:ref:`the sieve <Castle-TheSieve>` is simple: use the **SLowStart** (base) protocol. It changes
+only three lines!
+|BR|
+But we start with a new requirement, for a new tool in the :ref:`Castle Workshop <Workshop-Design>`.
+
+
+Simulation
+----------
+
+As we will see below the `SlowStart` protocol will *remove* our Heisenbug. But it does not abolish the Heisenbug!
+
+The feature does by no means prevent a developer from using other solutions, with a comparable flaw. Besides, it’s
+hopeless to use testing to prove the absence of a Heisenbug. As we have seen above, all variants of all possible
+concurrent execution orders should be correct. Where we have very limited control over which variant is used.
+
+This led to a new requirement: :need:`U_Tools_EventOrder.` To assist the developer the Castle Workshop will come
+with tools to detect such bugs. See :ref:`simulation` for more on this.
+
 
 .. include:: ./sieve-protocols-sidebar.irst
-
 SlowStart
 ---------
 
-
 Castle (now) comes [#KipEi]_ with the parametric *base* protocol :ref:`SlowStart <doc-SlowStart>`, which is based on
-`TCP Slow start <https://en.wikipedia.org/wiki/TCP_congestion_control#Slow_start>`__ and contains a queue-model
-[#ModelOnly]_ to controll the speed off an event-connection. As the name suggests, initially the connections with be
+`TCP Slow start <https://en.wikipedia.org/wiki/TCP_congestion_control#Slow_start>`__ and contains a queueing model
+[#ModelOnly]_ to control the speed of an (event) connection. As the name suggests, initially the connections with be
 slow. Roughly, the parameter set the maximal number of unhandled events on a connection.
 |BR|
 The (improved) version of :ref:`Castle-TheSieve` uses a SlowStart of **1**. And `Main` will remove (or increase) that
 limit after reconnecting.
 
-Initially, the `Generator` is only *allowed* to sent one event, which is received by the `Finder`. Then `Main` will create
+Initially, the `Generator` is only *allowed* to send one event, which is received by the `Finder`. Then, `Main` will create
 the first Sieve (`Sieve(2)`), reconnects the Generator to that component, and increases the “speed” of the
-connection. As the connection **`Generator`->`Sieve(2)`** is stable, the is no need to limit the “queue”.
+connection. As the connection **Generator->Sieve(2)** is stable, the is no need to limit the “queue”.
 
 The `Generator` acts as before: it sends (events with) integers over its output. But now, the SimpleSieve protocol can
-slow down the `Generator` --no code changes are needed for this. This may happen when the second event is sent, before
-it is received (or “handeld”) by the Finder, and the limit is set to **1**.
+slow down the `Generator` --no code changes are needed for this. This may happen when the second event is sent before
+it is received (or “handled”) by the Finder, and the limit is set to **1**.
 |BR|
-As this limit is removed when a Sieve-component is inserted to the chain, only the start is slow...
+As this limit is removed when a Sieve-component is inserted into the chain, only the start is slow...
 
 The same happens to every Sieve: initially (when it is connected to the Finder) there is a limit of 1 event in the
 queue. But when that connection is reconnected --and the potential Heisenbug is gone-- the limit is removed.
 
 .. tip:: Unlimited or better?
 
-   In this blog we remove the limit of the ``SlowStart protocol`` completely, for simplicity. Than, the Heisenbug is
+   In this blog, we remove the limit of the ``SlowStart protocol`` completely, for simplicity. Then the Heisenbug is
    solved.
 
    That is not the only option.
@@ -152,18 +171,13 @@ queue. But when that connection is reconnected --and the potential Heisenbug is 
    Given the `Generator` is a simple loop it can produce many integers fast. And so cause huge piles of queued
    events. That can be done better, by the same concept: a maximal queue size. (again: just model).
 
-   It’s up to de developer to optimize this. Some prever the maximum (queue length) equally to the number of
-   Sieve-components,  other related it to the available core. Some use static values, other will adjust it over the
-   run-time of the appplication.
+   It’s up to de developer to optimize this. Some prefer the maximum queue length equal to the number of
+   Sieve-components,  others relate the maximum queue length  to the number of available cores. Some use static values,
+   others will adjust them over the run-time of the application.
    |BR|
-   That is all possible, with a few extra lines in the `Main` component. But also the Sieve component can set this
-   limit, both for incoming-ports as for outgoing port.
+   That is all possible with a few lines in the `Main` component. But also the Sieve component can set this
+   limit, both for incoming-ports as well for outgoing ports.
 
-
-Simulation
-----------
-
-XXX
 
 
 -----
@@ -178,18 +192,18 @@ XXX
    The Heisenbug will not (trivially) disappear when switching between hose variants
 
 .. [#ButImprove]
-   Still, as language-designer, we need to give the programmer more options to hint to a more optimals implementation.
+   Still, as language-designer, we need to give the programmer more options to hint at a more optimal implementation.
 
 .. [#KipEi]
-   This *SlowStart* base-protocol is part of Castle; see :ref:`Protocol-SlowStart`. But the need for it --follows like
-   this blog-- follows from the discovery of this :ref:`Castle-Heisenbug` in :ref:`Castle-TheSieve`.
+   This *SlowStart* base protocol is part of Castle; see :ref:`Protocol-SlowStart`. But the need for it --follows like
+   this blog-- follows from the discovery of these :ref:`Castle-Heisenbug` in :ref:`Castle-TheSieve`.
 
 
 .. [#ModelOnly]
-   Remember, this queue exist as a *model* **only** (like everything in Castle-code)!
+   Remember, this queue exists as a *model* **only** (like everything in Castle-code)!
    |BR|
-   Depending on ‘:ref:`TheMachinery`, there may no need to implement the queue (e.g.with DirectCall) at all; or the may
-   only be a queue-lenght and -maximum, or ..
+   Depending on ‘:ref:`TheMachinery`, there may be no need to implement the queue (e.g.with DirectCall) at all; or they may
+   only be a queue-length and -maximum, or ...
 
 
 
