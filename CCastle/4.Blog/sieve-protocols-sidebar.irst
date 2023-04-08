@@ -19,15 +19,32 @@
               input(int:try);
          }
 
-      .. code-tab:: ReasonML Improved
+      .. tab:: Improved
 
-         protocol StartSieve : Protocol {
-              kind: event;
-              runTo(int:max);
-         }
+         This version has one main change: the SimpleSieve now inherits from **SlowStart**
 
-         protocol SimpleSieve : SlowStart(1) {
-              kind: event;
-              input(int:try);
-         }
+         .. code-block:: ReasonML
 
+            protocol StartSieve : Protocol {
+                 kind: event;
+                 runTo(int:max);
+            }
+
+            protocol SimpleSieve : SlowStart(1) {
+                 input(int:try);
+            }
+
+         Aside of that, the ``kind: event`` line is gone, as it *inherited* from ``SlowStart``
+
+      .. tab:: Demo of use
+
+         .. code-block:: ReasonML
+
+            SimpleSieve.try(newPrime) on self.generator.found
+            {
+               ...
+
+               self.lastSieve.coprime.queue.removeLimit();
+
+               ...
+            } 

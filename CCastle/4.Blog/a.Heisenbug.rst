@@ -20,11 +20,11 @@ Heisenbugs (start/DRAF)
 What is a Heisenbug?
 ====================
 
-The `heisenbug <https://en.wikipedia.org/wiki/Heisenbug>`__ is named to Werner Heisenberg, who described the *“observer
-effect”*: when you look closely, the behavior changes. The same can happen to software (bugs). The behavior apparently
-changes when you study -or slightly adjust- that code.  Often this is due to (small) changes in timing; possibly even in
-generated code. Therefore old (old-fashioned), sequential code on slow CPUs is less likely to have heisenbugs than
-concurrent code on fast multi-core systems. It’s also common in threaded programs.
+The `heisenbug <https://en.wikipedia.org/wiki/Heisenbug>`__ is named to the theoretical physics *Werner Heisenberg*, who
+described the *“observer effect”*: when you look closely, the behavior changes. The same can happen to software
+(bugs). The behavior apparently changes when you study -or slightly adjust- that code.  Often this is due to (small)
+changes in timing; possibly even in generated code. Therefore old (old-fashioned), sequential code on slow CPUs is less
+likely to have heisenbugs than concurrent code on fast multi-core systems. It’s also common in threaded programs.
 
 .. include:: ./Heisenbug-sidebar-Sequence.irst
 
@@ -115,14 +115,16 @@ How to improve?
 Finding this heisenbug triggered an investigation  to improve both Castle and ‘:ref:`Castle-TheSieve`’. Where our goals
 is not (just) to improve the sieve code, but all programs. And give the programmer options to prevent heisenbugs.
 
+.. include:: ./sieve-protocols-sidebar.irst
 
 SlowStart
 ---------
 
-Castle comes [#KipEi]_ with the parametric *base* protocol :ref:`SlowStart <doc-SlowStart>`, which is based on `TCP Slow
-start <https://en.wikipedia.org/wiki/TCP_congestion_control#Slow_start>`__ and contains a queue-model [#ModelOnly]_ to
-controll the speed off an event-connection.As the name suggests, initially the connections with be slow. Roughly, the
-parameter set the maximal number of unhandled events on a connection.
+
+Castle (now) comes [#KipEi]_ with the parametric *base* protocol :ref:`SlowStart <doc-SlowStart>`, which is based on
+`TCP Slow start <https://en.wikipedia.org/wiki/TCP_congestion_control#Slow_start>`__ and contains a queue-model
+[#ModelOnly]_ to controll the speed off an event-connection. As the name suggests, initially the connections with be
+slow. Roughly, the parameter set the maximal number of unhandled events on a connection.
 |BR|
 The (improved) version of :ref:`Castle-TheSieve` uses a SlowStart of **1**. And `Main` will remove (or increase) that
 limit after reconnecting.
