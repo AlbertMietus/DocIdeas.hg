@@ -43,8 +43,12 @@
             SimpleSieve.try(newPrime) on self.generator.found
             {
                ...
-
-               self.lastSieve.coprime.queue.removeLimit();
-
+               // When ``Sieve(2)`` is made (alias: s)
+               self.generator.outlet = s2.try;
+               self.generator.outlet.queue.removeLimit();
                ...
-            } 
+               // Simular for other ``Sieve’s``
+               self.lastSieve.coprime = s.try;
+               self.lastSieve.coprime.queue.removeLimit();
+               ...
+            }
