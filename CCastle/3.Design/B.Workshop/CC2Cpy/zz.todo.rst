@@ -48,4 +48,13 @@ No Name Collisions
 
 
 
+Pre/In/PostFixes in generated CC2Py code
+========================================
 
+.. post::
+   :category: Castle, DesignStudy, CC2Cpy
+   :tags: DRAFT
+
+   The CC2Cpy :ref:`compiler<CC2Cpy>` generated C-code, using a lot of pre-, in- and postfixed.
+
+   They are documented later ..

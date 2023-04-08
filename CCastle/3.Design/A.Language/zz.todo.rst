@@ -1,13 +1,24 @@
 TODO Language design
 ********************
 
-Congestion Avoidance
-====================
+.. _Protocol-SlowStart:
 
-.. todo:: “FastGrow” Congestion Avoidance
+SlowStart (Language Design, ToDo)
+==================================
 
+This is part of the Congestion Avoidance concept.
 
-   Design a “standard base/pod protocol `FastGrow`, that can be used as base for ``SimpleSieve`` to solve the `Castle-Heisenbug`. 
+.. note:: In a draft version of the docs we used “FastGrow”, but SlowStart seems a better ter,
+
+.. todo::
+
+   * Design a “standard base/pod protocol `SlowStart`, that can be used as base for ``SimpleSieve`` to solve the
+     `Castle-Heisenbug`.
+
+   .. _doc-SlowStart:
+
+   * Document (how to use) this document too
+
 
 .. seealso::
    * :ref:`Castle-Heisenbug`

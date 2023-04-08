@@ -2,15 +2,15 @@
 
 .. _Castle-Heisenbug:
 
-======================
-Heisenbug (start/DRAF)
-======================
+=======================
+Heisenbugs (start/DRAF)
+=======================
 
 .. post::
    :category: CastleBlogs, Castle DesignStudy
    :tags: Castle, DRAFT
 
-   In Castle, one can dynamically connect components and send “events” over those connections. Typically this is done as
+   In Castle, one can dynamically connect components, and send “events” over those connections. Typically this is done as
    an action on an incoming message (see: :ref:`CCC-Actors`). Depending on ‘:ref:`TheMachinery`’, those events can be
    queued and this combination *can result* in a **beautiful Heisenbug**.
 
@@ -31,7 +31,7 @@ concurrent code on fast multi-core systems. It’s also common in threaded progr
 The sieve goes wrong
 ====================
 
-My standard example, ‘:ref:`Castle-TheSieve`’,  suffered from this issue. The initial version did work for years,
+My standard example, :ref:`Castle-TheSieve`, suffered from this issue. The initial version did work for years,
 but failed horribly when another “machinery” was used. After studying this, the bug is simple and easy to fix.
 
 There are two related timing issues, that (probably only together) result in the Heisenbug. First, we introduce them one
@@ -63,15 +63,15 @@ Reconnecting
 ------------
 
 The chain of `Sieve`\s will grow as we find more primes. When an *int* isn’t filtered-out and so reaches the `Finder` a
-*new prime* is found. Then, a new Sieve component is created and inserted into the chain.
+*new prime* is found. Then, a new Sieve element is created and inserted into the chain.
 |BR|
 This is done by the Main component (which is signaled by the Finder) [#orVariant]_.
 
 Therefore, `Main` remembers the ``last_sieve`` and reconnects its output to the newly creates `Sieve`. And temporally
 connects that new-Sieve’s output to the Finder. For every newly found prime, this repeats.
 |BR|
-This detail is shown in the **With Details** sidebar diagram; where the `Finder` and `Main` component and all messages
-to/from them are shown.
+This detail is shown in the **With Details** sidebar diagram; where the `Finder` and `Main` and all its messages
+are shown too.
 
 Assuming the initial “conceptual” order, you will see the same Sieve(s) become alive (“new” message), and are added to
 the end of the sieve chain. The integers still flow (now, shown as “try(`int`)” messages) by this sieve.
@@ -89,7 +89,7 @@ As we can see in the picture, it goes dreadfully wrong. No proper chain is creat
 and **6**.  This is wrong, they are not prime.
 |BR|
 With a (very) *fast Generator*, **all** integers are sent to the `Finder` --before any `Sieve` is created, and so any
-int is reported as prime. And, too many elements are added to the chain, as a Sieve component is created for each found
+int is reported as prime. besides, too many elements are added to the chain as a Sieve component is created for each found
 “prime”.  On top of that, no integer is ever sieved...
 
 This is just **an** example. As we can’t predict (or assume) any order, we can find other results too. And, when we add
@@ -112,17 +112,56 @@ This is just **an** example. As we can’t predict (or assume) any order, we can
 How to improve?
 ===============
 
-xxxxx
+Finding this heisenbug triggered an investigation  to improve both Castle and ‘:ref:`Castle-TheSieve`’. Where our goals
+is not (just) to improve the sieve code, but all programs. And give the programmer options to prevent heisenbugs.
+
 
 SlowStart
 ---------
 
-xxxxx
+Castle comes [#KipEi]_ with the parametric *base* protocol :ref:`SlowStart <doc-SlowStart>`, which is based on `TCP Slow
+start <https://en.wikipedia.org/wiki/TCP_congestion_control#Slow_start>`__ and contains a queue-model [#ModelOnly]_ to
+controll the speed off an event-connection.As the name suggests, initially the connections with be slow. Roughly, the
+parameter set the maximal number of unhandled events on a connection.
+|BR|
+The (improved) version of :ref:`Castle-TheSieve` uses a SlowStart of **1**. And `Main` will remove (or increase) that
+limit after reconnecting.
+
+Initially, the `Generator` is only *allowed* to sent one event, which is received by the `Finder`. Then `Main` will create
+the first Sieve (`Sieve(2)`), reconnects the Generator to that component, and increases the “speed” of the
+connection. As the connection **`Generator`->`Sieve(2)`** is stable, the is no need to limit the “queue”.
+
+The `Generator` acts as before: it sends (events with) integers over its output. But now, the SimpleSieve protocol can
+slow down the `Generator` --no code changes are needed for this. This may happen when the second event is sent, before
+it is received (or “handeld”) by the Finder, and the limit is set to **1**.
+|BR|
+As this limit is removed when a Sieve-component is inserted to the chain, only the start is slow...
+
+The same happens to every Sieve: initially (when it is connected to the Finder) there is a limit of 1 event in the
+queue. But when that connection is reconnected --and the potential Heisenbug is gone-- the limit is removed.
+
+.. tip:: Unlimited or better?
+
+   In this blog we remove the limit of the ``SlowStart protocol`` completely, for simplicity. Than, the Heisenbug is
+   solved.
+
+   That is not the only option.
+   |BR|
+   Given the `Generator` is a simple loop it can produce many integers fast. And so cause huge piles of queued
+   events. That can be done better, by the same concept: a maximal queue size. (again: just model).
+
+   It’s up to de developer to optimize this. Some prever the maximum (queue length) equally to the number of
+   Sieve-components,  other related it to the available core. Some use static values, other will adjust it over the
+   run-time of the appplication.
+   |BR|
+   That is all possible, with a few extra lines in the `Main` component. But also the Sieve component can set this
+   limit, both for incoming-ports as for outgoing port.
+
 
 Simulation
 ----------
 
-xxxx
+XXX
 
 
 -----
@@ -137,6 +176,19 @@ xxxx
    The Heisenbug will not (trivially) disappear when switching between hose variants
 
 .. [#ButImprove]
-   Still, as language-designer, we need to give the programmer more options to hint to a more optimals implementation. 
+   Still, as language-designer, we need to give the programmer more options to hint to a more optimals implementation.
 
-..  LocalWords:  heisenbugs, heisenbug
+.. [#KipEi]
+   This *SlowStart* base-protocol is part of Castle; see :ref:`Protocol-SlowStart`. But the need for it --follows like
+   this blog-- follows from the discovery of this :ref:`Castle-Heisenbug` in :ref:`Castle-TheSieve`.
+
+
+.. [#ModelOnly]
+   Remember, this queue exist as a *model* **only** (like everything in Castle-code)!
+   |BR|
+   Depending on ‘:ref:`TheMachinery`, there may no need to implement the queue (e.g.with DirectCall) at all; or the may
+   only be a queue-lenght and -maximum, or ..
+
+
+
+..  LocalWords:  heisenbug heisenbugs

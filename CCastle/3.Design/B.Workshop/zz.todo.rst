@@ -12,3 +12,20 @@ The (first) ideas is to not modify the code-files (as many tools do), but to rea
 
    * Plz do not, *never*, touch the files!
    * Make a virtual, “ram-based” temp-disk, copy all files to there and modify & test there. It also a lot faster!
+
+
+.. _simulation :
+
+Simulation/Verification
+=======================
+
+.. use:: Simulate & Verify all possible event-orders
+   :ID: U_Tools_EventOrder
+
+   To prevent :ref:`Castle-Heisenbug`, Castle should come with a tools to
+
+   - Simulate “other” event-orders (show it’s effect to the user)
+   - Verify that “any” event-order results in a logical & correct result.
+
+   .. seealso:: “:ref:`Dezyne`” has such a tool 
+

@@ -8,7 +8,7 @@ find a collection of (quick) notes here.
 .. include:: /std/QuickNote-tip.irst
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :titlesonly:
    :glob:
 
