@@ -11,7 +11,7 @@ Compiler Compiler
    :category: Castle, Usage
    :tags: Castle, Grammar
 
-   In Castle you can define a *grammar* directly in your code. The compiler will *translate* them into functions, using
+   In Castle, you can define *grammar*(s) directly in your code. The compiler will *translate* them into functions, using
    the build-in (PEG) **compiler-compiler** -- at least that was it called back in the days of *YACC*.
 
    How does one *use* that? And *why* should you?
@@ -21,7 +21,7 @@ Grammars, a short intro
 =======================
 
 A grammar is a collection of (parsing)-**rules** and optionally some *settings*.  Rules are written in a mixture of EBNF
-and PEG meta-syntax.  Let’s start with an simple example:
+and PEG meta-syntax.  Let’s start with a simple example:
 
 .. code-block:: PEG
 
@@ -33,132 +33,131 @@ and PEG meta-syntax.  Let’s start with an simple example:
 
 
 This basically defines that a ``castle_file`` is a sequence of ``import_line``\(s), ``interface``\(s), or
-``implementation``\(s); which are all “non-terminal(s)” -- see below. Each of those non-terminals are defined by more
-rules. By example, an ``import_line`` starts with the ``IMPORT_stmt`` then comes either a ``STRING_literal`` or a
+``implementation``\(s); which are all “non-terminal(s)” -- see below. All of those *’non-terminals’* are defined by more
+rules. For example, an ``import_line`` starts with the ``IMPORT_stmt`` then comes either a ``STRING_literal`` or a
 ``qualID``, and it ends with a semicolon (`';'`). Likewise, the ``IMPORT_stmt`` is set to ‘import’ (literally).
 
-As we see, a grammar contains non-terminals and terminals. Non-terminals are abstract and defined by grammar-rules,
-containing both (other) non-terminals and terminals. Terminals are concrete: it are the things (tokens) you type when
+As we see, the grammar contains non-terminals and terminals. Non-terminals are abstract and defined by grammar rules,
+containing both (other) non-terminals and terminals. Terminals are concrete: they are the things (tokens) you type when
 programming. Some terminals are like constants like the semicolon at the end of ``import_line``, therefore they are
-quoted in the grammar (Notice, the is also a non quoted semicolon on each line, that is part of the syntax of grammar.)
+quoted in the grammar (Notice, the is also a non-quoted semicolon on each line, which is part of the syntax of grammar.)
 |BR|
-Other terminals are more like valuables, they have a value. The ``STRING_literal`` is a good example. It’s value is the
-string itself. Similar for numbers and variable-names.
+Other terminals are more like valuables, they have a value. The ``STRING_literal`` is a good example. Its value is the
+string itself. Similar for numbers and variable names.
 
-In this example grammar, a ``qualID`` is a ``nameID`` *(a name that is used as ID, like in any programming language)*,
+In this (example) grammar, a ``qualID`` is a ``nameID`` *(a name that is used as ID, like in any programming language)*,
 optionally followed by sub-names *(again like most languages: a dotted name, specifying a field (in a field, in
 ...)*. In Castle, that name may start with a dot --which is a shorthand notation for “in the current namespace”. You can
-ignore that for know.
+ignore that for now.
 
-Basically, grammers defines how one should read the input --a text--, or more formally: how to parse it. The result of
-this parsing is twofold. It will check whether input conforms to the grammer; resulting in boolean, for the
-mathematics under us. And it will translate a sequential (flat) text into a tree-structure; which typically much more
-useful for a software-engineer.
+A grammar defines how one (aka the compiler) should read the input --a text--, or more formally: how to parse it. The
+result of this parsing is twofold. It will check whether the input conforms to the grammar; resulting in a boolean, for
+the mathematics under us. And it will translate a sequential (flat) text into a tree-structure; which is typically much
+more useful for a software engineer.
 |BR|
-A well known example is this HTML-file. On disk it’s nothing but text, which is easy to store and to transfer. But when
-send to your brouwer, it’s *parsed* to create the `DOM <https://nl.wikipedia.org/wiki/Document_Object_Model>`__; a
-tree of the document, with sections, paragraphs, hyper-links, etc. By regarding it as a tree, it easy to describe
-(e.g. with CSS) how arts should be shown: all headers have a background, the first row in a table is highlighed,
-etc.
 
+A well-known example is this HTML file. On disk, it’s nothing but text, which is easy to store and transfer. But when
+sent to your browser, it’s *parsed* to create the `DOM <https://nl.wikipedia.org/wiki/Document_Object_Model>`__; a tree
+of the document, with sections, paragraphs, hyperlinks, etc. By regarding it as a tree, it becomes easy to describe or
+selected parts (e.g. with CSS) how parts should be shown: all headers have a background, the first row in a table is
+highlighted, etc.
 
 Parsing
 =======
 Another well-known example is (the source of a) program. As code, it is just text. But the compiler will parse it into
-a parse-tree and/or an abstract-syntax-tree; which is build out of classes, methods, statements etc.
+a parse tree and/or an “abstract syntax tree” (AST); which is built out of classes, methods, statements, etc.
 |BR|
 But also your favorite IDE will *parse* it; to highlight the code, give tooltips, enable you to quickly navigate and
-refactor it and all those conviant features that make it your favorite editor.
-
+refactor it, and all those convenient  features that make it your favorite editor.
 And even you are probably parsing text as part of your daily job. When you un-serialise data, you are (often) parsing
-text; when you read the configuration, you are (or should be ) parsing that text. Even a simple input of the user might
+text; when you read the configuration, you are (or should be ) parsing that text. Even a simple input from the user might
 need a bit of parsing. The text “42”  is not the number :math:`42.0` -- you need to convert it; parse it.
 
-There a many ways to *parse*. You do not need a full-fledged grammer to translate “42” into :math:`42` or
-:math:`42.0`; a stdlib-function as ``atoi()`` or ``atof()`` will do. But how about handling complex numbers
-(:math:`4+j2`) or fractions (:math:`\frac{17}{42}`)?
+There are many ways to *parse*. A full-fledged grammar to translate (the text) ‘42’ into the int “:math:`42`” or
+the float “:math:`42.0`” isn’t needed, a stdlib-function as “``atoi()` or ``atof()`` will do. But how about handling
+complex numbers (:math:`4+j2`) or fractions (:math:`\frac{17}{42}`)?
 
 Non-parsing
 -----------
 
 As writing a proper-passer used to be (too) hard, other similar (but simpler) techniques are often used, like `globing
 <https://en.wikipedia.org/wiki/Glob_(programming)>`__ *(``\*.Castle`` on the bash-prompt will result in all
-Castle-files)*. This is simple, and will is very simple cases.
+Castle-files)*. This is simple and will do in very simple cases.
 |BR|
-Other try to use `regular-expressions <https://en.wikipedia.org/wiki/Regular_expression>`__ for parsing. RegExps are
-indeed more powerfull then globing, and often used to highlight code.  A pattern as ``//.*$`` can be used to highlight
-(single-line) comment. It often works, but this simple pattern might match a piece of text *inside* a
-multi-line-(doc)string -- which wrong.
+Others try to use `regular expressions <https://en.wikipedia.org/wiki/Regular_expression>`__ for parsing. RegExps are
+indeed more powerful than globing and are often used to highlight code.  A pattern as ``//.*$`` can be used to highlight
+(single-line) comments. It often works, but this simple pattern might match a piece of text *inside* a
+multi-line-(doc)string -- which is wrong.
 
-To parse an input-text its not a sound solution; although I have seen cunning regular-expressions, that almost always
-work. But *reg-exps* have not the same power as a grammar-- That is already proven halve a century ago and will not be
-repeated here.
+Those *tricks* aren’t a sound solution to parse generic input/text; although I have seen cunning RegExps that almost
+(always) work.  *Regular expressions* do have not the same power as grammars; that is already proven half a century
+ago and not repeated here.
 
-Grammars are more powerfull
-===========================
+Grammars are more powerful
+==========================
 
-A grammar (even a simple one) is more powerfull. You can define the overal structure of the input and the sub-structure
-of each *lump*. When a multi-line-string has no sub-structure, the parser will never find comments inside it. Nor other
-way around; it simple is not hunting for it.
+A grammar (even a simple one) is more powerful. You can define the overall structure of the input and the sub-structure
+of each *lump*. When a multi-line-string has no sub-structure, the parser will never find comments inside it. Nor the other
+way around; it simply is not hunting for it.
 
-As most programming-languages do not have build-in support for grammars, one has to resort to external tools. Like the
-famous `YACC <https://en.wikipedia.org/wiki/Yacc>`__; developed in 197X. YACC will read a grammar-file, and generates
+As most programming languages do not have built-in support for grammars, one has to resort to external tools. Like the
+famous `YACC <https://en.wikipedia.org/wiki/Yacc>`__; developed in 197X. YACC will read a grammar-file and generates
 C-code that can be compiled and linked to your code.
 
-Back then, writing compiler-compilers was a popular academic research exercise (YACC stand for: Yet Another Compiler
-Compiler). It was great for compiler-designers, but clumsy to use for average developers: The syntax to write a grammar
+Back then, writing compiler-compilers was a popular academic research exercise (YACC stands for: Yet Another Compiler
+Compiler). It was great for compiler designers, but clumsy to use for average developers: The syntax to write a grammar
 was hard to grasp, with many pitfalls, the interface between your code and the parser was awkward (you had to call
 ``yyparse()``; needed some globals; OO wasn't invented, no inheritance or data-hiding, which resulted in puzzling tricks
 to use multiple parsers, etc).
 |BR|
-Aside of that, more and better parsing strategies are developed; that is handles in another :ref:`blog <grammmar-code>`.
+Aside from that, more and better parsing strategies are developed; that is handled in another :ref:`blog <grammmar-code>`.
 
 Unleash that power!
 -------------------
 
-With those better parsing-algorithms, faster computers with a lot more memory and other inventions, writing grammars
-has become more peaceful. Except that you still need an extra step, another sytax, as you still need to use an external
+With those better parsing algorithms, faster computers with a lot more memory, and other inventions, writing grammars
+has become more peaceful. Except that you still need an extra step, another syntax, as you still need to use an external
 tool. That sometimes isn’t maintained after a couple of years ...
 |BR|
-The effect is, most developers don’t use grammars; they write parser-like code manually, or the settle for less optimal
-result. Or are utterly not aware that grammer can provide another, better, easier solution.
+The effect is, most developers don’t use grammars; they write parser-like code manually, or they settle for less optimal
+results. Or are utterly not aware that grammar can provide another, better, easier solution.
 
 With a few lines, you can define the structure of the input. Each rule is like a function: it has a name (the
-left-hand-side of the rule, so the part before the arrow), and an implementation; the part after the arrow. That
-implementation “calls” other rules, like normal code.
+‘left-hand side’ (LHS) of the rule, so the part before the arrow), and an implementation; the part after the
+arrow. That implementation “calls” other rules, like normal code.
 |BR|
-When you call the “main rule function”, with the input-stream as input, that *file* is parsed, and the complete input is
-ready to use; not more manual scanning and parsing. And when the file-structure is slightly updated, you just add a few
-details to the grammer.
+When you call the “main rule function”, with the input stream as input, that *file* is parsed, and the complete input is
+ready to use; not more manual scanning and parsing. And when the file structure is slightly updated, you just add a few
+details to the grammar.
 
-Castle has it build-in
+Castle has it built-in
 ======================
 
 Grammars makes reading text easy. Define the structure, call the “main rule” and use the values. Castle makes that
 simple!
 
-.. use:: Castle has build-in grammers support
-   :ID: U_Grammers
+.. use:: Castle has build-in grammar support
+   :ID: U_Grammars
 
-   In Castle one can define a grammer directly into the source-code; as :ref:`grammmar-code`!
+   In Castle one can define a grammar directly into the source code; as :ref:`grammmar-code`!
 
-   And, like many other details, the language is hiding the nasty details of parsing-strategies. There is no need to
-   generating, compiling, and use that code, with external tools. All that clutter is gone.
+   And, like many other details, the language is hiding the nasty details of parsing strategies. There is no need to
+   generate, compile, and use that code, with external tools. All that clutter is gone.
 
-   .. tip:: The standard parsing-algorithm is PEG; but that is not an requirement.
+   .. tip:: The standard parsing algorithm is PEG, but that is not a requirement.
 
-      The syntax of grammers is quite generic, it’s the implementation of the Castle-compiler that implements the
-      parsing-strategy; it should supports PEG. But it is free to support others as well (with user-selectable
+      The syntax of grammars is quite generic, it’s the implementation of the Castle compiler that implements the
+      parsing strategy; it should support PEG. But it is free to support others as well (with user-selectable
       compiler-plugins).
       |BR|
       This is not unlike other compiler-options.
 
-To use the grammar you simply call one of those rules as a function: pass the input (string) and it will return a
-(generic) tree-structure.
-When you simple like to verify the syntax is correct: use the tree as a boolean: when it not-empty the input is valid.
+To use the grammar, you simply call one of those rules as a function: pass the input (string) and it will return a
+(generic) tree structure.
+When you like to verify the syntax is correct: use the tree as a boolean: when it not-empty the input is valid.
 |BR|
-Typically however, you traverse that tree, like you do in many situations.
+Typically, however, you traverse that tree, like you do in many situations.
 
 To read that early configuration: parse the file and walk over the tree.  Or use it “ala a DOM” by using Castle’s
-:ref:`matching-statements` to simply. Curious on how that works: continue reading in :ref:`grammmar-code`.
+:ref:`matching-statements` to simply. Curious about how that works: continue reading in :ref:`grammmar-code`.
 Or skip to  “Why there are :ref:`G2C-actions`”.
