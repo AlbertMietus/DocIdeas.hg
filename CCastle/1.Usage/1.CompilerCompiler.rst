@@ -11,8 +11,8 @@ Compiler Compiler
    :category: Castle, Usage
    :tags: Castle, Grammar
 
-   In Castle, you can define *grammar*(s) directly in your code. The compiler will *translate* them into functions, using
-   the build-in (PEG) **compiler-compiler** -- at least that was it called back in the days of *YACC*.
+   In Castle, you can define *grammar(s)* directly in your code. A Castle compiler will **translate** them into
+   functions, using the build-in (PEG) *compiler-compiler* -- at least that was it called back in the days of *YACC*.
 
    How does one *use* that? And *why* should you?
 
@@ -20,8 +20,8 @@ Compiler Compiler
 Grammars, a short intro
 =======================
 
-A grammar is a collection of (parsing)-**rules** and optionally some *settings*.  Rules are written in a mixture of EBNF
-and PEG meta-syntax.  Let’s start with a simple example:
+A grammar is a collection of (parsing)-**rules** and some optional *settings*. Let us start with a simple example with
+some rules written in a mixture of EBNF and PEG meta-syntax. 
 
 .. code-block:: PEG
 
@@ -42,7 +42,7 @@ containing both (other) non-terminals and terminals. Terminals are concrete: the
 programming. Some terminals are like constants like the semicolon at the end of ``import_line``, therefore they are
 quoted in the grammar (Notice, the is also a non-quoted semicolon on each line, which is part of the syntax of grammar.)
 |BR|
-Other terminals are more like valuables, they have a value. The ``STRING_literal`` is a good example. Its value is the
+Other terminals are more like variables, they have a value. The ``STRING_literal`` is a good example. Its value is the
 string itself. Similar for numbers and variable names.
 
 In this (example) grammar, a ``qualID`` is a ``nameID`` *(a name that is used as ID, like in any programming language)*,
@@ -52,7 +52,7 @@ ignore that for now.
 
 A grammar defines how one (aka the compiler) should read the input --a text--, or more formally: how to parse it. The
 result of this parsing is twofold. It will check whether the input conforms to the grammar; resulting in a boolean, for
-the mathematics under us. And it will translate a sequential (flat) text into a tree-structure; which is typically much
+the mathematics under us. And it will translate a sequential (flat) text into a tree structure; which is typically much
 more useful for a software engineer.
 |BR|
 
@@ -80,25 +80,25 @@ complex numbers (:math:`4+j2`) or fractions (:math:`\frac{17}{42}`)?
 Non-parsing
 -----------
 
-As writing a proper-passer used to be (too) hard, other similar (but simpler) techniques are often used, like `globing
+As writing a proper parser used to be (too) hard, other similar (but more simple) techniques are often used, like `globing
 <https://en.wikipedia.org/wiki/Glob_(programming)>`__ *(``\*.Castle`` on the bash-prompt will result in all
-Castle-files)*. This is simple and will do in very simple cases.
+Castle-files)*. It is elementary and will do in simple cases.
 |BR|
 Others try to use `regular expressions <https://en.wikipedia.org/wiki/Regular_expression>`__ for parsing. RegExps are
-indeed more powerful than globing and are often used to highlight code.  A pattern as ``//.*$`` can be used to highlight
+indeed more powerful than globing. They are often used to highlight code.  A pattern as ``//.*$`` can be used to highlight
 (single-line) comments. It often works, but this simple pattern might match a piece of text *inside* a
 multi-line-(doc)string -- which is wrong.
 
 Those *tricks* aren’t a sound solution to parse generic input/text; although I have seen cunning RegExps that almost
 (always) work.  *Regular expressions* do have not the same power as grammars; that is already proven half a century
-ago and not repeated here.
+ago and is not repeated here.
 
 Grammars are more powerful
 ==========================
 
-A grammar (even a simple one) is more powerful. You can define the overall structure of the input and the sub-structure
-of each *lump*. When a multi-line-string has no sub-structure, the parser will never find comments inside it. Nor the other
-way around; it simply is not hunting for it.
+A grammar (even a simple one) is more powerful. You can define the  (input) structure hierarchically. And specify the
+sub-structure of each *lump*. For example: when a multi-line-string has no sub-structure, the parser will never find
+a statement inside it; it simply is not hunting for it.
 
 As most programming languages do not have built-in support for grammars, one has to resort to external tools. Like the
 famous `YACC <https://en.wikipedia.org/wiki/Yacc>`__; developed in 197X. YACC will read a grammar-file and generates
@@ -150,7 +150,7 @@ simple!
       parsing strategy; it should support PEG. But it is free to support others as well (with user-selectable
       compiler-plugins).
       |BR|
-      This is not unlike other compiler-options.
+      This is not unlike other compiler options.
 
 To use the grammar, you simply call one of those rules as a function: pass the input (string) and it will return a
 (generic) tree structure.

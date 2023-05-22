@@ -11,7 +11,7 @@ Heisenbugs
    :tags: Castle, DRAFT
 
    In Castle, one can dynamically connect components and send “events” over those connections. Typically this is done as
-   an action on an incoming message (see: :ref:`CCC-Actors`). And, depending on ‘:ref:`TheMachinery`’ those events can be
+   an action on an incoming message (see: :ref:`CCC-Actors`). And depending on ‘:ref:`TheMachinery`’, those events can be
    queued. It is this combination that *can result* in a **beautiful Heisenbug**.
 
    First, let’s explain the Heisenbug, before we give an example. Then we analyze it, show how to improve the code, and
@@ -34,14 +34,14 @@ The Sieve goes wrong
 My standard example, :ref:`Castle-TheSieve`, suffered from this issue. The initial version did work for years
 but failed horribly when another “machinery” was used. After studying this, the bug is simple and easy to fix.
 
-There are two related timing issues that together result in the Heisenbug. First, we introduce them, and then
+There are two related timing issues that together result in the Heisenbug. First, we introduce them and then
 show how the combination may fail.
 
 
 Event-order
 -----------
 
-Conceptually, the `Generator` sends (events with) integers to `Sieve(2)`, which may forwarded them to `Sieve(3)`, then
+Conceptually, the `Generator` sends (events with) integers to `Sieve(2)`, which may forward them to `Sieve(3)`, then
 to `Sieve(5)`, etc. As shown in the **Conceptual sidebar**, we probably like to assume that each integer is sieved
 before the next *’int’* *starts*: the classic “sequential view” we are used to.
 
@@ -203,7 +203,7 @@ queue. But when that connection is reconnected --and the potential Heisenbug is 
    Remember, this queue exists as a *model* **only** (like everything in Castle-code)!
    |BR|
    Depending on ‘:ref:`TheMachinery`, there may be no need to implement the queue (e.g.with DirectCall) at all; or they may
-   only be a queue-length and -maximum, or ...
+   only be a queue length and -maximum, or ...
 
 
 
