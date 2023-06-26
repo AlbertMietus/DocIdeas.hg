@@ -43,11 +43,10 @@ then into CPU instructions.
 Why RPython?
 -------------
 
-When a Castle-Compiler emits (valid) RPython, that code can be translated into C. And so we can compile Castle
-into native instructions!
+When a Castle-Compiler emits valid RPython, we can translate that into C and then in native instructions. So we can
+compile Castle into native instructions!
 |BR|
 And, when that extra step results in less development work, it sounds like an interesting idea.
-
 
 .. toctree::
    :maxdepth: 2
