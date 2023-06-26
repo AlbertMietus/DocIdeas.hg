@@ -1,12 +1,14 @@
 TODO (CC2Cpy)
 *************
 
+.. _CC2Cpy_NoNameSpaces:
+
 No Name Collisions
 ==================
 
 .. todo::
 
-   When we generate C code, all names are globals -- *there are no names in C*!
+   When we generate C code, all names are globals -- *there are no namespaces in C*!
    |BR|
    So, when a file (or package etc) defines a component (or protocol, ect), that happens to have the same name as one in
    another file, they clash. This is known as a *Name Collision*.
