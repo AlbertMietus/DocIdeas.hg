@@ -15,9 +15,9 @@ Grammar is code
 
    In this post, we look into de details of how this works. And will confirm grammars is code ...
 
-Let’s start with an example. The grammer below is a simplified description of how a (PEG) parsing-rule looks like. The
+Let’s start with an example. The grammar below is a simplified description of how a (PEG) parsing-rule looks like. The
 syntax in Castle is a bit more complicated, by having more details and options; but very simular. Most of the
-Caste-grammers can be parsed by the grammer below!
+Caste-grammars can be parsed by the grammar below!
 
 .. code-block:: PEG
 
@@ -32,7 +32,7 @@ Caste-grammers can be parsed by the grammer below!
    rule_name       <-  ID ;
    rule_xref       <-  ID ;
 
-With this grammer we can read and check whether an a string is a valid rule by simply calling:
+With this grammar we can read and check whether an a string is a valid rule by simply calling:
 :math:`ast:=PEG\_rule(single\_line)`. When not, ``ast`` is :math:`False`, else ``ast`` has 4 children (or fields).
 Where :data:`ast[0]` represent the ``rule_name``, :data:`ast[2]` is an ``expression``; which is a sequence of
 ``ordered_choice``\(s).
@@ -95,7 +95,7 @@ location.
 More details
 ~~~~~~~~~~~~
 
-There are a lot of details that make writing a grammer complex. We mention a few, and what it effect is on the (manually
+There are a lot of details that make writing a grammar complex. We mention a few, and what it effect is on the (manually
 written) code.
 
 When using alternatives (the ``|`` operator in the grammar), a PEG-parser will always try the first alternative first,
@@ -145,7 +145,7 @@ correct. Grammars in Castle can be left recursive! Both direct and indirect recu
 Generating the code
 ===================
 
-You might recognise the pattern: To make the grammer more useful, the algorithms become more complex and adds more
+You might recognise the pattern: To make the grammar more useful, the algorithms become more complex and adds more
 code. This “extra” code, however is not hard; you just need the same (or almost the same) lines at many places.
 |BR|
 This begs for automation. And that is exactly what most compiler-compilers do.
@@ -178,8 +178,8 @@ Castle: rules are functions
 ===========================
 
 .. resolution:: In Castle each rule act as a callable
-   :ID: R_GrammerCallables
-   :links: U_Grammers
+   :ID: R_GrammarCallables
+   :links: U_Grammars
 
    Each parse-rule that is defined in Castle is a kind of function; more accurately it’s a “callable”
 
@@ -205,7 +205,7 @@ there are outdated and both :ref:`matching-statements`, and :ref:`CyclicWoods`
    mathematical meaning: some input (parameters) and an output (return value).
 
 .. [#maintain]
-   This is not specially for grammers; all it valid for all programming-languages. New languages may introduce new
+   This is not specially for grammars; all it valid for all programming-languages. New languages may introduce new
    concepts (like --once-- OO). When the compiler becomes smarter, the programmer can focus in the important bits!
 
 .. [#notation]
@@ -214,7 +214,7 @@ there are outdated and both :ref:`matching-statements`, and :ref:`CyclicWoods`
    <https://en.wikipedia.org/wiki/Augmented_Backus–Naur_form>`__, and `YACC`_
    Most implementations of a given algorithm, use a dialect of a standard one, to enable :ref:`G2C-actions`, or ..
 
-   Also Caste does this: We use the Caste-grammer, which is based on both EBNF and PEG; but using the classic ‘|’
+   Also Caste does this: We use the Caste-grammar, which is based on both EBNF and PEG; but using the classic ‘|’
    instead of the ‘\’ for ordered-choice.
 
 .. [#leftStack]

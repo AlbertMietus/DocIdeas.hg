@@ -28,7 +28,7 @@ reached that point the code as executed. You could anything you like: Build a pa
 (partially) parsed input [#SAXDOM]_.
 
 It was great (back then). Many, also the more modern, parser-generators use inline-actions -- with the drawback that it
-makes the grammer harder to read.  In spite of the popularity of actions, I think we can do better, as lot has happend
+makes the grammar harder to read.  In spite of the popularity of actions, I think we can do better, as lot has happend
 since then. Most important: parsing-algorithms become a lot smarter. Yacc_ used a simple `LALR(1)`_ pattern; with only 1
 token lookahead. That allowed us to execute an action as soon a the input was read upto that point. Without backtracking
 and other “considere alternatives”, that execution is always deterministic.
@@ -39,7 +39,7 @@ Ambiguity
 With *“backtracking”* (and other *smartness*) this has chanced. Both the compiler-compiler and the resulting parsers
 have to consider multiple ways on how to read the input. And may reconsider many tokens and lines later on how to parse
 a (earlier) line. When execution actions “in-line”, the can become executed many times -- which probably isn’t what was
-ment when specifying the grammer.
+ment when specifying the grammar.
 
 Many strategies exist to solve this ambiguity.  Some tools demand that each action have no side-effects. When a
 pure-functions (as the are called) many times, the deliver exactly the same result, every time. So the issue is gone;
@@ -51,7 +51,7 @@ A tools may also postpone all actions until the parser is confident on how to re
 input is read. Again it works, unless you expected (debug) output on the fly.
 
 In short: inline-actions have become more restricted and less useful when parser become smarter. Without solving the
-need for maintainable grammers.
+need for maintainable grammars.
 
 Memory
 ------
@@ -100,22 +100,22 @@ and, act on it with visitors_ (and friend) later; possible in another component.
 Castle Has build-in visitors
 ============================
 
-.. resolution::  Castle Grammers should not need “inline-actions”
+.. resolution::  Castle Grammars should not need “inline-actions”
    :ID: RG_NoInlineActions
 
-   The traditional inline actions, as one invented by Yacc_, are outdated as the complicate the grammer, modern
+   The traditional inline actions, as one invented by Yacc_, are outdated as the complicate the grammar, modern
    parser-strategies need to read all input anyhow and we aren’t that restricted in memory anymore. So, an alternative
    that make the code better maintainable is to be preferred.
 
    .. tip:: It does not imply Castle (or a future version) is not allowed to support inline-actions
 
-      Grammer-tules are just functions; so why not allow pseudo-rules, that act as inline-actions, but are just regular
+      Grammar-tules are just functions; so why not allow pseudo-rules, that act as inline-actions, but are just regular
       functions (with the same signature)
 
-.. Use::  Castle Grammers can use Visitors
-   :ID: UG_GrammerVisitors
+.. Use::  Castle Grammars can use Visitors
+   :ID: UG_GrammarVisitors
 
-   To act on data, and to separate the data and the action, Castle will support Visitors that can act on Grammers; or
+   To act on data, and to separate the data and the action, Castle will support Visitors that can act on Grammars; or
    more accurate: on the trees that result from a parser-invocation.
 
    .. tip:: To enable this, Castle has a (generic, abstract) data-type ``Tree``; see :ref:`tree-type`.
