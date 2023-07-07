@@ -68,6 +68,9 @@ And, when that extra step results in less development work, it sounds like an in
    * `David Beazley: Tinkering with PyPy & Rpython [video]
      <https://www.youtube.com/watch?v=l_HBRhcgeuQ>`__
      [PDF] *funny & entertaining*!
-
+   * *RPython By Example* (a bit outdated):
+     `docs <https://mssun.github.io/rpython-by-example>`__
+     &
+     `code (git) <https://github.com/mssun/rpython-by-example>`__
 ..  LocalWords:  CCastle
 ..  LocalWords:  RPython CPython
