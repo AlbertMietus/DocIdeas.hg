@@ -3,7 +3,7 @@
 =====================================
 QuickNote: Sending Events & Machinery
 =====================================
-.. post:: 2023/7/26
+.. post:: 2023/7/27
    :category: DesignStudy, CastleBlogs, rough
    :tags: Castle, WorkshopTools
 

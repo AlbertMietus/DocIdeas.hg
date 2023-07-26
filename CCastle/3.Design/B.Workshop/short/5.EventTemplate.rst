@@ -4,7 +4,7 @@
 QuickNote: Jinja Events (templating)
 ====================================
 
-.. post:: 2023/7/27
+.. post:: 2023/7/26
    :category: DesignStudy, CastleBlogs, rough
    :tags: Castle, WorkshopTools
 
