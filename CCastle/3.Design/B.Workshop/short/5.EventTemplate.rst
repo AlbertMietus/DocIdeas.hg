@@ -13,8 +13,9 @@ QuickNote: Jinja Events (templating)
 Events, Eventshandlers & code
 =============================
 
-An (Castle) event is always part of a (Castle) protocol, Only the combination of the **names** of both the *Protocol*
-and the *Event* lead to a in unique (C/rPy/...) generated name. That is the event-handler (within a component, for a port).
+A (Castle) event is always part of a (Castle) protocol. Only the combination of the **names** of both the *Protocol* and
+the *Event* leads to a uniquely generated name. (for C/rPy/... code).  That is the event-handler (within a component,
+for a port).
 
 Besides -- and especially for C, we need a functiontype (aka prototype) and a handler/dispatch-table index
 
