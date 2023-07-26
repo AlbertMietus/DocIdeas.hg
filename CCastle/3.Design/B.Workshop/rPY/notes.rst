@@ -21,9 +21,9 @@ Generated
 
     {
     struct CC_B_OutPort          outport   = self->outlet;
-    CC_ComponentType             receiver  = outport.connection
-    CC_B_eDispatchTable          handlers  = outport.handlers    // This is set during the connect!
-    CC_E_SimpleSieve_input_FT    signal    = (CC_E_SimpleSieve_input_FT)handlers[CC_P_SimpleSieve_input]
+    CC_ComponentType             receiver  = outport.connection;
+    CC_B_eDispatchTable          handlers  = outport.handlers;    // This is set during the connect!
+    CC_E_SimpleSieve_input_FT    signal    = (CC_E_SimpleSieve_input_FT)handlers[CC_P_SimpleSieve_input];
 
     signal(receiver, (CC_selfType)self, i);
     }
@@ -87,48 +87,67 @@ Generated
 
 CC_E_Main__powerOn__power
 =========================
-.. code-block:: ReasonML
-
-   self.generator.runTo(max);
 
 This one differs a bit, as ``.generator`` is a **sub**\(component), not a ``port<out>``
 
 .. error::
 
-   Probably, this CCastle code is wrong: a Generator can handle ``runTo``, but only on it’s controll port.
-   |BR|
-   I assume, the code should be
+   Probably, the Castle code was wrong: a Generator can handle ``runTo``, but only on it’s controll port.
+
+   The code is, but see below for an improved version
 
    .. code-block:: ReasonML
 
-      self.generator.controll.runTo(max);
+      self.generator.runTo(max);
 
+   Which  was generated into:
+
+   .. code-block:: C
+
+      {
+      CC_ComponentType          receiver = self->generator;
+      CC_B_eDispatchTable       handlers = cc_S_Generator_controll; //XXX =self->generator->"controll"
+      CC_E_StartSieve_runTo_FT  signal   = (CC_E_StartSieve_runTo_FT)handlers[CC_P_StartSieve_runTo];
+
+      signal(receiver, (CC_selfType)self, max);
+      }
+
+   .. note:: As you can see, there is abit of magic here
+
+The improved Castle code is:
+
+.. code-block:: ReasonML
+
+   self.generator.controll.runTo(max);
 
 
 Generated
 ---------
+That improved Castle-code is “generated again”:
+
 .. code-block:: C
 
-  {
-  CC_ComponentType          receiver = self->generator;
-  CC_B_eDispatchTable       handlers = cc_S_Generator_controll; //XXX =self->generator->"controll"
-  CC_E_StartSieve_runTo_FT  signal   = (CC_E_StartSieve_runTo_FT)handlers[CC_P_StartSieve_runTo];
+   {
+   CC_ComponentType          sub = self->generator; // One extra line to find the sub-component
+   struct CC_B_OutPort       outport   = sub->controll;
+   CC_ComponentType          receiver  = outport.connection;
+   CC_B_eDispatchTable       handlers  = outport.handlers; 
+   CC_E_StartSieve_runTo_FT  signal   = (CC_E_StartSieve_runTo_FT)handlers[CC_P_StartSieve_runTo];
 
-  signal(receiver, (CC_selfType)self, max);
-  }
+   signal(receiver, (CC_selfType)self, max);
+   }
 
-.. warning:: A better variant is, see bug above
+Inline
+~~~~~~
+When *inlining* the first two lines, we get the basic structure again
 
-  .. code-block:: C
+.. code-block:: C
 
-     {
-     CC_ComponentType          sub = self->generator; // One extra line to find the sub-component
-     struct CC_B_OutPort       outport   = sub->controll
-     CC_ComponentType          receiver  = outport.connection;
-     CC_B_eDispatchTable       handlers  = outport.handlers; 
-     CC_E_StartSieve_runTo_FT  signal   = (CC_E_StartSieve_runTo_FT)handlers[CC_P_StartSieve_runTo];
+   {
+   struct CC_B_OutPort       outport   = self->generator->controll;     // Inline the first 2 lines
+   CC_ComponentType          receiver  = outport.connection;
+   CC_B_eDispatchTable       handlers  = outport.handlers;
+   CC_E_StartSieve_runTo_FT  signal   = (CC_E_StartSieve_runTo_FT)handlers[CC_P_StartSieve_runTo];
 
-     signal(receiver, (CC_selfType)self, max);
-     }
-
-   
+   signal(receiver, (CC_selfType)self, max);
+   }
