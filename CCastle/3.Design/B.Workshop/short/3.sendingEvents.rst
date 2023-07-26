@@ -3,6 +3,15 @@
 ==========================================
 QuickNote: Sending Events (generated code)
 ==========================================
+.. post:: 2023/7/25
+   :category: DesignStudy, CastleBlogs, rough
+   :tags: Castle, WorkshopTools
+
+   The handCompiled, generated to send an event is about 4 to 6 lines; depending on the :ref:`TheMachinery`, with a lot
+   of similarity. It is however buried in lot of other code, notes, ect. And therefore hard to see the difference.
+
+   Here, we collect al those pieces, and see which lines/fragments are common -- and can go into a template. And which
+   parts we have to *fill-in*.
 
 .. seealso::
 
@@ -10,7 +19,7 @@ QuickNote: Sending Events (generated code)
    * The Machinery part is now in :ref:`QN_EventMachinery`
    * The Jinja templating study can be found in :ref:`QN_EventTemplate`
 
-.. tip:: The assert & printf/debug statements (in C code) are removed, for clarity
+.. tip:: The assert & printf/debug statements (in C code) are removed, for clarity. As are most comments
 
 .. _QN_SendEvent_1:
 
@@ -27,7 +36,7 @@ Generated
     {
     struct CC_B_OutPort          outport   = self->outlet;
     CC_ComponentType             receiver  = outport.connection;
-    CC_B_eDispatchTable          handlers  = outport.handlers;    // This is set during the connect!
+    CC_B_eDispatchTable          handlers  = outport.handlers;
     CC_E_SimpleSieve_input_FT    signal    = (CC_E_SimpleSieve_input_FT)handlers[CC_P_SimpleSieve_input];
 
     signal(receiver, (CC_selfType)self, i);

@@ -4,6 +4,15 @@
 QuickNote: Jinja Events (templating)
 ====================================
 
+.. post:: 2023/7/27
+   :category: DesignStudy, CastleBlogs, rough
+   :tags: Castle, WorkshopTools
+
+   As we have seen in the recent :ref:`QS_QN` a lot of code (to send/handle events) is always the same, but for some
+   details. A template engine, like `Jinja <https://jinja.palletsprojects.com/>`__, can help in that.
+
+   Let’s study how those templates can help us.
+
 .. seealso::
 
    * The study of generated code in: :ref:`QN_SendEvent`
@@ -14,10 +23,13 @@ Events, Eventshandlers & code
 =============================
 
 A (Castle) event is always part of a (Castle) protocol. Only the combination of the **names** of both the *Protocol* and
-the *Event* leads to a uniquely generated name. (for C/rPy/... code).  That is the event-handler (within a component,
+the *Event* leads to a uniquely generated name. (for C/rPy/... code).  To be used in an EventHandler (within a component,
 for a port).
 
-Besides -- and especially for C, we need a functiontype (aka prototype) and a handler/dispatch-table index
+Events in Protocols
+-------------------
+Besides --and especially for C--, we need a functiontype (aka prototype) and a handler/dispatch-table index (as a
+constant).
 
 .. code-block:: ReasonML
 
@@ -33,50 +45,124 @@ Besides -- and especially for C, we need a functiontype (aka prototype) and a ha
    #define CC_P_StartSieve_runTo      42 // demo-no
    // The index-number is calculates by (e.g.) the number of *inherit* events plus literal index of protocol
 
-Jinja macros
-------------
-Below, we use a 2-step approach: Combine the protocol and event into an `event_handler`; that is the base to generated
-both the `event_FT` (function-proto-type) and the `event_no` index (number constante)
+Eventshandlers
+--------------
+We also need the event handler implementation, which is component and port specific. Here we focus only of the name of
+both the Castle and the generated (C-) function.
 
-.. code-block:: jinja
+.. code-block:: ReasonML
 
-   {%macro event_handler(protocol, event) -%}
-      {{protocol}}+{{event}}
-   {%- endmacro %}
-
-   {%macro event_FT(eventHandler) -%}	CC_E_{{eventHandler}}_FT	{%- endmacro %}
-   {%macro event_no(eventHandler) -%}	CC_P_{{eventHandler}}		{%- endmacro %}
-
-
---------
-
-
-
-The C-code, events results in two kind of texts
-- The 
-.. code-block:: jinja
-
-   {%macro event_FT(event) -%}	CC_E_{{event}}_FT	{%- endmacro %}
-   {%macro event_no(event) -%}	CC_P_{{event}}		{%- endmacro %}
+   implement Generator {
+   ...
+   StartSieve.runTo(max) on self.controll
+   {...}
 
 .. code-block:: C
 
-   void* 
-   CC_E_Main__powerOn__power(CC_Main* self, 
-                             CC_OutPortType sender, 
+   void
+   CC_E_Generator__StartSieve_runTo__controll(CC_C_Generator* self, CC_OutPortType sender, int max)
+   { ... }
+
+
+Jinja macros
+============
+
+Below, we use a 3-step approach:
+
+#. Combine the protocol and event into an `protocol_event`; that is the base to
+#. generatedboth the `event_FT` (function-proto-type) and the `event_no` index (number constante). And we use it to
+#. generate the name of the `event_handler` (C-) implementation
+
+.. code-block:: jinja
+
+   {%macro protocol_event(protocol, event) -%}
+     {{protocol}}_{{event}}
+   {%- endmacro %}
+
+.. code-block:: jinja
+
+   {%macro event_FT(protocolEvent) -%}	CC_E_{{protocolEvent}}_FT	{%- endmacro %}
+   {%macro event_no(protocolEvent) -%}	CC_P_{{protocolEvent}}		{%- endmacro %}
+
+.. code-block:: jinja
+
+   {%macro event_handler(compName, protocolEvent, portName)
+     CC_E_{{compName}}__{{protocolEvent}}__{{portName}}
+   {%- endmacro %}
+
+.. caution::
+
+   The code above is not fully designed. We have to chain the part to make it work. Now the are freewheeling,
+   independer, but readable piece.
+
+   We use `macro_names` and `marcoNames`. The former is a (jinga) *function*, the latter act as an argument. When the
+   are otherwise the same, the results of the function call is stored in the variable, and passed into the next marco as
+   parameter.
+   |BR|
+   But we assume you understand that, and are able to add the plumbing (or combine/inline them -- convenient, but less
+   readable!
+
+
+Generating C-Code
+=================
+
+Here we use the above marco’s (without plumbing) to generate *parts* of the code. Other pieces are (for now)
+hardcoded. That will change later.
+
+Sending
+-------
+
+CastleCode
+~~~~~~~~~~
+.. code-block:: ReasonML
+
+   self.generator.controll.runTo(max);
+
+Template
+~~~~~~~~
+.. code-block:: C
+
+   // Input jinja-marco’s:
+   /// (Aside of the ones given above)
+   ///  All values are valid C-code snippets
+   ////  my_comp:	“self”
+   ////  path2port:	“generator->control”
+   ///   args:		<list of arguments>
+
+   void*
+   CC_E_Main__powerOn__power(CC_Main* self,
+                             CC_OutPortType sender,
                              int max)
    {
    ...
-     // CastleCode:   self.generator.controll.runTo(max);
-     // Jinja: an Event like: ``StartSieve_runto`` can be expanded into a FuntionType and an handler[] index
+   {
+   struct CC_B_OutPort		outport 	= {{my_comp}}->{{path2port}};
+   CC_ComponentType		receiver	= outport.connection;
+   CC_B_eDispatchTable		handlers	= outport.handlers;
+   {{event_FT(protocolEvent)}}	signal  	= ({{event_FT(protocolEvent)}})handlers[{{event_no(protocolEvent)}}]; 
 
-     {
-   	struct CC_B_OutPort	outport 	= {{my_comp}}->{{path2port}];   //my_comp: self; path2port: generator->control
-    	CC_ComponentType	receiver	= outport.connection;
-    	CC_B_eDispatchTable	handlers	= outport.handlers; 
-   	{{event_FT(event)}}	signal  	= ({{event_FT(event)}})handlers[{{event_no(event)}}]; //event: StartSieve_runTo
-
-   	signal(receiver, (CC_selfType)self, {{args}}); // args: max
-     }
+   signal(receiver, (CC_selfType)self, {{args}}); // args: max
+   }
    ...
    };
+
+EventHandler
+-------------
+
+CastleCode
+~~~~~~~~~~
+.. code-block:: ReasonML
+
+   StartSieve.runTo(max) on self.controll // in Generator
+
+Template
+~~~~~~~~
+.. code-block:: C
+
+   // Input jinja-marco’s:
+   /// (Aside of the ones given above)
+   ///  All values are valid C-code snippets
+   ///   typedParms:	<list of parameters with types>
+   void
+   {{eventHandler}}(CC_C_{{compName}}* self, CC_OutPortType sender, {{typedParms}})
+   {...}

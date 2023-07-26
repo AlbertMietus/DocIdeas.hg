@@ -6,8 +6,8 @@ rPY: Use (r)Python as backend [Idea]
 
 
 .. post:: 2023/06/25
-   :category: Castle DesignStudy
-   :tags: DRAFT, IDEA, Castle, Workshop-Tools, rough
+   :category: Castle, DesignStudy, rough
+   :tags: DRAFT, IDEA, Castle, WorkshopTools,
 
    When designing a Castle-Compiler with a :ref:`C-backend <CC2Cpy>`, we found some nasty details unrelated to CCastle
    but to the C-language. For example, C has no namespaces (see :ref:`CC2Cpy_NoNameSpaces`); we can simulate them, but

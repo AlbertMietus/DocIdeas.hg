@@ -7,7 +7,7 @@ Heisenbugs
 ==========
 
 .. post:: 2023/04/08
-   :category: CastleBlogs, Castle DesignStudy
+   :category: CastleBlogs, Castle, DesignStudy
    :tags: Castle, DRAFT
 
    In Castle, one can dynamically connect components and send “events” over those connections. Typically this is done as

@@ -3,6 +3,12 @@
 =====================================
 QuickNote: Sending Events & Machinery
 =====================================
+.. post:: 2023/7/26
+   :category: DesignStudy, CastleBlogs, rough
+   :tags: Castle, WorkshopTools
+
+   Depending on the :ref:`TheMachinery`, the generated code to send an events will alter.
+   However, only a little bit as we will see in this study.
 
 .. seealso::
 

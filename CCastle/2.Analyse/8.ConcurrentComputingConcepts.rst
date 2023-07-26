@@ -7,7 +7,7 @@ Concurrent Computing Concepts
 =============================
 
 .. post:: 2022/09/30
-   :category: Castle DesignStudy
+   :category: Castle, DesignStudy
    :tags: Castle, Concurrency
 
    Sooner as we realize, even embedded systems will have piles & heaps of cores, as I described in
