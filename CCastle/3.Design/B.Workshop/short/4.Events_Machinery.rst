@@ -14,6 +14,8 @@ QuickNote: Sending Events & Machinery
 
    * :ref:`QN_SendEvent` for the generic part
    * :file:`.../SIEVE/2.GCD-work/CC-event-sieve.Castle-handCompiled.c`
+     |BR|
+     (not yet on OSDN)
 
 The generated code depends on :ref:`TheMachinery`. For sending an event, this however only a minor change. In this quick-note, we study the difference, for just one case: :ref:`QN_SendEvent_1`
 

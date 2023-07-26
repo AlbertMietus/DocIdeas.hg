@@ -16,6 +16,8 @@ QuickNote: Sending Events (generated code)
 .. seealso::
 
    * :file:`.../SIEVE/1.WorkCopy/CC-event-sieve.Castle-handCompiled.c`
+     |BR|
+     (`also on OSDN <https://osdn.net/users/albertmietus/pf/CC-Castle/scm/blobs/tip/src-example/hand-compiled/CC-event-sieve.Castle-handCompiled.c>`__)
    * The Machinery part is now in :ref:`QN_EventMachinery`
    * The Jinja templating study can be found in :ref:`QN_EventTemplate`
 

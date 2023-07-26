@@ -17,6 +17,8 @@ QuickNote: Jinja Events (templating)
 
    * The study of generated code in: :ref:`QN_SendEvent`
    * :file:`.../SIEVE/1.WorkCopy/CC-event-sieve.Castle-handCompiled.c`
+     |BR|
+     (`also on OSDN <https://osdn.net/users/albertmietus/pf/CC-Castle/scm/blobs/tip/src-example/hand-compiled/CC-event-sieve.Castle-handCompiled.c>`__)
 
 
 Events, Eventshandlers & code
