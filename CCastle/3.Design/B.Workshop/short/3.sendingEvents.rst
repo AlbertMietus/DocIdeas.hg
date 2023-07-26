@@ -1,13 +1,18 @@
-================================================
-Note: events trigger eventhandler (by Machinery)
-================================================
+.. _QN_SendEvent:
+
+==========================================
+QuickNote: Sending Events (generated code)
+==========================================
 
 .. seealso::
 
-   * .../SIEVE/1.WorkCopy/CC-event-sieve.Castle-handCompiled.c
-   * .../SIEVE/2.GCD-work/CC-event-sieve.Castle-handCompiled.c
+   * :file:`.../SIEVE/1.WorkCopy/CC-event-sieve.Castle-handCompiled.c`
+   * The Machinery part is now in :ref:`QN_EventMachinery`
+   * The Jinja templating study can be found in :ref:`QN_EventTemplate`
 
 .. tip:: The assert & printf/debug statements (in C code) are removed, for clarity
+
+.. _QN_SendEvent_1:
 
 CC_E_Generator__StartSieve_runTo__controll
 ==========================================
@@ -27,23 +32,6 @@ Generated
 
     signal(receiver, (CC_selfType)self, i);
     }
-
-LibDispatch
-~~~~~~~~~~~
-Most of the code is the same, but the call the eventhandler:  That line
-( ``signal(receiver, (CC_selfType)self, i);``) is the same, but embedded in a dispatch_queue plumbing 
-
-.. code-block:: C
-
-   ... // see above upto/including: ``CC_E_SimpleSieve_input_FT    signal = ...``
-
-   dispatch_queue_t             queue     = receiver->queue;
-   dispatch_async(queue, ^{
-       signal(receiver, (CC_selfType)self, i);
-     });
-    }
-
-As we like to focus on the generated structure, we ignore the LibDispatch variant; and only show te DirectCall base
 
 CC_E_Sieve__SimpleSieve_input__try
 ===================================
@@ -151,3 +139,4 @@ When *inlining* the first two lines, we get the basic structure again
 
    signal(receiver, (CC_selfType)self, max);
    }
+

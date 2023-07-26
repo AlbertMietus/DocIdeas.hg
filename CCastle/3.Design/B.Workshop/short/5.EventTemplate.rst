@@ -1,0 +1,81 @@
+.. _QN_EventTemplate:
+
+====================================
+QuickNote: Jinja Events (templating)
+====================================
+
+.. seealso::
+
+   * The study of generated code in: :ref:`QN_SendEvent`
+   * :file:`.../SIEVE/1.WorkCopy/CC-event-sieve.Castle-handCompiled.c`
+
+
+Events, Eventshandlers & code
+=============================
+
+An (Castle) event is always part of a (Castle) protocol, Only the combination of the **names** of both the *Protocol*
+and the *Event* lead to a in unique (C/rPy/...) generated name. That is the event-handler (within a component, for a port).
+
+Besides -- and especially for C, we need a functiontype (aka prototype) and a handler/dispatch-table index
+
+.. code-block:: ReasonML
+
+   protocol StartSieve : Protocol {
+     ...
+     runTo(int:max);
+     ...
+   }
+
+.. code-block:: C
+
+   typedef void (*CC_E_StartSieve_runTo_FT)(CC_selfType, CC_ComponentType, int);
+   #define CC_P_StartSieve_runTo      42 // demo-no
+   // The index-number is calculates by (e.g.) the number of *inherit* events plus literal index of protocol
+
+Jinja macros
+------------
+Below, we use a 2-step approach: Combine the protocol and event into an `event_handler`; that is the base to generated
+both the `event_FT` (function-proto-type) and the `event_no` index (number constante)
+
+.. code-block:: jinja
+
+   {%macro event_handler(protocol, event) -%}
+      {{protocol}}+{{event}}
+   {%- endmacro %}
+
+   {%macro event_FT(eventHandler) -%}	CC_E_{{eventHandler}}_FT	{%- endmacro %}
+   {%macro event_no(eventHandler) -%}	CC_P_{{eventHandler}}		{%- endmacro %}
+
+
+--------
+
+
+
+The C-code, events results in two kind of texts
+- The 
+.. code-block:: jinja
+
+   {%macro event_FT(event) -%}	CC_E_{{event}}_FT	{%- endmacro %}
+   {%macro event_no(event) -%}	CC_P_{{event}}		{%- endmacro %}
+
+.. code-block:: C
+
+   void* 
+   CC_E_Main__powerOn__power(CC_Main* self, 
+                             CC_OutPortType sender, 
+                             int max)
+   {
+   ...
+     // CastleCode:   self.generator.controll.runTo(max);
+     // Jinja: an Event like: ``StartSieve_runto`` can be expanded into a FuntionType and an handler[] index
+
+     {
+   	struct CC_B_OutPort	outport 	= {{my_comp}}->{{path2port}];   //my_comp: self; path2port: generator->control
+    	CC_ComponentType	receiver	= outport.connection;
+    	CC_B_eDispatchTable	handlers	= outport.handlers; 
+   	{{event_FT(event)}}	signal  	= ({{event_FT(event)}})handlers[{{event_no(event)}}]; //event: StartSieve_runTo
+
+   	signal(receiver, (CC_selfType)self, {{args}}); // args: max
+     }
+   ...
+   };

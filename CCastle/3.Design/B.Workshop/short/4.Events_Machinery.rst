@@ -1,0 +1,55 @@
+.. _QN_EventMachinery:
+
+=====================================
+QuickNote: Sending Events & Machinery
+=====================================
+
+.. seealso::
+
+   * :ref:`QN_SendEvent` for the generic part
+   * :file:`.../SIEVE/2.GCD-work/CC-event-sieve.Castle-handCompiled.c`
+
+The generated code depends on :ref:`TheMachinery`. For sending an event, this however only a minor change. In this quick-note, we study the difference, for just one case: :ref:`QN_SendEvent_1`
+
+
+Castle Code
+-----------
+.. code-block:: ReasonML
+
+   self.outlet.input(i);
+
+DirectCall (generated C)
+-------------------------
+.. code-block:: C
+
+    {
+    struct CC_B_OutPort          outport   = self->outlet;
+    CC_ComponentType             receiver  = outport.connection;
+    CC_B_eDispatchTable          handlers  = outport.handlers;
+    CC_E_SimpleSieve_input_FT    signal    = (CC_E_SimpleSieve_input_FT)handlers[CC_P_SimpleSieve_input];
+
+    signal(receiver, (CC_selfType)self, i);
+    }
+
+
+LibDispatch (generated C)
+-------------------------
+.. code-block:: C
+   :emphasize-lines: 6, 8, 10
+
+   {
+   struct CC_B_OutPort          outport   = self->outlet;
+   CC_ComponentType             receiver  = outport.connection;
+   CC_B_eDispatchTable          handlers  = outport.handlers;
+   CC_E_SimpleSieve_input_FT    signal    = (CC_E_SimpleSieve_input_FT)handlers[CC_P_SimpleSieve_input];
+   dispatch_queue_t             queue     = receiver->queue;
+
+   dispatch_async(queue, ^{
+       signal(receiver, (CC_selfType)self, i);
+     });
+    }
+
+Most of the code is the same, but the call the eventhandler: That line ( ``signal(receiver, (CC_selfType)self, i);``) is the same, but embedded in a dispatch_queue plumbing
+
+
+
