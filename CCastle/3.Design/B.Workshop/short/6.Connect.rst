@@ -1,0 +1,109 @@
+.. _QN_Connect:
+
+===============================
+QuickNote: Connecting two ports
+===============================
+.. post:: 2023/7/25
+   :category: DesignStudy, CastleBlogs, rough
+   :tags: Castle, WorkshopTools
+
+   Like in :ref:`QN: Sending Events <QN_SendEvent>`, we collect lines/fragments about connecting two ports from the
+   handCompiled code, to find similarities and design (jinja) templates.
+
+.. seealso::
+
+   * :file:`.../SIEVE/1.WorkCopy/CC-event-sieve.Castle-handCompiled.c`
+     (`also on OSDN <https://osdn.net/users/albertmietus/pf/CC-Castle/scm/blobs/tip/src-example/hand-compiled/CC-event-sieve.Castle-handCompiled.c>`__)
+
+.. hint::
+
+   The Castle **connect operator** (``=``) is *symmetrical*. One connects two ports, without any order.
+   |BR|
+   So, ``a=b`` and ``b=a`` have exactly the same behaviour.
+
+   Still, in the code below, we use the ``out = in`` order, which is advised. The real compiler will check this, and
+   silently adapt the generated code when the order is reversed.
+
+Collected Code fragments
+************************
+
+CC_Mi_Main__init
+================
+.. code-block:: ReasonML
+
+   .generator.outlet = .finder.newPrime;  // ``.port`` is short for self.port
+
+Generated
+---------
+.. code-block:: C
+
+   {
+   struct CC_B_OutPort * outlet	= &(((CC_C_Generator*)(self->generator))->outlet);	// link to port
+   outlet->connection		= self->finder;						// connection is to comp, not port!
+   outlet->handlers		= cc_S_Finder_newPrime;  				// a hardcoded, generated `CC_B_eDispatchTable`
+   }
+
+
+CC_E_Main__SimpleSieve_try__generator_found
+===========================================
+.. code-block:: ReasonML
+
+   s.coprime = self.finder.newPrime; // s: an alias to a Sieve
+
+.. code-block:: ReasonML
+
+   self.generator.outlet = s.try;
+
+.. code-block:: ReasonML
+
+    self.lastSieve.coprime = s.try;
+
+Generated
+---------
+.. code-block:: C
+
+   {
+   struct CC_B_OutPort * coprime	= &(((CC_C_Sieve*)s)->coprime);
+   coprime->connection			= self->finder;
+   coprime->handlers			= cc_S_Finder_newPrime;
+   }
+
+.. code-block:: C
+
+    {
+    struct CC_B_OutPort * outlet	= &(((CC_C_Generator*)(self->generator))->outlet);
+    outlet->connection = 		s;
+    outlet->handlers   = 		cc_S_Sieve_try;
+    }
+
+.. code-block:: C
+
+   {
+   struct CC_B_OutPort * coprime	= &(((CC_C_Sieve*)(self->lastSieve))->coprime);
+   coprime->connection			= s;
+   coprime->handlers			= cc_S_Sieve_try;
+   }
+
+
+Analyse
+*******
+
+
+The generated code above assumes a cohesive software deployment; where the “out-port” can view the “in port”. This depends
+on :ref:`TheMachinery`, like in the (above used) :ref:`Machinery-DirectCall`, and in the
+:ref:`Machinery-LibDispatch`. In others, like `DDS`, this may not be the case, and the code may need to change.
+
+Still, the generated code hardly uses that. It finds the outport, which is either ‘in’ `self` or a sub-component (like
+Generator and Finder in Main). And update that one. By writing a reference (here/in C: a pointer) to the component that
+holds the in-port. And by filling in the (eventhandler) dispatchTable of that in-port.
+|BR|
+But is does not read/use the in-component for that! The name of the table is generated, by combining the in-component
+and in-port name; both are known in/from the CastleCode!
+
+There is a bit of magic however.
+|BR|
+A components can be an **alias** --which is generic-- like ``s``. Then, we can only generate the (dispatchTable) name
+when we know the real type!
+
+For now, we can life with that!
+
