@@ -5,7 +5,7 @@ All Sphinx Directives
 
 .. post:: 2018/05/11
    :category: Sphinx
-   :tags: Sphinx directives
+   :tags: Tips & Tricks
 
    `Sphinx <http:\\Sphinx-doc.org>`_ comes with a huge number of *directives*. Some are inherited from `RST
    <http://docutils.sourceforge.net/rst.html>`_, others come from the many extensions that are available. But the is no

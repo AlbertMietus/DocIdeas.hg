@@ -10,8 +10,8 @@
    ``kwargs``: use or misuse?
 
 .. post:: 2017/03/29
-   :tags: Python, feedback
-   :category: Tips, rough
+   :category: rough
+   :tags: Tips & Tricks, Python
    :location: EHV
 
    Elke python-programmeur kent het :dfn:`kwargs` concept, waarmee een variabel aantal **named**- (of
