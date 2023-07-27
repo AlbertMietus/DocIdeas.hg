@@ -107,3 +107,6 @@ when we know the real type!
 
 For now, we can life with that!
 
+
+Templating
+**********
