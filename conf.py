@@ -85,3 +85,4 @@ print(f"Using plantuml -version: {result.stdout}")
 #-----------------------------------------------
 extensions.append('sphinx_tabs.tabs')
 
+html_theme_options["navigation_depth"] =5
