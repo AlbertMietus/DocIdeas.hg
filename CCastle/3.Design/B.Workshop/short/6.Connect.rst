@@ -3,7 +3,7 @@
 ===============================
 QuickNote: Connecting two ports
 ===============================
-.. post:: 2023/7/25
+.. post:: 2023/9/1
    :category: DesignStudy, CastleBlogs, rough
    :tags: Castle, WorkshopTools
 
@@ -72,8 +72,8 @@ Generated
 
     {
     struct CC_B_OutPort * outlet	= &(((CC_C_Generator*)(self->generator))->outlet);
-    outlet->connection = 		s;
-    outlet->handlers   = 		cc_S_Sieve_try;
+    outlet->connection  		= s;
+    outlet->handlers	 		= cc_S_Sieve_try;
     }
 
 .. code-block:: C
@@ -87,7 +87,6 @@ Generated
 
 Analyse
 *******
-
 
 The generated code above assumes a cohesive software deployment; where the “out-port” can view the “in port”. This depends
 on :ref:`TheMachinery`, like in the (above used) :ref:`Machinery-DirectCall`, and in the
@@ -110,3 +109,50 @@ For now, we can life with that!
 
 Templating
 **********
+
+Below we give in the same style as in “:ref:`QN_SendEvent`” some Jinja templates. In the comments we list the input
+(variables) with some examples as used above.
+
+Jinja macros
+============
+
+We can generate the name of the DispatchTable when we know the names of the component and the port. That is, the name of
+the Component, as set in the CastleCode (So, the name of the ``Component``, not the `instance`).
+
+.. code-block:: jinja
+
+   {#
+   # inComp -- Finder, Sieve,
+   # inPort -- newPrime, try, 
+   #}
+   {%macro dispatch_table(inComp, inPort) -%}	 cc_S_{{inComp}}_{{inPort}} 	{%- endmacro %}
+
+
+Template
+========
+
+The C-code to make the connection is quite straightforward. We need an alias/pointer to the outgoing port; we like to
+use the name of the outport for that -- although we can use a static name.  The value is always (de)referencing the
+outgoing Port on the outgoing Component; but we need to add a little casting, and (optionally) a few “pointer-steps” to
+that Comp -- that is called the outCompPath. Later, we will use macros to calculate it.
+
+That `CC_B_OutPort` has two values, that need to be set -- that are the last 2 lines. The connection-field is the
+incoming component (Note: the Component, not the Port), and the handlers is pointer to the corresponding
+DispatchTable; as calculated above.
+
+.. code-block:: C
+
+   // Input jinja-marco’s:
+   ////  outPort (name)	-- outlet, coprime
+   ////  outCompType 	--  CC_C_Generator, CC_S_Sieve
+   ////  outCompPath 	-- self->generator,  self->finder, self->lastSieve
+   ////  inCompPath 	-- self->finder, s [as alias]
+   ////  inComp (name)	-- Finder, Sieve
+   ////  inPort (name)	-- newPrime, try
+
+   {
+   struct CC_B_OutPort * {{outPort}}	= &((({{outCompType}}*)({{outCompPath}}))->{{outPort}});
+   {{outPort}}->connection		= {{inCompPath}};
+   {{outPort}}->handlers		= {{dispatch_table(inComp, inPort)}};
+   }
+
