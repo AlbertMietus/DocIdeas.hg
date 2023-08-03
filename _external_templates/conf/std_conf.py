@@ -61,3 +61,11 @@ needs_id_regex = r'^[A-Z][A-Za-z]*_[A-Za-z0-9-]{2,}'
 
 from std_needs import needs_types, needs_layouts
 needs_default_layout = 'clean_collapsed'
+
+if True
+    print("Debug: show all packages:")
+    import os
+    os.system("pip list")
+    print("Debug: Outdates packages:")
+    os.system("pip list --outdated")
+    print("Done =====")
