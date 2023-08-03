@@ -1,6 +1,8 @@
 # Copyright (C) ALbert Mietus, SoftwareBeterMaken.nl; 2017- 2023
 # -*- coding: utf-8 -*-
 
+DEBUG=False
+
 # read STD config ...
 #==========================================
 import sys; sys.path.append('_external_templates/conf')
@@ -74,10 +76,11 @@ if on_rtd:
 else:
     plantuml = 'java  -Djava.awt.headless=true  -jar /Users/albert/Apps/PlantUML/libexec/plantuml-RTfD.jar'  #plantuml.1.2020.2.jar
 
-    
-import subprocess
-result = subprocess.run(plantuml.split() +['-version'], stdout=subprocess.PIPE)
-print(f"Using plantuml -version: {result.stdout}")
+
+if DEBUG:
+    import subprocess
+    result = subprocess.run(plantuml.split() +['-version'], stdout=subprocess.PIPE)
+    print(f"Using plantuml -version: {result.stdout}")
 
 
 
@@ -87,7 +90,7 @@ extensions.append('sphinx_tabs.tabs')
 
 html_theme_options["navigation_depth"] =5
 
-if True:
+if DEBUG:
     print("Debug: show all packages:")
     import os
     os.system("pip list")
