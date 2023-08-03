@@ -1,4 +1,4 @@
-sphinx=6.2.1
+sphinx==6.2.1
 ablog
 sphinxcontrib-plantuml
 sphinxcontrib-fulltoc
