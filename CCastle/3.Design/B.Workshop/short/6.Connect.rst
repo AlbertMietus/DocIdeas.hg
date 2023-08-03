@@ -3,7 +3,7 @@
 ===============================
 QuickNote: Connecting two ports
 ===============================
-.. post:: 2023/9/1
+.. post:: 2023/8/1
    :category: DesignStudy, CastleBlogs, rough
    :tags: Castle, WorkshopTools
 
