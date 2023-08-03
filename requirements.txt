@@ -1,4 +1,4 @@
-ablog
+ablog=="0.10.25"
 sphinxcontrib-plantuml
 sphinxcontrib-fulltoc
 sphinx-rtd-theme
