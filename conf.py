@@ -86,3 +86,11 @@ print(f"Using plantuml -version: {result.stdout}")
 extensions.append('sphinx_tabs.tabs')
 
 html_theme_options["navigation_depth"] =5
+
+if True:
+    print("Debug: show all packages:")
+    import os
+    os.system("pip list")
+    print("Debug: Outdates packages:")
+    os.system("pip list --outdated")
+    print("Done =====")
