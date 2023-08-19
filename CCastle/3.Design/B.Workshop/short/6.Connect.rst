@@ -1,3 +1,5 @@
+.. include:: /std/localtoc.irst
+
 .. _QN_Connect:
 
 ===============================
@@ -7,8 +9,8 @@ QuickNote: Connecting two ports
    :category: DesignStudy, CastleBlogs, rough
    :tags: Castle, WorkshopTools
 
-   Like in :ref:`QN: Sending Events <QN_SendEvent>`, we collect lines/fragments about connecting two ports from the
-   handCompiled code, to find similarities and design (jinja) templates.
+   Like in :ref:`QN: Sending Events <QN_SendEvent>`, we collect here some lines/fragments about connecting two ports in the
+   *handCompiled code* to find similarities, and to design the (Jinja) templates.
 
 .. seealso::
 
@@ -27,8 +29,20 @@ QuickNote: Connecting two ports
 Collected Code fragments
 ************************
 
+:ref:`Castle-TheSieve` has only a few (kinds of) connections:
+
+#. Between the ``Generator`` and (the first) ``Sieve``-element;
+#. Between two ``Sieve``-elements;
+#. Between (the last) ``Sieve`` and the ``Finder``; and
+#. Only at the start, the ``Generator`` is connect with the ``Finder``, as there are initially no ``Sieve``\s (aka primes found).
+
+In this variant of the code, all those connections are made in the ``Main`` component. In other variants some code is
+located in the Finder, but that has no effect on the generated code (except for prefixed and generated function-names).
+
 CC_Mi_Main__init
 ================
+This connects the output-port ``outlet`` of the ``Generator`` with the ``Finder``’s input-port ``newPrime``; to start sieving.
+
 .. code-block:: ReasonML
 
    .generator.outlet = .finder.newPrime;  // ``.port`` is short for self.port
@@ -46,17 +60,23 @@ Generated
 
 CC_E_Main__SimpleSieve_try__generator_found
 ===========================================
+Connection the new ``Sieve``-element.
+|BR|
+Both it’s output-port (`coprime`) to the Finder’s input (`newPrime`).
+
 .. code-block:: ReasonML
 
-   s.coprime = self.finder.newPrime; // s: an alias to a Sieve
+   s.coprime = self.finder.newPrime; // s: alias to the newly created Sieve-Element
 
-.. code-block:: ReasonML
-
-   self.generator.outlet = s.try;
+And it’s input-port (`try`), typically to the output of the last Sieve, but initially to the output of the Generator.
 
 .. code-block:: ReasonML
 
     self.lastSieve.coprime = s.try;
+
+.. code-block:: ReasonML
+
+   self.generator.outlet = s.try;
 
 Generated
 ---------
@@ -70,19 +90,19 @@ Generated
 
 .. code-block:: C
 
-    {
-    struct CC_B_OutPort * outlet	= &(((CC_C_Generator*)(self->generator))->outlet);
-    outlet->connection  		= s;
-    outlet->handlers	 		= cc_S_Sieve_try;
-    }
-
-.. code-block:: C
-
    {
    struct CC_B_OutPort * coprime	= &(((CC_C_Sieve*)(self->lastSieve))->coprime);
    coprime->connection			= s;
    coprime->handlers			= cc_S_Sieve_try;
    }
+
+.. code-block:: C
+
+    {
+    struct CC_B_OutPort * outlet	= &(((CC_C_Generator*)(self->generator))->outlet);
+    outlet->connection  		= s;
+    outlet->handlers	 		= cc_S_Sieve_try;
+    }
 
 
 Analyse
@@ -92,19 +112,25 @@ The generated code above assumes a cohesive software deployment; where the “ou
 on :ref:`TheMachinery`, like in the (above used) :ref:`Machinery-DirectCall`, and in the
 :ref:`Machinery-LibDispatch`. In others, like `DDS`, this may not be the case, and the code may need to change.
 
-Still, the generated code hardly uses that. It finds the outport, which is either ‘in’ `self` or a sub-component (like
-Generator and Finder in Main). And update that one. By writing a reference (here/in C: a pointer) to the component that
-holds the in-port. And by filling in the (eventhandler) dispatchTable of that in-port.
+Still, the generated code hardly uses that!
 |BR|
-But is does not read/use the in-component for that! The name of the table is generated, by combining the in-component
-and in-port name; both are known in/from the CastleCode!
+It finds the *OutPort*, which is either ‘in’ `self`, or in a sub-component (like ``.generator`` and ``.finder`` in
+*Main__init*). And update it’s two fields:
+
+a. It fills-in the reference (here/in C: a pointer) to the element (not component) that holds the in-port. And,
+b. Links (C: write a pointer) to the dispatchTable of the receiving Component (not element).
+
+Not, it does not need to access (read/write) the in-component!
+|BR|
+It only compose the names. For example, the name of the dispatchTable is based on the name of the Component, and the
+name of the Port. The event-handlers (the functions) itself are not needed! Both names are available in the CastleCode!
 
 There is a bit of magic however.
 |BR|
 A components can be an **alias** --which is generic-- like ``s``. Then, we can only generate the (dispatchTable) name
 when we know the real type!
 
-For now, we can life with that!
+But as that alias is typically created (or set) a few lines above,  we can life with that *(for now)*.
 
 
 Templating
