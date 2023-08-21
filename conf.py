@@ -84,7 +84,7 @@ if DEBUG:
 
 
 
-# tabs (There are many versions, we use this one
+# tabs (There are many versions, we use this one: https://sphinx-tabs.readthedocs.io/
 #-----------------------------------------------
 extensions.append('sphinx_tabs.tabs')
 

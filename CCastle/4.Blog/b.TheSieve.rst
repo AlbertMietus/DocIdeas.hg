@@ -122,6 +122,11 @@ usually called “main”. However the name is not special (like in C/C++), it�
 
 XXXX
 
+The Code
+********
+
+.. include:: ./sieve-code.irst
+
 ----------
 
 .. rubric:: Footnotes
