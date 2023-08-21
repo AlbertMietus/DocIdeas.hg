@@ -110,7 +110,7 @@ The generated code above assumes a cohesive software deployment; where the “ou
 on :ref:`TheMachinery`, like in the (above used) :ref:`Machinery-DirectCall`, and in the
 :ref:`Machinery-LibDispatch`. In others, like `DDS`, this may not be the case, and the code may need to change.
 
-Still, the generated code hardly uses that!
+Still, the generated code hardly uses this cohesive aspect!
 |BR|
 It finds the *OutPort*, which is either ‘in’ `self`, or in a sub-component (like ``.generator`` and ``.finder`` in
 *Main__init*). And update it’s two fields:
