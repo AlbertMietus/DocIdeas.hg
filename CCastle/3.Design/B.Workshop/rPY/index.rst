@@ -72,5 +72,8 @@ And, when that extra step results in less development work, it sounds like an in
      `docs <https://mssun.github.io/rpython-by-example>`__
      &
      `code (git) <https://github.com/mssun/rpython-by-example>`__
+   * https://osdn.net/users/albertmietus/pf/TryOut_PyPy-and-Rpython (SLOW!)
+     My collection of small rpython demo and typical Python-code that is not rpython
+
 ..  LocalWords:  CCastle
 ..  LocalWords:  RPython CPython
