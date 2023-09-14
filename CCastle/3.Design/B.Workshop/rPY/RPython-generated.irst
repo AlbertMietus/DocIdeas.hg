@@ -59,7 +59,7 @@
                def _debug_attr_(self, name_only=True): ...
 
                # One method for each event-port combi
-               def SimpleSieve_try__generator_found(self, newPrime): ...
+               def SimpleSieve_input__generator_found(self, newPrime): ...
                def powerOn__power(self, max): ...
 
                # other
@@ -86,25 +86,36 @@
                ]
 
             cc_S_Generator_collect = [
-                None, None, None, None, None, None,        # 0-5: not relevant here
-                CC_Generator.SimpleSieve_input__collect,   # 6
+                None, None, None, None, None, None, 		# 0-5: not relevant here
+                CC_Generator.SimpleSieve_input__collect,   	# 6/CC_P_SimpleSieve_input
                  ]
 
          .. code-tab:: Python Sieve
 
             cc_S_Sieve_try = [
-                None, None, None, None, None, None, # 0-5: not relevant here
-                CC_Sieve.SimpleSieve_input__try,   # 6/CC_P_SimpleSieve_input
+                None, None, None, None, None, None, 		# 0-5: not relevant here
+                CC_Sieve.SimpleSieve_input__try,    		# 6/CC_P_SimpleSieve_input
                ]
 
          .. code-tab:: Python Finder
 
             cc_S_Finder_newPrime = [
-                None, None, None, None, None, None, # 0-5: not relevant here
-                CC_Finder.SimpleSieve_input__newPrime # 6/CC_P_SimpleSieve_input
+                None, None, None, None, None, None, 		# 0-5: not relevant here
+                CC_Finder.SimpleSieve_input__newPrime 		# 6/CC_P_SimpleSieve_input
                ]
 
 
          .. code-tab:: Python Main
 
-            .
+            cc_S_Main_power = [
+                None, 						# 0: not relevant here
+                CC_Main.powerOn__power,
+               ]
+
+         .. code-tab:: Python Main (pins)
+
+            cc_S_Main__pin1 = [					# internal pin
+                None, None, None, None, None, None, 		# 0-5: not relevant here
+                CC_Main.SimpleSieve_input__finder_found, 	# 6/CC_P_SimpleSieve_input
+               ]
+

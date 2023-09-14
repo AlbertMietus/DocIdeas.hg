@@ -42,34 +42,63 @@ This part is easy to automate.
 
 .. include:: ./RPython-definitions.irst
 
+
 Generated code
 ===============
 
-Each *(Castle)* component results in a (*RPython*) Class, that contain all code for that component. As (R)Python classes
-are also namespaces, the names of (e.g) the even-handlers become shorter; there is no need to put the component-name in
-the method-name. But in general we follow the structure as in the :ref:`CC2Cpy<CC2Cpy>` approach.
+Each *(Castle)* component results in a (*RPython*) class containing all code for that component. As (R)Python classes
+are also namespaces, the names of (e.g.) the even-handlers become shorter; there is no need to put the component-name in
+the method-name. But in general, we follow the structure as in the :ref:`CC2Cpy<CC2Cpy>` approach.
 
 Components
 ----------
 
-A (Castle) Component becomes a subclass of ``CC_B_Component``, this (abstract) base-class provides (currently, mostly)
-some debugging support. Subclasses should override the ``_debug_attr_()`` method, that returns *(not print)* a string
+A (Castle) Component becomes a subclass of ``CC_B_Component``, an (abstract) base class providing (currently mostly)
+debugging support. Subclasses should override the ``_debug_attr_()`` method, which returns *(but not print)* a string
 with ``name=value`` pairs for debug-printing.
 
-The initialiser is split in ``__init__()`` and ``_castle_init()``; the later implements (generates code for) the
+The initialiser is split in ``__init__()`` and ``_castle_init()``; the latter implements (generates code for) the
 Castle-init function, and is called by ``__init__()`` [#init]_.
 
-Roughly each protocol-event for each port (aka a Eventhandler) results in a (R)Python method, as do data- (and other)
+Both initialisers will have the parameters to the class, and/or the elements. A default value (Nil) is set in
+``__init__``, whereas ``_castle_init`` can set it -- as specified in the castle-code. See the `SieveClass.py` code for
+an example (not shown).
+|BR|
+Static variables in Components --which are defined in e.g. EventHandlers-- are also handled in ``__init__``. As they
+have a scope of one function, there name is prefix with that function-name. You can find an example in the
+`GeneratorClass.py` (not shown).
+
+
+Roughly each protocol-event for each port (aka an EventHandler) results in a (R)Python method, as do data- (and other)
 handlers, and internal functions.
 
 DispatchTables
 --------------
 
-Every (input) port can trigger several eventhandlers (or data-/stream-/... handlers), as an (event) protocol can have
+Every (input) port can trigger several EventHandlers (or data-/stream-/... handlers), as an (event) protocol can have
 multiple events. Therefore, a component has an (event) DispatchTable per port [#activePort]_.
 
 Every DispatchTable is an *array* (python: List) with the same size as the number of events in the corresponding
 Protocol (which is static at compile-time) -- including the inherited events [#arbitrary]_.
+
+
+.. include:: ./sub_EH-sidebar.irst
+
+Pins
+~~~~
+
+A (Castle) component can have sub-component. They can be interconnected using the typical syntax and (RPython)
+structure.
+|BR|
+But a component-element can also receive and send messages to its own sub-elements. The (SieveDemo) Main component uses
+this to handle a newly *found prime* (by the ``Finder``\’s output-port ``found``). In Castle-code the EventHandler names
+both the (sub)element and its port (instead of only its own port). See the sidebar for an example.
+
+Such an “incoming event” of a sub-element needs a DispatchTable also, we call them “pin(s)”.
+|BR|
+No extra DispatchTable’s are needed to send an event to a sub-element; the normal in-port of that component (aka it
+DispatchTable) handle’s that. Bu we need a but of extra code to fire that event (see below).
+
 
 Examples
 ---------
@@ -87,10 +116,10 @@ Below we show some Jinja(s) templates, in the style of :ref:`QN_EventTemplate` (
 XXX
 ===
 
-Eventhandlers
+EventHandlers
 -------------
 
-As we use (R)Python namespaces (modules, classes), the generated names for the eventhandlers becomes shorter (than in
+As we use (R)Python namespaces (modules, classes), the generated names for the EventHandlers becomes shorter (than in
 C).
 
 .. code-block:: jinja
@@ -140,4 +169,10 @@ C).
    At the moment, we believe a table-approach doing the same thing directly is better!
 
 .. [#arbitrary]
-   In this example, we use some arbitrary number (like 6, 7) of “dummy” inherited events for all Protocols.
+   In this example, we use some arbitrary number (like 6, 7) of “dummy” inherited events for all Protocols. Those *not
+   existing* inherited one get a simple ``None`` in the table. In real code, this should not happen. Then (a)  inherited
+   events are copied down, and (b) empty slots will contain a generic error function [#RT]_.
+
+.. [#RT]
+   The runtime becomes simpler (and faster) by using a error-function, then using None, and checking for None on every
+   call. For this experiment both ways are not needed.

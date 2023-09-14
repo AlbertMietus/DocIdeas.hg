@@ -1,0 +1,16 @@
+.. -*-rst-*-
+   included in  `Sieve_in_rPython.rst`
+
+.. sidebar::  EventHandlers: 2 kind (syntax demo)
+
+   .. tabs::
+
+      .. code-tab:: ReasonML interconnect
+
+         SimpleSieve.input(try) on self.try
+         { ... }
+
+      .. code-tab:: ReasonML sub-elements
+
+         SimpleSieve.try(newPrime) on self.finder.found
+         { ... }
