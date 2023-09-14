@@ -19,6 +19,7 @@ QuickNote: Sending Events & Machinery
 
 The generated code depends on :ref:`TheMachinery`. For sending an event, this however only a minor change. In this quick-note, we study the difference, for just one case: :ref:`QN_SendEvent_1`
 
+.. _QN_EventMachinery-outlet-input:
 
 Castle Code
 -----------

@@ -1,11 +1,13 @@
+.. include:: /std/QuickNote-tip.irst
+
 .. _Sieve_in_rPython:
 
-====================
-The Sieve in RPython
-====================
+===============================
+QuickNote: The Sieve in RPython
+===============================
 
-.. post:: 		
-   :category:  RPython, Experiment, rough
+.. post:: 2023/9/14
+   :category:  RPython, Experiment, rough, QuickNote
    :tags: Castle, WorkshopTools
 
    Before implementing an :ref:`RPython backend <rPY>`, a short study of `RPython
@@ -43,7 +45,7 @@ This part is easy to automate.
 .. include:: ./RPython-definitions.irst
 
 
-Generated code
+Data structures
 ===============
 
 Each *(Castle)* component results in a (*RPython*) class containing all code for that component. As (R)Python classes
@@ -105,41 +107,91 @@ Examples
 
 .. include:: ./RPython-generated.irst
 
-XXXX
 
+Code fragments
+==============
 
-Templating
-**********
+To connect two components (via ports), and to send events (or other protocols) over them, some code is needed. That is
+studied below.
 
-Below we show some Jinja(s) templates, in the style of :ref:`QN_EventTemplate` (for the :ref:`CC2Cpy` backend).
+Connecting
+----------
 
-XXX
-===
+Castle supports multiple :ref:`Machineries<TheMachinery>`, with all will generate a bit different code. Here we use the
+:ref:`Machinery-DirectCall` one [#differ_a_bit]_.
 
-EventHandlers
--------------
+We use (one of the ) same examples as in :ref:`QN_Connect` (see: :ref:`QN_Connect_Main__init`).
+|BR|
+The Castle Code:
 
-As we use (R)Python namespaces (modules, classes), the generated names for the EventHandlers becomes shorter (than in
-C).
+.. code-block:: ReasonML
 
-.. code-block:: jinja
+   .generator.outlet = .finder.newPrime;
 
-   {%macro event_handler(compName, protocol, event, portName) 
-      {{protocol{}_{{event}}__{{portName}}
-   {%- endmacro %}
-   {# compName is not used/needed, as the method is in the `compName` class #}
+This will result in two lines of RPython. They are very similar to the C-backend: the `outlet` field holds the other
+component (element) and the handlers denote the DispatchTable of the incoming port.
 
+.. code-block:: python
 
-------------
+   self.generator.outlet.connection = self.finder
+   self.generator.outlet.handlers = FinderClass.cc_S_Finder_newPrime
+
+Sending
+-------
+
+Again, we use an :ref:`earlier example <QN_EventMachinery-outlet-input>` (in :ref:`QN_EventMachinery`). The Generator is
+sending numbers to the sieves
+
+.. code-block:: ReasonML
+
+   self.outlet.input(i); // Part of Generator:: StartSieve.runTo(max) on self.controll
+
+This translates to a few lines of Python.
+|BR|
+The manual crafted version adds some print/debug and assert statements. It also handles the case where a ``None`` is set
+in a DispatchTable. See the real code for the details. Here you see the essence.
+
+.. code-block:: python
+
+   outport  = self.outlet
+   receiver = outport.connection
+   handlers = outport.handlers
+   handler = handlers[SimpleSieve.CC_P_SimpleSieve_input]
+   handler(receiver, i)
+
+Or simply:
+
+.. code-block:: python
+
+   receiver = self.outlet.connection
+   self.outlet.handlers[SimpleSieve.CC_P_SimpleSieve_input](receiver, i)
+   # Note: this assumes there is always a valid method in all entries of the DispatchTable
+
+Trigger sub-elements
+--------------------
+
+To send an event to an (in)-port of a (Castle) sub-element, we need to select the correct (RPython) DispatchTable,
+index it with the event number, and call that method, passing the sub-element’s (RPython) instance -- and parameters.
+
+.. code-block:: python
+
+   GeneratorClass.cc_S_Generator_controll[StartSieve.CC_P_StartSieve_runTo](self.generator, max)
+
+.. warning::
+
+   The Castle Code for this feature isn’t 100% clear. Several variants of the (Castle) Sieve do it differently, wrong or
+   simply lack that line [#CastleBugs]_.
+
+------------------------------------------------
+
 
 .. seealso::
-
    * https://osdn.net/users/albertmietus/pf/TryOut_PyPy-and-Rpython (SLOW!)
      |BR|
      My collection of small rpython demos, and typical Python-code that is not RPython ..
    * https://osdn.net/users/albertmietus/pf/CC_Sieve_in_rPython/wiki/FrontPage (SLOW)
      |BR|
-     The code used for in study.
+     The code used for in this study.
 
 .. rubric:: Footnotes
 
@@ -148,31 +200,40 @@ C).
    however, introduced in *Python-3.7*. As RPython is a Python-2.7 subset, they are not available.
 
 .. [#init]
-   Possible, it would be better to have 3 init functions. Now the (generated) `__init__`, calls both the `__init__` of the
-   base-component/class and the `_castle_init` of the own class.
+   Possibly, it would be better to have 3 init functions. Now the (generated) `__init__`, calls both the `__init__` of the
+   base-component/class and its own `_castle_init`.
    |BR|
    This results that all Caste-init code is called, mixed with build-in/generated init code.
 
-   However, for now this approach is used. Remomber: the goal in generated-code; which has different demands on
-   maintainability.
+   For now, this approach is used. Remember: the goal in generated code; with different demands on maintainability.
 
 .. [#activePort]
-   We could implement this by making the ports “active”; a (R)Python class with implements an method for each event --
-   then we use the DispatchTable of Python-itself. However, that port-method needs to call a method in the
-   ComponentClass -- which name is not statically determined.
+   We could implement this by making the ports “active”; an RPython class with implements a method for each event --
+   then we use the DispatchTable of Python itself. However, that port method needs to call a method in the
+   ComponentClass -- whose name is not statically determined.
    |BR|
    In (normal) Python, this is possible using introspection. That feature is however not allowed in RPython.
 
-   As all code is generated, it is still possible -- we can generate a port-method that calles a component-method, as we
+   As all code is generated, it is still possible. We could generate a port method that calls a component method, as we
    know the name of the latter during (Caste) compile-time. But is that better?
    |BR|
-   At the moment, we believe a table-approach doing the same thing directly is better!
+   At the moment, we believe a table approach, doing the same thing directly is better!
 
 .. [#arbitrary]
    In this example, we use some arbitrary number (like 6, 7) of “dummy” inherited events for all Protocols. Those *not
-   existing* inherited one get a simple ``None`` in the table. In real code, this should not happen. Then (a)  inherited
-   events are copied down, and (b) empty slots will contain a generic error function [#RT]_.
+   existing* inherited ones get a simple ``None`` in the table. In real code, this should not happen. Then (a)  inherited
+   events are copied down, and (b) empty slots will contain the generic error function [#RT]_.
 
 .. [#RT]
-   The runtime becomes simpler (and faster) by using a error-function, then using None, and checking for None on every
-   call. For this experiment both ways are not needed.
+   The runtime becomes simpler (and faster) by using an error function, then using None, and checking for None on every
+   call. For this experiment, both are not needed.
+
+.. [#differ_a_bit]
+   As we have seen in :ref:`Machinery-DirectCall`, the code for other machinery differ, but typically not too much.
+
+.. [#CastleBugs]
+   During this study, we found several (small) bugs in the Castle Code: typos, wrong names, and (like this) lacking
+   lines.
+   |BR|
+   Probably, that is the result of writing code without a compile/syntax-checker (and so, no options for UnitTesting
+   and/or practising TDD)

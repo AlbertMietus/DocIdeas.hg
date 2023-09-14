@@ -37,6 +37,8 @@ Collected Code fragments
 In this variant of the code, all those connections are made in the ``Main`` component. In other variants some code is
 located in the Finder, but that has no effect on the generated code (except for prefixed and generated function-names).
 
+.. _QN_Connect_Main__init:
+
 CC_Mi_Main__init
 ================
 This connects the output-port ``outlet`` of the ``Generator`` with the ``Finder``’s input-port ``newPrime``; to start sieving.
