@@ -9,19 +9,19 @@
 
          .. group-tab:: StartSieve
 
-            .. literalinclude:: code/Sieve_in_rPython/StartSieve.py
+            .. literalinclude:: code/StartSieve.py
                :language: Python
                :lines: 14-15, 17-29
 
          .. group-tab:: SimpleSieve
 
-            .. literalinclude:: code/Sieve_in_rPython/SimpleSieve.py
+            .. literalinclude:: code/SimpleSieve.py
                :language: Python
                :lines: 15-25
 
          .. group-tab:: SlowStart (XXX)
 
-            .. literalinclude:: code/Sieve_in_rPython/SlowStart.py
+            .. literalinclude:: code/SlowStart.py
                :language: Python
                :lines: 19-28
 
@@ -41,29 +41,29 @@
 
          .. group-tab:: Generator
 
-            .. literalinclude:: code/Sieve_in_rPython/GeneratorMoat.py
+            .. literalinclude:: code/GeneratorMoat.py
                :language: Python
                :lines: 15-39
 
          .. group-tab:: Sieve
 
-            .. literalinclude:: code/Sieve_in_rPython/SieveMoat.py
+            .. literalinclude:: code/SieveMoat.py
                :language: Python
                :lines: 15-30
 
          .. group-tab:: Finder
 
-            .. literalinclude:: code/Sieve_in_rPython/FinderMoat.py
+            .. literalinclude:: code/FinderMoat.py
                :lines: 16-18,24-35
 
          .. group-tab:: Main
 
-            .. literalinclude:: code/Sieve_in_rPython/MainMoat.py
+            .. literalinclude:: code/MainMoat.py
                :lines: 14-17
 
          .. group-tab:: Board (inherited)
 
-            .. literalinclude:: code/Sieve_in_rPython/MainMoat.py
+            .. literalinclude:: code/MainMoat.py
                :lines: 21-23
 
       .. warning::
@@ -82,24 +82,24 @@
 
          .. group-tab:: Generator
 
-            .. literalinclude:: code/Sieve_in_rPython/GeneratorClass.py
+            .. literalinclude:: code/GeneratorClass.py
                :language: Python
                :lines: 121-126
 
          .. group-tab:: Sieve
 
-            .. literalinclude:: code/Sieve_in_rPython/SieveClass.py
+            .. literalinclude:: code/SieveClass.py
                :language: Python
                :lines: 82-87
 
          .. group-tab:: Finder
 
-            .. literalinclude:: code/Sieve_in_rPython/FinderClass.py
+            .. literalinclude:: code/FinderClass.py
                :lines: 98-103
 
          .. group-tab:: Main
 
-            .. literalinclude:: code/Sieve_in_rPython/MainClass.py
+            .. literalinclude:: code/MainClass.py
                :lines: 163-168
 
 

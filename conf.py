@@ -34,6 +34,8 @@ def setup(app):
 html_static_path.append ('_static/')
 html_favicon = '_static/Bulb.ico'
 
+exclude_patterns.append('**/LinkToOrg/**')
+
 ## ABlog
 #-------
 extensions.append('ablog')
