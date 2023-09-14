@@ -1,0 +1,113 @@
+.. -*-rst-*-
+   included in  `Sieve_in_rPython.rst`
+
+.. tabs::
+
+   .. tab:: CC_B_Protocol
+
+      .. tabs::
+
+         .. group-tab:: StartSieve
+
+            .. literalinclude:: code/Sieve_in_rPython/StartSieve.py
+               :language: Python
+               :lines: 14-15, 17-29
+
+         .. group-tab:: SimpleSieve
+
+            .. literalinclude:: code/Sieve_in_rPython/SimpleSieve.py
+               :language: Python
+               :lines: 15-25
+
+         .. group-tab:: SlowStart (XXX)
+
+            .. literalinclude:: code/Sieve_in_rPython/SlowStart.py
+               :language: Python
+               :lines: 19-28
+
+      .. hint::
+
+         Here,the basic ``cc_P_<<ProtoName>>`` structure is defined first, without events.
+         Then, the events are added, one by one; by appending to the (internal) list.
+
+         As those ``CC_B_P_EventID``\(s) refer the Protocol-structure, there is no syntax to combine that (now).
+         |BR|
+         You will see this approach also in other definition.
+
+
+   .. tab:: CC_B_ComponentInterface
+
+      .. tabs::
+
+         .. group-tab:: Generator
+
+            .. literalinclude:: code/Sieve_in_rPython/GeneratorMoat.py
+               :language: Python
+               :lines: 15-39
+
+         .. group-tab:: Sieve
+
+            .. literalinclude:: code/Sieve_in_rPython/SieveMoat.py
+               :language: Python
+               :lines: 15-30
+
+         .. group-tab:: Finder
+
+            .. literalinclude:: code/Sieve_in_rPython/FinderMoat.py
+               :lines: 16-18,24-35
+
+         .. group-tab:: Main
+
+            .. literalinclude:: code/Sieve_in_rPython/MainMoat.py
+               :lines: 14-17
+
+         .. group-tab:: Board (inherited)
+
+            .. literalinclude:: code/Sieve_in_rPython/MainMoat.py
+               :lines: 21-23
+
+      .. warning::
+
+         Each port as a (sequence) number, which isn’t really used (yet). For now a small, but non-zero, number is used.
+
+         As ports can inherit, each component-interface starts with a  `portNo`  that is one higher as the number of ports in
+         the base-port.
+         |BR|
+         With start of ‘2’, we assumes the base-port has 2 port of it own.
+
+
+   .. tab:: CC_B_ComponentClass
+
+      .. tabs::
+
+         .. group-tab:: Generator
+
+            .. literalinclude:: code/Sieve_in_rPython/GeneratorClass.py
+               :language: Python
+               :lines: 121-126
+
+         .. group-tab:: Sieve
+
+            .. literalinclude:: code/Sieve_in_rPython/SieveClass.py
+               :language: Python
+               :lines: 82-87
+
+         .. group-tab:: Finder
+
+            .. literalinclude:: code/Sieve_in_rPython/FinderClass.py
+               :lines: 98-103
+
+         .. group-tab:: Main
+
+            .. literalinclude:: code/Sieve_in_rPython/MainClass.py
+               :lines: 163-168
+
+
+.. note::
+
+   It’s possible to improve this code in many ways. For example, we can use smart initialisers to get define a
+   data-structure in ones.
+   |BR|
+   However, as it is (a) an experiment and (b, *more relevant*) it’s (ultimately) generated code, that isn’t needed, nor
+   foreseen.
+

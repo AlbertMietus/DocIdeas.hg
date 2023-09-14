@@ -1,12 +1,12 @@
 .. _rPY:
 
-====================================
-rPY: Use (r)Python as backend [Idea]
-====================================
+=============================
+rPY: Use (r)Python as backend
+=============================
 
 
 .. post:: 2023/06/25
-   :category: Castle, DesignStudy, rough
+   :category: Castle, DesignStudy, rough, RPython
    :tags: DRAFT, IDEA, Castle, WorkshopTools,
 
    When designing a Castle-Compiler with a :ref:`C-backend <CC2Cpy>`, we found some nasty details unrelated to CCastle
@@ -73,7 +73,8 @@ And, when that extra step results in less development work, it sounds like an in
      &
      `code (git) <https://github.com/mssun/rpython-by-example>`__
    * https://osdn.net/users/albertmietus/pf/TryOut_PyPy-and-Rpython (SLOW!)
-     My collection of small rpython demo and typical Python-code that is not rpython
+     |BR|
+     My collection of small rpython demos, and typical Python-code that is not RPython ..
 
 ..  LocalWords:  CCastle
 ..  LocalWords:  RPython CPython

@@ -1,0 +1,110 @@
+.. -*-rst-*-
+   included in  `Sieve_in_rPython.rst`
+
+
+.. tabs::
+
+   .. tab:: CC_B_Component
+
+      .. tabs::
+
+         .. code-tab:: Python Generator
+
+            class CC_Generator(buildin.CC_B_Component): # generated class
+
+               # A few standard method
+               def __init__(self,  *args): ...
+               def _castle_init(self): ...
+               def _debug_attr_(self, name_only=True): ...
+
+               # One method for each event-port combi
+               def StartSieve_newMax__controll(self, max_): ...
+               def StartSieve_runTo__controll(self, max_): ...
+               def SimpleSieve_input__collect(self, foundPrime): ...
+
+               # other
+               def assertCorrectPrime(self, foundPrime): # internal, test (manually written)
+
+         .. code-tab:: Python Sieve
+
+            class CC_Sieve(buildin.CC_B_Component):      # generated class
+
+               # A few standard method
+               def __init__(self,  *args): ...
+               def _castle_init(self, onPrime): ...       # parameters depend on Moat definition
+               def _debug_attr_(self, name_only=True): ...
+
+               # One method for each event-port combi
+               def SimpleSieve_input__try(self, try_): ...
+
+         .. code-tab:: Python Finder
+
+            class CC_Finder(buildin.CC_B_Component):      # generated class
+
+               # A few standard method
+               def __init__(self,  *args): ...
+               def _castle_init(self, onPrime): ...       # parameters depend on Moat definition
+               def _debug_attr_(self, name_only=True): ...
+
+               # One method for each event-port combi
+               def SimpleSieve_input__newPrime(self, foundPrime):   # handCompiledC: CC_E_Finder__SimpleSieve_input__newPrime
+
+         .. code-tab:: Python Main
+
+            class CC_Main(CC_Board):      # generated class
+
+               # A few standard method
+               def __init__(self,  *args): ...
+               def _castle_init(self, onPrime): ...       # parameters depend on Moat definition
+               def _debug_attr_(self, name_only=True): ...
+
+               # One method for each event-port combi
+               def SimpleSieve_try__generator_found(self, newPrime): ...
+               def powerOn__power(self, max): ...
+
+               # other
+               def insert_sieve(self, s):
+
+         .. code-tab:: Python Board (inherited)
+
+            class CC_Board:      # default class
+               "A bad name, now used for historical reasons. Rename before R1.0"
+
+               # A few standard method
+               def __init__(self,  *args): ...
+
+   .. tab:: DispatchTable(s)
+
+      .. tabs::
+
+         .. code-tab:: Python Generator
+
+            cc_S_Generator_controll = [
+                None, None, None, None, None, None, None,  # 0-6: not relevant here
+                CC_Generator.StartSieve_runTo__controll,   # 7
+                CC_Generator.StartSieve_newMax__controll,  # 8
+               ]
+
+            cc_S_Generator_collect = [
+                None, None, None, None, None, None,        # 0-5: not relevant here
+                CC_Generator.SimpleSieve_input__collect,   # 6
+                 ]
+
+         .. code-tab:: Python Sieve
+
+            cc_S_Sieve_try = [
+                None, None, None, None, None, None, # 0-5: not relevant here
+                CC_Sieve.SimpleSieve_input__try,   # 6/CC_P_SimpleSieve_input
+               ]
+
+         .. code-tab:: Python Finder
+
+            cc_S_Finder_newPrime = [
+                None, None, None, None, None, None, # 0-5: not relevant here
+                CC_Finder.SimpleSieve_input__newPrime # 6/CC_P_SimpleSieve_input
+               ]
+
+
+         .. code-tab:: Python Main
+
+            .
