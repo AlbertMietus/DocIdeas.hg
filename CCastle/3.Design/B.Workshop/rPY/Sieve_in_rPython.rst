@@ -65,7 +65,7 @@ Both initialisers will have the parameters to the class, and/or the elements. A 
 an example (not shown).
 |BR|
 Static variables in Components --which are defined in e.g. EventHandlers-- are also handled in ``__init__``. As they
-have a scope of one function, there name is prefix with that function-name. You can find an example in the
+have a scope of one function, their name is prefixed with that function-name. You can find an example in the
 `GeneratorClass.py` (not shown).
 
 
@@ -87,17 +87,17 @@ Protocol (which is static at compile-time) -- including the inherited events [#a
 Pins
 ~~~~
 
-A (Castle) component can have sub-component. They can be interconnected using the typical syntax and (RPython)
+A (Castle) component can have sub-components. They can be interconnected using the typical syntax and (RPython)
 structure.
 |BR|
-But a component-element can also receive and send messages to its own sub-elements. The (SieveDemo) Main component uses
-this to handle a newly *found prime* (by the ``Finder``\’s output-port ``found``). In Castle-code the EventHandler names
-both the (sub)element and its port (instead of only its own port). See the sidebar for an example.
+But a component-element can also receive and send messages to its sub-elements. The (SieveDemo) Main component uses
+this to handle a newly *found prime* (by the ``Finder``\’s output port ``found``). In Castle-code the EventHandler names
+both the (sub)element and its port (instead of only a port). See the sidebar for an example.
 
 Such an “incoming event” of a sub-element needs a DispatchTable also, we call them “pin(s)”.
 |BR|
-No extra DispatchTable’s are needed to send an event to a sub-element; the normal in-port of that component (aka it
-DispatchTable) handle’s that. Bu we need a but of extra code to fire that event (see below).
+Note: No extra DispatchTables are needed to send an event to a sub-element; the normal in-port of that component (aka it
+DispatchTable) handles that. A bit of extra gear is needed to fire that event, however (see below).
 
 
 Examples
