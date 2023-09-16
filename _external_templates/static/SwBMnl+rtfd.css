@@ -107,6 +107,6 @@ div.highlight-jinja    pre 		{ background-color: #c0c0c0;}
 
 div.highlight-ReasonML pre::before 	{ content: "CasteCode";	float: right; color: white;}
 div.highlight-Python   pre::before 	{ content: "Python";	float: right; color: white;}
-div.highlight-jinja    pre::before 	{ content: "Jina"; 	float: right; color: white;}
+div.highlight-jinja    pre::before 	{ content: "Jinja"; 	float: right; color: white;}
 
 
