@@ -1,0 +1,103 @@
+.. include:: /std/QuickNote-tip.irst
+
+.. _rPY-Jinja:
+
+===================================
+QuickNote: Jinja Templating for rPY
+===================================
+
+.. post::			
+   :category:  RPython, rough, QuickNote
+   :tags: Castle, WorkshopTools
+
+   With a working :ref:`RPython implementation <Sieve_in_rPython>` of :ref:`Castle-TheSieve`, it’s time to find the
+   patterns to automate: generating RPython code from Castle-Code.
+
+   Like in :ref:`QN_EventTemplate`, part of the :ref:`CC2Cpy` backend, we focus on the essential Jinja templates.
+
+.. caution::
+
+   The given templates are written in the *analysis (research) phase* to guide where we are heading.
+   |BR|
+   They are **not** used (or even ‘compiled’)! So, there may be syntax and other mistakes in them.
+
+
+Templating
+**********
+
+We focus on a few concept:
+
+- data-structures
+- connecting two ports
+- Sending Events *(using only 1 Machinery)*
+- Fire an events to an sub-Component
+
+Those parts depend on the ubiquitous names for RPython chunks (like clases, methods, etc): calling a method ‘foo’
+implies that method implementation is also called ‘foo’ -- even when those named are generated in very different
+places.
+|BR|
+Therefore, we start with macro to generate names ...
+
+Naming
+======
+
+EventHandler names
+------------------
+
+As we use (R)Python namespaces (modules, classes), the generated names for the EventHandlers becomes shorter (than in
+C).
+
+.. code-block:: jinja
+
+   {%macro event_handler_Name(compName, protocol, event, portName) -%}
+      {{protocol{}_{{event}}__{{portName}}
+   {%- endmacro %}
+
+.. hint::
+   The ``compName`` parameter is not used/needed in the RPY implementation. The (generated) name unique as it is in the
+   namespace of the `compName` class.
+   |BR|
+   For similarity reasons it is passed however.
+
+Structure names
+---------------
+
+The name of some structures are quite simple, and given without explanations.
+
+The tree basic classes
+
+.. code-block:: jinja
+
+   {%macro comp_interface_Name(compName) -%}	cc_CI_{{CompName}}	{%- endmacro %}
+   {%macro comp_component_Name(compName) -%}	CC_{{CompName}}		{%- endmacro %}
+   {%macro comp_compClass_Name(compName) -%}	cc_C_{{CompName}}	{%- endmacro %}
+
+Notice, the case: a small_case `CC` prefix denotes an instance, whereas Classes use a uppercase `CC` prefix.
+
+The DispatchTable(s), there is one pro port
+
+.. code-block:: jinja
+
+   {%macro dispatchtable_handler_Name(compName, portName) -%}
+      cc_S_{{compName}}_{{portName}}
+   {%- endmacro %}
+   
+
+CompClasses
+-----------
+
+XXX ToDO
+
+Behaviour
+=========
+
+XXX ToDO
+
+Connecting
+----------
+
+XXX ToDO
+
+Pins
+----
+XXX ToDO
