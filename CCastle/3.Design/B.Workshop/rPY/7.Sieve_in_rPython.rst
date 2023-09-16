@@ -18,7 +18,7 @@ QuickNote: The Sieve in RPython
 
    Writing RPython isn’t too complicated for someone with a C-background. But making the code pass the RPython compiler
    can be tricky, however. Both, as just added statements can interfere with existing code -- when that isn’t “static
-          enough”, new code can trigger compile errors in old, tested code! And, because the RPython compiler isn’t that great
+   enough”, new code can trigger compile errors in old, tested code! And, because the RPython compiler isn’t that great
    in giving helpful info.
    |BR|
    It feels like old-style debugging: *try-and-error*, remove-and-enable-lines, one-at-a-time until one
