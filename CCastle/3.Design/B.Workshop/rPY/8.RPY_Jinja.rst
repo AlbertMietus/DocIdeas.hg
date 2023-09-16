@@ -140,9 +140,19 @@ Connecting ports
       self.{{outComp}}.{{outPort}}.handlers = {{dispatchtable_handler_Name(inComp, inPort)}} -%}
    {%- endmacro %}
 
+Sending Events
+--------------
 
-Triggering Events (to sub-elements
-----------------------------------
+The typical case
+~~~~~~~~~~~~~~~~
+
+.. code-block:: ReasonML
+
+   self.outlet.input(i); // Sent event ‘input’ over the port ‘outlet’
+
+In the code below, the parametes are more-or-less ignored. It works with ``withParms`` is correctly formated: a comma
+(‘,’) separated list of values; e.g in python: ``", ".join(for p in parms)``
+
 .. code-block:: jinja
 
    {%macro send_event(outPort, event, ofProtocol, withParms) -%}
@@ -152,5 +162,14 @@ Triggering Events (to sub-elements
        handler({{outport}}.connection, {{withParms}})
    {%- endmacro %}
 
-Here, we assume ‘withParms’ is already correctly formated: a comma (‘,’) separated list of values; e.g in python::
-  ``", ".join(for p in parms)``
+
+Trigger sub-elements
+~~~~~~~~~~~~~~~~~~~~
+.. code-block:: jinja
+
+   {%macro trigger_event(toComp, toPort, subElm, withParms) -%}
+       table = {{dispatchtable_handler_Name(toComp, toPort)}}
+       index = {{EventIndexName(ofProtocol, event)}}
+       {{table}}[{{index}}]({{subElm}}, {{withParms}})
+   {%- endmacro %}
+
