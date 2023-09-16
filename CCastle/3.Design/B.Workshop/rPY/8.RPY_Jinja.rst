@@ -37,6 +37,14 @@ places.
 |BR|
 Therefore, we start with macro to generate names ...
 
+.. note::
+
+   In the examples below, all modele(file) **namespaces** are ignored. This is possible when those python identifiers are
+   imported (``from ... import *`` style).
+   |BR|
+   When using the (better) ``import ...`` style is used, that namespaces (in dot notation) should be prepended
+   ``{namespace}}.{{...}}``
+
 Naming
 ======
 
@@ -111,22 +119,38 @@ These ‘names’ are actually numbers to be used as index (into the Dispatchtab
 
 .. code-block:: jinja
 
-   {%macro EventIndexName(compName, portName) -%}
-      CC_P_{{ProtoName}}_{{EventtName}}
+   {%macro EventIndexName(ProtoName, EventName) -%}
+      CC_P_{{ProtoName}}_{{EventName}}
    {%- endmacro %}
 
-   {# to be used as: #}
-   {%macro EventIndex((compName, portName, indexNo) %} {{EventIndexName(compName, portName)}} = {{indexNo}} }}{% endmacro %}
+   {# used as (for example): #}
+   {%macro SetEventIndex((ProtoName, EventName, indexNo) %} {{EventIndexName(ProtoName, EventName)}} = {{indexNo}} }}{% endmacro %}
 
 
 Behaviour
 =========
 
-Connecting 2 port
-----------~~~~~~~~
+Connecting ports
+----------------
 
-XXX ToDO
+.. code-block:: jinja
 
-Pins
-----
-XXX ToDO
+   {%macro connect(outComp, outPort,  inComp, inPort)
+      self.{{outComp}}.{{outPort}}.connection = self.{{inComp}}
+      self.{{outComp}}.{{outPort}}.handlers = {{dispatchtable_handler_Name(inComp, inPort)}} -%}
+   {%- endmacro %}
+
+
+Triggering Events (to sub-elements
+----------------------------------
+.. code-block:: jinja
+
+   {%macro send_event(outPort, event, ofProtocol, withParms) -%}
+       outport  = self.{{outPort}}
+       index    = {{EventIndexName(ofProtocol, event)}}
+       handler  = {{outport}}.handlers[{{index}}]
+       handler({{outport}}.connection, {{withParms}})
+   {%- endmacro %}
+
+Here, we assume ‘withParms’ is already correctly formated: a comma (‘,’) separated list of values; e.g in python::
+  ``", ".join(for p in parms)``
