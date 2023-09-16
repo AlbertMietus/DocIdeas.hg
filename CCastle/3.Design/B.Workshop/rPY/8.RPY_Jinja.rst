@@ -21,7 +21,6 @@ QuickNote: Jinja Templating for rPY
    |BR|
    They are **not** used (or even ‘compiled’)! So, there may be syntax and other mistakes in them.
 
-
 Templating
 **********
 
@@ -50,7 +49,7 @@ C).
 .. code-block:: jinja
 
    {%macro event_handler_Name(compName, protocol, event, portName) -%}
-      {{protocol{}_{{event}}__{{portName}}
+      {{protocol}}_{{event}}__{{portName}}
    {%- endmacro %}
 
 .. hint::
@@ -59,12 +58,26 @@ C).
    |BR|
    For similarity reasons it is passed however.
 
+.. warning::  The ``powerOn__power`` method does not fit in this pattern, for two reasons.
+
+   Firstly it not really a event, there is no protocol defined that holds it, not is there a port
+   that receives it. Non of them are defined (yet).
+   |BR|
+   This part of Castle is designed fully. Possibly the base-Component (now called ‘Board’) will have a power-port, with
+   a startup/down protocol. Then it becomes an event, with an EventHandler -- and the name of the EventHandler will be
+   updated.
+
+   Secondly, possibly we should models this “power up” as a function/method -- like the init method(s). Again, the
+   demands a bit more attention to tje language design. And can have effect on the name
+
+
 Structure names
 ---------------
 
 The name of some structures are quite simple, and given without explanations.
 
 The tree basic classes
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: jinja
 
@@ -72,29 +85,45 @@ The tree basic classes
    {%macro comp_component_Name(compName) -%}	CC_{{CompName}}		{%- endmacro %}
    {%macro comp_compClass_Name(compName) -%}	cc_C_{{CompName}}	{%- endmacro %}
 
-Notice, the case: a small_case `CC` prefix denotes an instance, whereas Classes use a uppercase `CC` prefix.
+Notice, the case.  A small case `CC` prefix denotes an instance, whereas Classes use the uppercase `CC` prefix.
 
-The DispatchTable(s), there is one pro port
+DispatchTable(s), one per port
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: jinja
 
    {%macro dispatchtable_handler_Name(compName, portName) -%}
       cc_S_{{compName}}_{{portName}}
    {%- endmacro %}
-   
 
-CompClasses
------------
+For *pins*, that are a kind of internal ports, the pinID is used instead of the portName:
 
-XXX ToDO
+.. code-block:: jinja
+
+   {%macro dispatchtable_for_pins_Name(compName, pinID) -%}
+      {{dispatchtable_handler_Name(compName, pinID)}}
+   {%- endmacro %}
+
+Event & Protocols
+------------------
+
+These ‘names’ are actually numbers to be used as index (into the Dispatchtable), or an enumeration  when you like.
+
+.. code-block:: jinja
+
+   {%macro EventIndexName(compName, portName) -%}
+      CC_P_{{ProtoName}}_{{EventtName}}
+   {%- endmacro %}
+
+   {# to be used as: #}
+   {%macro EventIndex((compName, portName, indexNo) %} {{EventIndexName(compName, portName)}} = {{indexNo}} }}{% endmacro %}
+
 
 Behaviour
 =========
 
-XXX ToDO
-
-Connecting
-----------
+Connecting 2 port
+----------~~~~~~~~
 
 XXX ToDO
 
