@@ -8,7 +8,7 @@ Castle FSM syntax tries
 Try 1
 =====
 
-.. code:: ReasonML
+.. code-block:: ReasonML
 
    FSM AB {
      state A, B, C;
@@ -28,7 +28,7 @@ Variant a
 ---------
 Actions with ``(`` `parameters-list` ``)``.  **Question**: Do we know those parameters here. Or are the default?
 
-.. code:: ReasonML
+.. code-block:: ReasonML
 
    FSM AB {
      state A, B, C;
@@ -50,7 +50,7 @@ Variant b
 ---------
 No  FSM/State prequel nor block
 
-.. code:: ReasonML
+.. code-block:: ReasonML
 
      state A, B, C;
 

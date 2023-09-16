@@ -101,3 +101,12 @@ aside.sidebar .rubric {
     margin-bottom: 0;
     color: #000066;
 }
+div.highlight-ReasonML pre 		{ background-color: #e3e3e3;} /* Castle code*/
+div.highlight-Python   pre 		{ background-color: #d6d6d6;}
+div.highlight-jinja    pre 		{ background-color: #c0c0c0;}
+
+div.highlight-ReasonML pre::before 	{ content: "CasteCode";	float: right; color: white;}
+div.highlight-Python   pre::before 	{ content: "Python";	float: right; color: white;}
+div.highlight-jinja    pre::before 	{ content: "Jina"; 	float: right; color: white;}
+
+
