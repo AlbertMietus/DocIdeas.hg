@@ -17,8 +17,9 @@ QuickNote: The Sieve in RPython
 
 
    Writing RPython isn’t too complicated for someone with a C-background. But making the code pass the RPython compiler
-   can be tricky. Both, as just added statements can interfere with existing code -- when that isn’t “static enough”, new code
-   can trigger compile errors in old, tested code! And because the RPython compiler isn’t that great in giving helpful info.
+   can be tricky, however. Both, as just added statements can interfere with existing code -- when that isn’t “static
+          enough”, new code can trigger compile errors in old, tested code! And, because the RPython compiler isn’t that great
+   in giving helpful info.
    |BR|
    It feels like old-style debugging: *try-and-error*, remove-and-enable-lines, one-at-a-time until one
    understands and it becomes easy to fix...
@@ -29,10 +30,14 @@ QuickNote: The Sieve in RPython
 Code
 ****
 
-Below we show some (manually written) code as if it is hand-compiled -- using roughly the same approach as in the
-:ref:`CC2Cpy <CC2Cpy>` approach.
+Below we show only a part of the (manually written) code. It roughly follows the “handCompiled-C” version (see
+:ref:`CC2Cpy`). Again, mostly the structure to get the (Castle) Components working, like sending events between Elements
+is presented.
 |BR|
-I had two objectives: (a) make it (functional) work in RPython, and (b) find the patterns to automate.
+All other code is quite  straightforward, and can be found in the `code-archive <https://osdn.net/users/albertmietus/pf/CC_Sieve_in_rPython>`__
+
+For this study, I had two objectives: (a) make it (functional) work in RPython, and (b) find the patterns to
+automate. So, do not expect greatly crafted (maintainable) code.
 
 Definitions
 ============
@@ -189,7 +194,7 @@ index it with the event number, and call that method, passing the sub-element’
    * https://osdn.net/users/albertmietus/pf/TryOut_PyPy-and-Rpython (SLOW!)
      |BR|
      My collection of small rpython demos, and typical Python-code that is not RPython ..
-   * https://osdn.net/users/albertmietus/pf/CC_Sieve_in_rPython/wiki/FrontPage (SLOW)
+   * https://osdn.net/users/albertmietus/pf/CC_Sieve_in_rPython (SLOW)
      |BR|
      The code used for in this study.
 
