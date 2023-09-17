@@ -168,9 +168,13 @@ Or simply:
 
 .. code-block:: python
 
-   receiver = self.outlet.connection
-   self.outlet.handlers[SimpleSieve.CC_P_SimpleSieve_input](receiver, i)
-   # Note: this assumes there is always a valid method in all entries of the DispatchTable
+   outport  = self.outlet
+   index    = SimpleSieve.CC_P_SimpleSieve_input
+   handler  = outport.handlers[index]
+   handler(outport.connection, i)
+
+.. Note:: This code assumes there is always a valid method in all entries of the DispatchTable. See the `generic error function`_
+          footnote.
 
 Trigger sub-elements
 --------------------
@@ -227,7 +231,7 @@ index it with the event number, and call that method, passing the sub-element’
 .. [#arbitrary]
    In this example, we use some arbitrary number (like 6, 7) of “dummy” inherited events for all Protocols. Those *not
    existing* inherited ones get a simple ``None`` in the table. In real code, this should not happen. Then (a)  inherited
-   events are copied down, and (b) empty slots will contain the generic error function [#RT]_.
+   events are copied down, and (b) empty slots will contain the _`generic error function` [#RT]_.
 
 .. [#RT]
    The runtime becomes simpler (and faster) by using an error function, then using None, and checking for None on every

@@ -124,7 +124,7 @@ These ‘names’ are actually numbers to be used as index (into the Dispatchtab
    {%- endmacro %}
 
    {# used as (for example): #}
-   {%macro SetEventIndex((ProtoName, EventName, indexNo) %} {{EventIndexName(ProtoName, EventName)}} = {{indexNo}} }}{% endmacro %}
+   {%macro SetEventIndex(ProtoName, EventName, indexNo) %} {{EventIndexName(ProtoName, EventName)}} = {{indexNo}} {% endmacro %}
 
 
 Behaviour
@@ -135,9 +135,9 @@ Connecting ports
 
 .. code-block:: jinja
 
-   {%macro connect(outComp, outPort,  inComp, inPort)
+   {%macro connect(outComp, outPort,  inComp, inPort) -%}
       self.{{outComp}}.{{outPort}}.connection = self.{{inComp}}
-      self.{{outComp}}.{{outPort}}.handlers = {{dispatchtable_handler_Name(inComp, inPort)}} -%}
+      self.{{outComp}}.{{outPort}}.handlers = {{dispatchtable_handler_Name(inComp, inPort)}}
    {%- endmacro %}
 
 Sending Events
@@ -155,11 +155,11 @@ In the code below, the parametes are more-or-less ignored. It works with ``withP
 
 .. code-block:: jinja
 
-   {%macro send_event(outPort, event, ofProtocol, withParms) -%}
-       outport  = self.{{outPort}}
+   {%macro send_event(overPort, event, ofProtocol, withParms) -%}
+       outport  = self.{{overPort}}
        index    = {{EventIndexName(ofProtocol, event)}}
-       handler  = {{outport}}.handlers[{{index}}]
-       handler({{outport}}.connection, {{withParms}})
+       handler  = outport.handlers[index]
+       handler(outport.connection, {{withParms}})
    {%- endmacro %}
 
 
