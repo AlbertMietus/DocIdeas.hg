@@ -6,7 +6,7 @@
 QuickNote: Jinja Templating for rPY
 ===================================
 
-.. post::			
+.. post:: 2023/9/17
    :category:  RPython, rough, QuickNote
    :tags: Castle, WorkshopTools
 
