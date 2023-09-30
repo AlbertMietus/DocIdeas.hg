@@ -1,8 +1,8 @@
 .. _EventIndex:
 
-========================
-Modeling the Event Index
-========================
+=========================
+Modelling the Event Index
+=========================
 
 A (Castle) Event is like a remote function-call, to another Component.
 |BR|
@@ -15,7 +15,7 @@ The (design) question is how/where to model that index: Is it an attribute of th
 |BR|
 For the :ref:`Castle-WorkshopTools` developers, this is an important detail. The number should be stable: in one
 Component the DispatchTable is filled, using those indexes, in another it is used to calculate that index to make the
-call -- and depending on :ref:`_TheMachinery`, it is possible those sides are independent (even on other computers!).
+call -- and depending on :ref:`TheMachinery`, it is possible those sides are independent (even on other computers!).
 
 Concept
 -------
@@ -31,6 +31,20 @@ Conceptually, the order of the Events in a Protocol determine the number; where 
 
 Options
 =======
+.. error::
+
+   The :ref:`AIGR` (currently) does not has a *backlink* from `Event` to `Protocol`.
+
+   This implies the analyse below is partly wrong:
+   |BR|
+   As we can’t look-up the Protocol of an `Event` code, a method as ``Event.eventIndex(self) -> int`` can’t be
+   implemented.
+
+   .. warning::
+
+      Although it’s correct that the (current) :ref:`AIGR` has no backlink, this is strange, as most backends do have
+      that backlink.
+
 
 Event-attribute
 ---------------
@@ -69,5 +83,11 @@ This is the option we propose.
 Solution
 ========
 
-We use an abstraction: A method as ``getEventIndex``  can be used both for the Protocol and the Event.
+Currently, we  can only find the index of an Event by asking the Protocol. It is moduled to the standard
+*sequence*.index() method:
 
+.. code-block:: python
+
+   Protocol.eventIndex(self, event: Event) -> int
+
+This will search the inherited protocols as well as the specified one.
