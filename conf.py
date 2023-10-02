@@ -57,7 +57,7 @@ language='en' # As workaround for ABlog.post.generate_atom_feeds -- see: https:/
 post_always_section = True
 
 
-blog_baseurl = "http://DocIdeas.Mietus.nl"
+blog_baseurl = "http://DocIdeas.Mietus.nl/en/default/"
 disqus_shortname = 'DocIdeas'
 disqus_pages = True                                                 # All pages have a disqus-section
 disqus_drafts = False                                               # .. but the draft (blog) pages (.. post:: without date )
