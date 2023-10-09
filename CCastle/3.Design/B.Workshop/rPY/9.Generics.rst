@@ -1,0 +1,65 @@
+Generics: Wrapper vs parameters
+===============================
+
+A **generic** is used by passing an ``Argument`` to the inherited base. This is the only difference!
+|BR|
+It is not visual in the definition.
+
+SlowStart vs Sieve
+------------------
+
+As an example, let’s compare two definition in “the sieve. That of the Slowstart protocol, and the Sieve component.
+
+.. warning::
+
+   In this example, one is a ``Protocol`` and the other a ``Component``. Nonetheless, that is an irrelevant detail
+
+
+Both are defined with a (short list of) TypedParameter(s).  This does not reveal one is (used as) a *Generic*. It is just an option to pass a value; here an int in both cases.
+
+.. code-block:: ReasonML
+   :emphasize-lines: 1
+
+   protocol SlowStart(queue_max:int): EventProtocol {
+    setMax(queue_len:int);
+   }
+
+.. code-block:: ReasonML
+   :emphasize-lines: 1
+
+   component Sieve(onPrime:int) : Component {
+     port SimpleSieve<in>:try;
+     port SimpleSieve<out>:coprime;
+   }
+
+Nevertheless when *using* the SlowStart protocol --here when defining the SimpleSieve protocol-- it becomes clear that SlowStart is use (used as) a *Generic*. The formal argument (aka Parameter) is bound to a parameter -- here: 1.
+
+.. code-block:: ReasonML
+   :emphasize-lines: 1
+
+   protocol SimpleSieve : SlowStart(1) {
+      input(int:try);
+   }
+
+The Sieve Component is **used* complete dissimilar. It is instantiated somewhere in executable code
+
+.. code-block:: ReasonML
+   :emphasize-lines: 6
+
+   SimpleSieve.input(newPrime) on self.finder.found
+   {
+     alias s;
+
+     // Extent the sieve-list ...
+     s:= Sieve.new(newPrime); // See caution, below
+     ...
+
+.. caution::
+
+   The code above uses the code-snipped: ``s:= Sieve.new(newPrime)``, with the **new** method. That syntax detail is fully stable yet.
+   It could be that it becomes ``s:= Sieve(newPrime)`` (as in Python), or ...
+
+   In all cases, the difference is ...
+
+The difference is clear: we “**call**” the protocol/component, not define something else.
+
