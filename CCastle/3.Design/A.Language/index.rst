@@ -1,4 +1,4 @@
-.. _Language-Desing:
+.. _Language-Design:
 
 ===============
 Language Design
