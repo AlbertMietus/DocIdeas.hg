@@ -1,5 +1,3 @@
-.. include:: /std/localtoc.irst
-
 Generics: Parameters, Wrappers  and template-specialisation
 ***********************************************************
 
@@ -18,10 +16,6 @@ Generics: Parameters, Wrappers  and template-specialisation
    As this differs from other languages, it gives some questions. We will explain how to use it. And make some
    (high-level) hints on the implementation.
 
-   .. todo::
-
-      Despite this scribble is started  in :ref:`rPY`, is has become more of a :ref:`Language-Design` item. One day, we
-      will move it to a better place.
 
 SlowStart & Sieve
 =================
