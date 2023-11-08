@@ -110,3 +110,5 @@ div.highlight-Python   pre::before 	{ content: "Python";	float: right; color: wh
 div.highlight-jinja    pre::before 	{ content: "Jinja"; 	float: right; color: white;}
 
 
+/* Sometimes, an admonition doesn't need to be 100% width (e.g. with a fix aside). Mark it with ``:class: clear-none``*/
+div.admonition.clear-none {clear: none;}
