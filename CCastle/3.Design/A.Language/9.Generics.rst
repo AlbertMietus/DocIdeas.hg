@@ -8,7 +8,7 @@ Generics: Parameters, Wrappers  and template-specialisation
    Castle supports **Generics** (a bit like *Templates* in C++) but with a twist. For example, in (the improved version of)
    “:ref:`Castle-TheSieve`” we use the ``SlowStart`` (base)protocol as a Generic protocol.
 
-   It becomes **generic** as we pass an ``Argument`` to the base-class. Only that makes ``SlowStart`` a generic!
+   It becomes **generic** as we pass an ``Argument`` to the base class. Only that makes ``SlowStart`` a generic!
    |BR|
    It is not visual in the definition.
 
@@ -22,18 +22,17 @@ SlowStart & Sieve
 
 .. warning::
 
-   In this example, one is a ``Protocol`` and the other is a ``Component``. Nonetheless, that is an irrelevant detail --
-   the same applies to other constructs (that supports Generics -- most do).
+   In this example, one is a ``Protocol``, and the other is a ``Component``. Nonetheless, that is an irrelevant detail --
+   the same applies to other constructs (that support Generics -- most do).
 
 The definitions
 ---------------
 
-As “being a generic” isn’t visual in the definition, let’s compare two definition in :ref:`Castle-TheSieve`. That of the
-Slowstart protocol, and the Sieve component.
+As “being a generic” isn’t visual in the definition, let’s compare two definitions in :ref:`Castle-TheSieve`: The
+Slowstart protocol and the Sieve component.
 
-
-Both are defined with a formal argument (aka a *parameter*). Although it is needed to have (at least) a parameter, this
-does not reveal one is (used as) a *Generic*. A list of (one of more) TypedParameters just give the option to pass a
+Both have a (one) formal argument (aka a parameter) in their definition. Without a hint that one is being used as a
+Generic --although a (at least one )parameter is essential. The list of TypedParameters just gives the option to pass a
 value(s); here an int in both cases. -- like we can in most languages when we instantiate a class.
 
 .. code-block:: ReasonML
@@ -66,10 +65,10 @@ SimpleSieve.
    }
 
 By passing a (one or more) parameter(s) when “subclassing”, we kind of **specialise** the *Generic* into a “wrapper
-class” in between the (real) base-class and the derived-class. This in-between protocol (often denoted as ``Base(1)`` or
-``Base_1``) in *not* instantiated  --it still acts as a “class”.  And so, can be subclassed.
+class” in between the (real) base class and the derived class. This in-between protocol (often denoted as ``Base(1)`` or
+``Base_1``) is *not* instantiated  --it still acts as a “class”.  And so, can be subclassed.
 |BR|
-It acts exactly as the (real) base-class, except that the bound parameter has become build-in -- kind of what you expect.
+It acts exactly as the (real) base class, except that the bound parameter has become build-in -- kind of what you expect.
 
 The Sieve Component is *used* completely dissimilar (or: more traditionally). It is instantiated somewhere in executable
 code, as we see below.
@@ -81,13 +80,13 @@ code, as we see below.
    {
      alias s;
 
-     // Extent the sieve-list ...
+     // Extent the sieve list ...
      s:= Sieve.new(newPrime); // See caution, below
      ...
 
 .. caution::
 
-   The code above uses the code-snipped: ``s:= Sieve.new(newPrime)``, with the **new()** method. That syntax-detail is fully stable yet.
+   The code above uses the code-snipped: ``s:= Sieve.new(newPrime)``, with the **new()** method. That syntax detail is fully stable yet.
    It could be that it becomes ``s:= Sieve(newPrime)`` (as in Python), or ...
 
 The difference
@@ -97,7 +96,7 @@ The difference is clear:
 
 * When the protocol/component is “new’d”, or “called”, we *instantiate*.
   |BR|
-  And we get an element (aka: a class-instance).
+  And we get an element (aka a class instance).
 * When we bound a parameter during a definition, we *specialise*.
   |BR|
   The result is like a “class”.
@@ -109,7 +108,7 @@ Another view
 Instantiate generic
 -------------------
 
-You may wonder, what happens as we instance a *Generic*. For example like:
+You may wonder, what happens as we instance a *Generic*. For example:
 
 .. code-block:: ReasonML
 
@@ -127,22 +126,22 @@ is initialised to ‘42’.
 Partials (aka closure)
 ----------------------
 
-Some languages support the functional-programming feature “`partial(s)
+Some languages support the functional programming feature “`partial(s)
 <https://en.wikipedia.org/wiki/Partial_application>`__” and/or the related “`closure
-<https://en.wikipedia.org/wiki/Closure_(computer_programming)>`__” construct. Both have the ability to *fix* some
-parameters of existing functions to create a new function with less parameters. Conceptually, it is a function that
-calles another function (with more parameters), without writing-out that function completely.
+<https://en.wikipedia.org/wiki/Closure_(computer_programming)>`__” construct. Both can *fix* some
+parameters of existing functions to create a new function with fewer parameters. Conceptually, it is a function that
+calls another function (with more parameters), without writing out that function completely.
 
-The Castle approach to *Generics* is very simular: A SlowStart parameters is “fixed” (we speak about ‘bound’) such that
-the derived SimpleSieve protocol doesn't need to set in when it is initialised.
+The Castle approach to *Generics* is very similar: One SlowStart parameter is “fixed” (we speak about ‘bound’) such that
+the derived SimpleSieve protocol doesn't need to be set in when it is initialised.
 |BR|
-In the ``SlowStart``//``SimpleSieve`` example, we could define a ``SlowStart1`` protocol, by reusing the general
-``SlowStart`` protocol, but hardcoding the initial values to 1. And derived from that ``SlowStart1`` protocol to define
+In the ``SlowStart``//``SimpleSieve`` example, we could define a ``SlowStart1`` protocol by reusing the general
+``SlowStart`` protocol but hardcoding the initial values to 1. And derived from that ``SlowStart1`` protocol to define
 SimpleSieve.
 
 .. code-block:: ReasonML
 
-   // This is all pseudo code -- not valid Castle syntax
+   // This is all pseudo-code -- not valid Castle syntax
    protocol SlowStart1 (SlowStart);
    implement SlowStart1::
    - init(self) {
@@ -159,12 +158,12 @@ The effect is the same. Only Castle will generate that code for you.
 .. rubric:: Footnotes
 
 .. [#UselessP]
-   *Allowed* does not imply **useful**. Probably this `p` is completely useless.
+   *Allowed* does not imply **usefulness**. Probably this `p` is completely useless.
    |BR|
-   Aside that Protocols are typically used between -- not inside-- Components, this protocol only has one Event:
+   Aside from that Protocols are typically used between -- not inside-- Components, this protocol only has one Event:
    ``setMax()`` to change the length of the queue. By itself the SlowStart protocol is futile -- it merely models the
-   *slow start* feature to limit the number of event that aren’t handled (by the receiver) by delaying the sender. And
-   increases (or changes) that limit by the pseudo event setMax().
+   *slow start* feature to limit the number of events that aren’t handled (by the receiver) by delaying the sender. And
+   increases (or changes) that are limited by the pseudo-event setMax().
 
    Notwithstanding, it is allowed and eventually somebody will find a use even for this extreme example -- doubtless in
    a test or demo.

@@ -3,7 +3,7 @@
 
 .. UML::
 
-   ditaa
+   @startditaa
 
        Max |
            V
@@ -14,5 +14,7 @@
    +-----------/    \-----------/    \-----------/    \-----------/    \-----------/    \---------*-+
                                                                                                   |
    0 The shown (horizontal) connections all use the SimpleSieve protocol                          V Primes
-   0 The Generator has a (in) port for the StartSieve protocol
-   0 The Finder has an optional (out) port for SimpleSieve protocol
+   0 The Generator has an (in-)port for the StartSieve protocol
+   0 The Finder has an optional (out-) port for SimpleSieve protocol
+
+   @endditaa

@@ -77,9 +77,11 @@ if on_rtd:
     plantuml = 'java  -Djava.awt.headless=true  -jar /usr/share/plantuml/plantuml.jar'
 else:
     plantuml = 'java  -Djava.awt.headless=true  -jar /Users/albert/Apps/PlantUML/libexec/plantuml-RTfD.jar'  #plantuml.1.2020.2.jar
+plantuml = 'java  -Djava.awt.headless=true  -jar /Users/albert/Apps/PlantUML/libexec/plantuml-1.2023.12.jar'
 
-
-if DEBUG:
+plantuml_output_format='svg_img'
+plantuml_syntax_error_image=True
+if True or DEBUG:
     import subprocess
     result = subprocess.run(plantuml.split() +['-version'], stdout=subprocess.PIPE)
     print(f"Using plantuml -version: {result.stdout}")
