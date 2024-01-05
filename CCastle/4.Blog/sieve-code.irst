@@ -1,7 +1,7 @@
 .. -*-rst-*-
    included in  `b.TheSieve.rst`
 
-.. NOTE the code-tabs use ReasonML , but it Castle-code!!
+.. NOTE the code-tabs use ReasonML , but it is Castle-code!!
 
 .. The "No Heisenbug" variant is used as base:    ``.../SIEVE/3.NoHeisenbug/CC-event-sieve.Castle``
 

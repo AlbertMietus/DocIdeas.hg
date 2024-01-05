@@ -1,9 +1,13 @@
-=======================
-Castle FSM syntax tries
-=======================
+.. _FSM-rules-tries:
+
+============================
+Castle FSM-rule syntax tries
+============================
 
 .. note:: Based on some experiments we select “a” language to highlight the examples.
           Its  just try&error; there is  no relation with that language, Castle or a FSM!
+
+.. _FSM-rules-try-1:
 
 Try 1
 =====
