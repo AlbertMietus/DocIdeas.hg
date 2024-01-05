@@ -33,14 +33,14 @@ the transaction `rules` (‘:math:`R`’), a `start-state` (‘:math:`S0`’), a
 for a SW-FSM [#final-action]_. Usually, a set of `actions` (‘:math:`A`’) is required too. Where this set is implicitly
 defined: the actions are listed inside the rules.
 |BR|
-Each `rule` is relation :math:`R := S * E -> S, A`; this “table” is typically the biggest part of an FSM.
+Each `rule` is relation :math:`R := S * E \longrightarrow S, A`; this “table” is typically the biggest part of an FSM.
 
 So, to make a FSM-code compact, we have to focus on the rules.  It’s tempting to regard this rule-set as a *matrix*:
 with (‘:math:`S`’) and (‘:math:`E`’) on the axes and the next-states [#non-determinism]_ (and actions) inside each
 cell. Nevertheless this matrix is huge and probably sparse: most cells are empty, as the combination does not occur.
 |BR|
 We can describe such a sparse-matrix by listing the cell-value with the coordinates. This boils-down to listing the
-rules, one by one .The disadvantage of this that many states and/or events are listed many times. As we will see below,
+rules, one by one. The disadvantage of this that many states and/or events are listed many times. As we will see below,
 some languages solve this by factor-out `states` and/or `events`.
 
 .. hint:: Concurrency is not relevant
