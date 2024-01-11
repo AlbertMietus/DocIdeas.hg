@@ -1,5 +1,5 @@
-Integration a FSM in CastleCode (experiments)
-*********************************************
+{DRAFT] Integration a FSM in CastleCode (experiments)
+*****************************************************
 
 .. post:: 	
    :category: Castle, Language, rough
