@@ -1,0 +1,43 @@
+.. -*- rst -*-
+   included in  `10.FSM-intergration.rst`
+
+.. tabs::
+
+   .. tab:: Demo
+
+      We use a very simple Turnstile FSM as demo. It as two inputs, two states and a few actions; it's based on
+      #UncleBob’s State Machine Compiler demo.
+
+   .. next tab is JUST TEXT, but `java' makes it look nice...
+
+   .. code-tab:: java SMC-table
+
+      Initial: Locked
+      FSM: Turnstile
+      {
+        Locked    Coin    Unlocked    unlock()
+        Locked    Pass    Locked      alarm()
+        Unlocked  Coin    Unlocked    thankyou()
+        Unlocked  Pass    Locked      lock()
+      }
+
+   .. tab:: UML
+      :selected:
+
+      .. uml::
+
+          @startuml
+
+         [*] -> Locked
+
+         Locked    --> Unlocked : Coin /\n   unlock()
+         Locked    --> Locked   : Pass /\n   alarm()
+         Unlocked  --> Unlocked : Coin /\n   thankyou()
+         Unlocked  --> Locked   : Pass /\n   lock()
+
+         @enduml
+
+   .. tab:: Links
+
+      * SMC/Turnstile: https://github.com/unclebob/CC_SMC
+      * CPP2: https://github.com/hsutter/cppfront and https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p0707r4.pdf (a bit old)

@@ -1,0 +1,24 @@
+.. -*- rst -*-
+   included in  `10.FSM-intergration.rst`
+
+.. tabs::
+
+  .. tab:: 1. What ‘is’ a FSM?
+
+     1) a component (by itself)
+     2) a function (or other callable)
+     3) just a "statement"
+
+  .. tab:: 2. How to *"call"* a FSM
+
+     4) just sent events via a port?
+     5) call `FSM.step()`, or `FSM.step(input)`
+     6) call `FSM.run()` -- which may never return
+     7) How about event parameters?
+
+  .. tab:: 3. How are actions  called?
+
+     8) Sending events over an output-port?
+     9) Or do we execute local functions?
+     10) How about outgoing parameters?
+

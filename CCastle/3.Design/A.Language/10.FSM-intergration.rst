@@ -1,5 +1,8 @@
-{DRAFT] Integration a FSM in CastleCode (experiments)
-*****************************************************
+.. include:: /std/localtoc.irst
+
+=======================================================
+[DRAFT] Integration a FSM in CastleCode (experimenting)
+=======================================================
 
 .. post:: 	
    :category: Castle, Language, rough
@@ -27,70 +30,120 @@ inputs and outputs of the FSM. So, the need to exist both ‘in’ and ‘outsid
      |BR|
      to show the inputs and outputs to the user. This is not part of the syntax
 
+Intro
+*****
+
+This blog shows a few possible implementations of a simle “Turnstile” FSM, to experiment with syntax options. We use a
+basic version, and we will extend it too -- to show wat it does with the code.
 
 Questions
 =========
-Here, we focus (on experimenting) on how to intergrade it in CCastle
 
-1. What ‘is’ a FSM?
+The experiments -- how to intergrade an FSM into CCastle focus around the following questions.
 
-   a) a component (by itself)
-   #) a function (or other callable)
-   #) just a "statement"
-
-#. How do we *"call"* the FSM
-
-   a) just sent events via a port?
-   #) call `FSM.step()`, or `FSM.step(input)`
-   #) call `FSM.run()` -- which may never return
-   #) How about event parameters?
-
-#. How about the actions that are called?
-
-   a) Sending events over an output-port?
-   #) Or do we execute local functions?
-   #) How about outgoing parameters?
+.. include:: FSM-questions.irst
 
 
-
-The Basic
-=========
+Turnstile demo
+==============
 
 We use a very simple -- 2 states, 2 events, 4 actions-- FSM  called “Turnstile”. It has only 4 “rules”, and is easy to
 understand.
 |BR|
-After this introduction, we will intergrade it with demo code (in several ways) to answer the questions above.
+Later, we will add more stated (requesting 2 coins) and/or non-FSM behavior, like counting the (total number of) coins
 
-.. tabs::
-
-   .. code-tab:: ReasonML The Turnstile FSM
-
-      @FSM
-      Turnstile {
-        state: Locked, Unlocked;
-        #events: coin, pass;
-        #actions: unlock, alarm, thankyou, lock;
-
-         // State + event -> State, action();
-         Locked   + coin  -> Unlocked, unlock();
-         Locked   + pass  -> Locked,   alarm();
-         Unlocked + coin  -> Unlocked, thank_you();
-         Unlocked + pass  -> Locked,   lock();
-      }
-
-   .. tab:: References
-
-      * This Turnstile FSM is based on #UncleBob’s  State Machine Compiler demo. 
-      * The "@FSM" is based on python's decorator and CPP2's ‘Metaclass functions’
-
-   .. tab:: Links
-
-      * SMC/Turnstile: https://github.com/unclebob/CC_SMC
-      * CPP2: https://github.com/hsutter/cppfront and https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p0707r4.pdf (a bit old)
-
+.. include:: FSM-Turnstile.isrt
 
 
 Experimenting
-=============
+*************
 
-.. ToDo:: all
+FSM as Component
+================
+
+When an component is implemented as an FSM (using the “:ref:`Rewriters`”: `@FSM`) the in-ports are used as FSM-inputs and the
+out-port can be used for actions. So, “calling” the FSM is like “calling” any other component: send signales over the
+connections.
+|BR|
+Note: There is no need to that alls FSM-inputs (nor it outputs) match 1:1 to the protocol of one port -- the can
+originate from multiple in-ports and protocols.
+
+.. tabs::
+
+   .. tab:: IO
+
+      .. literalinclude:: code/Turnstile_Component.Castle
+         :language: ReasonML
+         :lines: 1-15
+         :emphasize-lines: 2-3, 7-8, 12
+
+   .. tab:: Interface
+
+      .. literalinclude:: code/Turnstile_Component.Castle
+         :language: ReasonML
+         :lines: 16-20
+
+   .. tab:: @FSM
+      :selected:
+
+      .. literalinclude:: code/Turnstile_Component.Castle
+         :language: ReasonML
+         :lines: 22-
+
+      .. hint:: `@FSM` (a :ref:`Rewriters`) will “expanded” this code to equivalent CCastle-Code as shown in the next tab.
+
+         That is, is not really generated as in most code-generators.
+         |BR|
+         It only exist inside the compiler, and is typically only exist in AST (actually: :ref:`AIGR<AIGR>`) format --
+         not as text.
+
+
+   .. tab:: Rewritten
+
+      .. literalinclude:: code/Turnstile_Component_Rewritten.Castle
+         :language: ReasonML
+
+      .. admonition:: Code generated at AST level
+
+         The Rewritten (see: ref:`Rewriters`) code will result in the same AST/:ref:`AIGR<AIGR>` as the original @FSM one.
+
+
+Eval (Component)
+~~~~~~~~~~~~~~~~
+
+I like this variant.
+|BR|
+The Turnstile FSM shows that a basic FSM in this style is very clean, and simple
+
+FSM as function
+===============
+ToDo
+
+Eval (function)
+~~~~~~~~~~~~~~~~
+ToDo
+
+FSM as (Data)Class
+==================
+
+.. error:: Class? Of Data-Classes? Or Struct’s
+
+   Until now, “classes” are hardly used in CCastle -- they are kind-of replace by Components. Components however are
+   always “active”, and we may/probably need passive “data-clases” too -- e.g  the AIGR has only data-clases.
+
+   .. hint:: As an FSM has state and behavior, a class sounds better then a Data-Class/Structure. But is it
+
+.. hint::
+
+   As an FSM has *state*, it needs “memory”, and is typically implemented as a instantiated class in many
+   language.
+
+   .. Caution:: Some design-patterns use classes (with no data; and hardly an instance) for “hold” the callables for
+      each state.
+
+      That is more namespace then a class.
+      And surely not a data-class
+
+Eval (Data/Class)
+~~~~~~~~~~~~~~~~~
+ToDo
