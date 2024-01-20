@@ -22,19 +22,12 @@ the FSM. In this blog we focus and experiments on how to integrate the FSM with 
 Unlike the ‘states’ -- which are internal details of the FSM--, the events and actions are external -- its are the
 inputs and outputs of the FSM. So, the need to exist both ‘in’ and ‘outside’ the FSM.
 
-.. caution::  Most of the shown CastleCode syntax is provisional.
-
-   * Here, we use basic rule synax of :ref:`FSM-rules-try-1`,
-   * But use the meta/decorator ``@FSM`` style to denote (which kind of) FSM it is. -- see references (below) on this
-   * Sometimes `#events:` and ``#actions:`` lines are added as pseudo comments
-     |BR|
-     to show the inputs and outputs to the user. This is not part of the syntax
 
 Intro
 *****
 
-This blog shows a few possible implementations of a simle “Turnstile” FSM, to experiment with syntax options. We use a
-basic version, and we will extend it too -- to show wat it does with the code.
+This blog shows a few possible implementations of a simle, well-known *Turnstile* FSM, to experiment with syntax options. We use a
+basic version, and we will extend it -- to show wat it does with the code.
 
 Questions
 =========
@@ -58,6 +51,17 @@ Later, we will add more stated (requesting 2 coins) and/or non-FSM behavior, lik
 Experimenting
 *************
 
+.. caution::  Most of the shown CastleCode syntax is provisional.
+
+   * Here, we use basic rule synax of :ref:`FSM-rules-try-1`,
+   * I use ``@FSM`` (see: “:ref:`Rewriters`”) as a kind of
+     (Python) (`decorator <https://docs.python.org/3/glossary.html#term-decorator>`__) or
+     CPP2 [#cpp2]_ metafunction `(video-link) <https://www.youtube.com/watch?v=fJvPBHErF2U&t=2590s>`__
+   * I use some “ad hoc syntax, for trivial thinks, I did’t design yet (e.g. Enum).
+   * The order of names and typs are not consistent ``name ‘:’ type [‘:=’ value]``
+     vs ``type ‘:’ name`` -- sorry for that; my tought are not final, and my fingers type differently:-)
+
+
 FSM as Component
 ================
 
@@ -68,45 +72,7 @@ connections.
 Note: There is no need to that alls FSM-inputs (nor it outputs) match 1:1 to the protocol of one port -- the can
 originate from multiple in-ports and protocols.
 
-.. tabs::
-
-   .. tab:: IO
-
-      .. literalinclude:: code/Turnstile_Component.Castle
-         :language: ReasonML
-         :lines: 1-15
-         :emphasize-lines: 2-3, 7-8, 12
-
-   .. tab:: Interface
-
-      .. literalinclude:: code/Turnstile_Component.Castle
-         :language: ReasonML
-         :lines: 16-20
-
-   .. tab:: @FSM
-      :selected:
-
-      .. literalinclude:: code/Turnstile_Component.Castle
-         :language: ReasonML
-         :lines: 22-
-
-      .. hint:: `@FSM` (a :ref:`Rewriters`) will “expanded” this code to equivalent CCastle-Code as shown in the next tab.
-
-         That is, is not really generated as in most code-generators.
-         |BR|
-         It only exist inside the compiler, and is typically only exist in AST (actually: :ref:`AIGR<AIGR>`) format --
-         not as text.
-
-
-   .. tab:: Rewritten
-
-      .. literalinclude:: code/Turnstile_Component_Rewritten.Castle
-         :language: ReasonML
-
-      .. admonition:: Code generated at AST level
-
-         The Rewritten (see: ref:`Rewriters`) code will result in the same AST/:ref:`AIGR<AIGR>` as the original @FSM one.
-
+.. include:: FSM-Turnstile-Basics.irst
 
 Eval (Component)
 ~~~~~~~~~~~~~~~~
@@ -147,3 +113,17 @@ FSM as (Data)Class
 Eval (Data/Class)
 ~~~~~~~~~~~~~~~~~
 ToDo
+
+
+
+-------
+
+.. rubric:: footnotes
+
+.. [#cpp2]
+   CPP2 is a language-study by Herb Sutter, see https://herbsutter.com/?s=cpp2 and https://github.com/hsutter/cppfront,
+   to make a “better, safer” C++.
+   |BR|
+   It has some goals that are comparable with my CCastle goals -- but restrics itself to be C++ (with good arguments).
+
+   Herb has a lot of experience and deep-tought; and so is a good inspiration.

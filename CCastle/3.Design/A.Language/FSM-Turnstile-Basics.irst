@@ -1,0 +1,42 @@
+.. -*- rst -*-
+   included in  `10.FSM-intergration.rst`
+
+.. tabs::
+
+   .. tab:: IO
+
+      .. literalinclude:: code/Turnstile_Component.Castle
+         :language: ReasonML
+         :lines: 1-15
+         :emphasize-lines: 2-3, 7-8, 12
+
+   .. tab:: Interface
+
+      .. literalinclude:: code/Turnstile_Component.Castle
+         :language: ReasonML
+         :lines: 16-20
+
+   .. tab:: @FSM
+      :selected:
+
+      .. literalinclude:: code/Turnstile_Component.Castle
+         :language: ReasonML
+         :lines: 22-
+
+      .. hint:: `@FSM` (a :ref:`Rewriters`) will “expanded” this code to equivalent CCastle-Code as shown in the next tab.
+
+         That is, is not really generated as in most code-generators.
+         |BR|
+         It only exist inside the compiler, and is typically only exist in AST (actually: :ref:`AIGR<AIGR>`) format --
+         not as text.
+
+
+   .. tab:: Rewritten
+
+      .. literalinclude:: code/Turnstile_Component_Rewritten.Castle
+         :language: ReasonML
+
+      .. admonition:: Code generated at AST level
+
+         The Rewritten (see: ref:`Rewriters`) code will result in the same AST/:ref:`AIGR<AIGR>` as the original @FSM one.
+

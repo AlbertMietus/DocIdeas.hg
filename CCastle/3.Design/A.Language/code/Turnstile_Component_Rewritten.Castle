@@ -1,5 +1,5 @@
 implement Turnstile { // This code is expanded by the @FSM rewriter
-   s: enum(Locked,Unlocked) := Locked
+   s: enum(Locked, Unlocked) := Locked;
 
 Turnstile_signals.coin on .sig {
    match self.s {

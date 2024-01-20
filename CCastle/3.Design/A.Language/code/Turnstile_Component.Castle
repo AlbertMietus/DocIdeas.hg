@@ -10,7 +10,7 @@ protocol Turnstile_action {
 
 protocol Gen_errors {
    alarm();
-    ....
+   ...
 }
 
 component Turnstile : Component {
