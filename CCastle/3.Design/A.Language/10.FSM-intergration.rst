@@ -61,12 +61,13 @@ Experimenting
    * The order of names and typs are not consistent ``name ‘:’ type [‘:=’ value]``
      vs ``type ‘:’ name`` -- sorry for that; my tought are not final, and my fingers type differently:-)
 
+.. _FSM_component:
 
 FSM as Component
 ================
 
 When an component is implemented as an FSM (using the “:ref:`Rewriters`”: `@FSM`) the in-ports are used as FSM-inputs and the
-out-port can be used for actions. So, “calling” the FSM is like “calling” any other component: send signales over the
+out-port can be used for actions. So, “calling” the FSM is like “calling” any other component: send signals over the
 connections.
 |BR|
 Note: There is no need to that alls FSM-inputs (nor it outputs) match 1:1 to the protocol of one port -- the can
@@ -75,19 +76,75 @@ originate from multiple in-ports and protocols.
 .. include:: FSM-Turnstile-Basics.irst
 
 Eval (Component)
-~~~~~~~~~~~~~~~~
+----------------
+I like this variant! The Turnstile FSM shows that a basic FSM in this style is very clean, and simple. Later, we will
+it’s expandable to; see:. :ref:`CountingTurnstile`.
 
-I like this variant.
-|BR|
-The Turnstile FSM shows that a basic FSM in this style is very clean, and simple
+.. _FSM_function:
 
 FSM as function
 ===============
-ToDo
+
+As a FSM has *state* it can’t be a “`pure function <https://en.wikipedia.org/wiki/Pure_function>`__” -- like a
+math-function: always returning the same answers on the same input, without side-effect. Pure function have great
+benefits for concurent computing.  However, most programming “functions” are (typical) not pure, and
+“procedures” would be better name, most language uses the term function.
+|BR|
+In line with that, we use the term ‘function’ too; in a general way.
+
+In that view, having state is not an issue. Programming-functions can have “state”, by example by having a `static
+(local) variable <https://en.wikipedia.org/wiki/Static_variable>`__, as in e.g. C/C++.
+|BR|
+The state of a FSM-as-functions is like a static. And as we can see below, it results in quite easy syntax.
+
+.. literalinclude:: code/Turnstile_FunSyntax.Castle
+   :language: ReasonML
+
+There are some complication with this concept, however! When rewriting this FSM-function to a regular-function with a local
+static variable, there is **only one** (memory) place to store the state, even when that FSM is used at multiple
+places.
+|BR|
+So, we need a kind of variable-instance pro use of the same function -- that is what we typically call a class (see:
+`FSM_class`_, below).
+
+Another tough questions is how to use “call” it, and what does it return?
+|BR|
+Conceptually, a FSM does not “return” anything, so it would be a void function. We could return the action to be called
+-- which is a bit strange, but making the FSM call them is strange too.
+
+Simular, when calling: what parameter(s) to pass?
+|BR|
+In the example above, we pass the list of signals (as a Protocol), not the “current signal”. That “list” is needed as
+the rules use it -- we can’t compile (aka: verify) the transactions without the list. Again, this can solved in a
+class-alike setting, e.g. by introducing a “step” method; which passes the current signal.
+
 
 Eval (function)
-~~~~~~~~~~~~~~~~
-ToDo
+---------------
+As shown above, using a FSM as a (classical) function is problematic. The syntax is easy to read & write, but the
+semantics are complicated. And even when it is possible, it not easy to use. So, this approach is *turned down*.
+
+
+Function syntax, to build a (local) component.
+==============================================
+
+Another approach to use the function-syntax is to consider a FSM as a (kind of) iterator. The FSM-function becomes a
+`generator <https://en.wikipedia.org/wiki/Generator_(computer_programming)>`__, as by example in Python.
+
+Then the function --roughly as shown above-- returns an object that *is* the FSM.
+|BR|
+This solves most (all?) of the described complications.
+
+In most languages an “iterator” is (like a) class-instance. So, it can store the state. Calling the FSM-function twice, returns two
+independent FSMs “instance”, each with it own state.
+|BR|
+Given the (returned) FSM is an instance, “calling” it becomes simple. We can have several (build-in) methods, like
+``fsm.step(<current signal>)``. 
+
+
+
+
+.. _FSM_class:
 
 FSM as (Data)Class
 ==================
@@ -111,7 +168,8 @@ FSM as (Data)Class
       And surely not a data-class
 
 Eval (Data/Class)
-~~~~~~~~~~~~~~~~~
+------------------
+
 ToDo
 
 
@@ -127,3 +185,37 @@ ToDo
    It has some goals that are comparable with my CCastle goals -- but restrics itself to be C++ (with good arguments).
 
    Herb has a lot of experience and deep-tought; and so is a good inspiration.
+
+
+
+
+
+
+=====
+
+.. _CountingTurnstile:
+
+Counting Turnstile
+*********************
+
+Using the Turnstile as a sub
+============================
+
+.. tabs::
+
+   .. tab:: interface
+
+      .. literalinclude:: code/CountingTurnstile.Moat
+         :language: ReasonML
+
+
+   .. tab:: sub Turnstile
+
+      .. literalinclude:: code/CountingTurnstile-sub.Castle
+         :language: ReasonML
+
+   .. tab:: Function syntax
+
+      .. literalinclude:: code/CountingTurnstile-fun.Castle
+         :language: ReasonML
+

@@ -1,0 +1,10 @@
+@FSM  // Experiment: a FSM as function
+Turnstile(signals:Turnstile_inputs, act:Turnstile_actions, err:Gen_errors) {
+   state: Locked, Unlocked := Locked;
+
+   // State + event -> State, action();
+   Locked 	+ signal.coin	->  Unlocked,	act.unlock();
+   Locked 	+ signal.pass	->  	,	err.alarm();
+   Unlocked	+ signal.coin 	->  	,	act.thank_you();
+   Unlocked	+ signal.pass	->  Locked,	act.lock();
+} // The syntax is clear -- BUT what are the semantics? (how to call)

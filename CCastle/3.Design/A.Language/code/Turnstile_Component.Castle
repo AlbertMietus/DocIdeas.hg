@@ -1,9 +1,9 @@
-protocol Turnstile_signals {
+protocol Turnstile_inputs {
    coin;
    pass;
 }
 
-protocol Turnstile_action {
+protocol Turnstile_actions {
    unlock();
    thanks();
 }
@@ -14,18 +14,18 @@ protocol Gen_errors {
 }
 
 component Turnstile : Component {
-   port Turnstile_signals<in>: sig;
+   port Turnstile_inputs<in>: signal;
    port Turnstile_actions<out>: act;
    port Gen_errors<out>: err;
 }
 
 @FSM
 implement Turnstile {
-   state: Locked, Unlocked := Locked
+   state: Locked, Unlocked := Locked;
 
    // State + event -> State, action();
-   Locked 	+ sig.coin	->  Unlocked,	act.unlock();
-   Locked 	+ sig.pass	->  	,	err.alarm();
-   Unlocked	+ sig.coin 	->  	,	act.thank_you();
-   Unlocked	+ sig.pass	->  Locked,	act.lock();
+   Locked 	+ signal.coin	->  Unlocked,	act.unlock();
+   Locked 	+ signal.pass	->  	,	err.alarm();
+   Unlocked	+ signal.coin 	->  	,	act.thank_you();
+   Unlocked	+ signal.pass	->  Locked,	act.lock();
 }

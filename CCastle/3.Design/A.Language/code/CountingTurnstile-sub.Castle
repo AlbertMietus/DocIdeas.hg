@@ -1,7 +1,3 @@
-component CountingTurnstile: Turnstile {
-  port Getter<coins> admin;
-}
-
 implement CountingTurnstile {
    sub fsm;
    int number_of_coins=0;
@@ -19,11 +15,11 @@ get_coins() on .admin {
 
 Turnstile_signals.coin on .sig {
    self.number_of_coins++;
-   .fsm.sig = coin // "call the FSM"
+   .fsm.signals = coin // "call the FSM"
 }
 
 * on .sig as other_signals { // default
    .fsm.sig = other_signals
 }
 
-} // end CountingTurnstile
+} // end CountingTurnstile (sub style)

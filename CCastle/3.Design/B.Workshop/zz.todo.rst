@@ -27,5 +27,27 @@ Simulation/Verification (todo)
    - Simulate “other” event-orders (show it’s effect to the user)
    - Verify that “any” event-order results in a logical & correct result.
 
-   .. seealso:: “:ref:`Dezyne`” has such a tool 
+   .. seealso:: “:ref:`Dezyne`” has such a tool
 
+
+
+FSM details to remember
+=======================
+
+.. impl::  FSM Actions become before state-updates
+   :ID: FSM_AbS
+   :links: U_FSM_Syntax, U_FSM_extensions
+
+   When implementing a FSM (:ref:`Rewriters`) actions and state-updates need to be in the right order; actions come
+   before state-updates.
+
+   When using “More & Mealy” actions, and/or hierarchically FSM’s it become a bit more complicated. But order is clearly
+   described and easy..
+
+   .. seealso::    https://en.wikipedia.org/wiki/UML_state_machine#Transition_execution_sequence
+
+.. note:: For NFA’s this is even more complicated.
+   The order is clear, but as a NFA has to be rewritten in a DFA, we have to be extra carefull to keep the same order.
+
+   Probably, this is not even possible in general. When possible, the “compiler” should do it. When not, it should give
+   a warning (or error, on request) and use an heuristic.

@@ -1,22 +1,24 @@
 implement Turnstile { // This code is expanded by the @FSM rewriter
    s: enum(Locked, Unlocked) := Locked;
 
-Turnstile_signals.coin on .sig {
+Turnstile_inputs.coin on .signal {
    match self.s {
       case Locked: {
-         self.act.unlock();	self.s := Unlocked;
+         self.act.unlock();
+         self.s := Unlocked;
       }
       case Unlocked:
          self.act.thank_you();
    }
 }
 
-Turnstile_signals.pass on .sig {
+Turnstile_signals.pass on .signal {
    match self.s {
       case Locked:
          self.err.alarm();
       case Unlocked: {
-         self.act.lock();	self.s := Locked;
+         self.act.lock();
+	 self.s := Locked;
       }
    }
 }
