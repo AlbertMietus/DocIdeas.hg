@@ -76,7 +76,8 @@ extensions.append('sphinxcontrib.plantuml')
 if on_rtd:
     plantuml = 'java  -Djava.awt.headless=true  -jar /usr/share/plantuml/plantuml.jar'
 else:
-    plantuml = 'java  -Djava.awt.headless=true  -jar /Users/albert/Apps/PlantUML/libexec/plantuml-RTfD.jar'  #plantuml.1.2020.2.jar
+#    plantuml = 'java  -Djava.awt.headless=true  -jar /Users/albert/Apps/PlantUML/libexec/plantuml-RTfD.jar'  #plantuml.1.2020.2.jar
+    plantuml = 'plantuml'
 
 
 ##plantuml_output_format='svg_img'

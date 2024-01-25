@@ -75,10 +75,16 @@ originate from multiple in-ports and protocols.
 
 .. include:: FSM-Turnstile-Basics.irst
 
+As you can see in the code above, *only* in the (component) implement it is shown it is (implemented as/with) an
+FSM. This a future implementation may be differently, without any change to it users.
+
+
 Eval (Component)
 ----------------
-I like this variant! The Turnstile FSM shows that a basic FSM in this style is very clean, and simple. Later, we will
-it’s expandable to; see:. :ref:`CountingTurnstile`.
+I like this variant!
+
+The Turnstile FSM shows that a basic FSM in this style is very clean, and simple. Later, we will
+it’s expandable to; see:  :ref:`CountingTurnstile`.
 
 .. _FSM_function:
 
@@ -86,9 +92,9 @@ FSM as function
 ===============
 
 As a FSM has *state* it can’t be a “`pure function <https://en.wikipedia.org/wiki/Pure_function>`__” -- like a
-math-function: always returning the same answers on the same input, without side-effect. Pure function have great
-benefits for concurent computing.  However, most programming “functions” are (typical) not pure, and
-“procedures” would be better name, most language uses the term function.
+math-function: always returning the same answers on the same input, without side-effects. Pure function have great
+benefits for concurent computing.  However, most programming “functions” are (typical) not pure, and “procedures” would
+be better name, most language uses the term function.
 |BR|
 In line with that, we use the term ‘function’ too; in a general way.
 
@@ -119,8 +125,8 @@ the rules use it -- we can’t compile (aka: verify) the transactions without th
 class-alike setting, e.g. by introducing a “step” method; which passes the current signal.
 
 
-Eval (function)
----------------
+Eval (typical function)
+-----------------------
 As shown above, using a FSM as a (classical) function is problematic. The syntax is easy to read & write, but the
 semantics are complicated. And even when it is possible, it not easy to use. So, this approach is *turned down*.
 
@@ -128,26 +134,75 @@ semantics are complicated. And even when it is possible, it not easy to use. So,
 Function syntax, to build a (local) component.
 ==============================================
 
-Another approach to use the function-syntax is to consider a FSM as a (kind of) iterator. The FSM-function becomes a
-`generator <https://en.wikipedia.org/wiki/Generator_(computer_programming)>`__, as by example in Python.
-
-Then the function --roughly as shown above-- returns an object that *is* the FSM.
+Another approach to use the function-syntax is to consider a FSM as a (kind of) iterator. Then the FSM-function becomes a
+`generator <https://en.wikipedia.org/wiki/Generator_(computer_programming)>`__, as by example in Python. And the function --roughly as shown above-- returns an object that *is* the FSM.
 |BR|
 This solves most (all?) of the described complications.
 
-In most languages an “iterator” is (like a) class-instance. So, it can store the state. Calling the FSM-function twice, returns two
-independent FSMs “instance”, each with it own state.
+Returning a class-object
+------------------------
+In most languages an *iterator* is (like a) class-instance. So, it can store the state. When Calling the FSM-function
+twice, two independent FSMs “instance” --each with it own state-- are returned.
 |BR|
 Given the (returned) FSM is an instance, “calling” it becomes simple. We can have several (build-in) methods, like
-``fsm.step(<current signal>)``. 
+``fsm.step(<current signal>)``.
+
+Admitting it solves the “calling” and some practical problems, other complications still arise. Like how to call the
+actions -- are the called by the FSM, or by the code that called the FSM? Both are possible, but not perfect.
+|BR|
+Another disadvantage is introducing “classes” (aslo see below). Classe are fine in most languages, but Castle is build
+around “components” -- more active, And with clean interface at the “backside”.
+
+And luckily, the is a better solution ...
 
 
+Returning a component-element
+-----------------------------
+When the FSM-function returns a component-element (instead of a class-instance) all uncertainties are solved!
 
+After calling that FSM-function, we have a normal component (element) with input- and output-ports (both passed as
+parameter). Those port can be connected to other ports, or an input can be triggered like any component. And as the
+element is *active*, the actions of the FSM result in triggering other components/ports.
+
+The semantics of a FSM-function are exactly the same as for the FSM-component. Actually, the rewriter for a FSM-function
+will transform it to a “normal” FSM-component (and instantiate it).
+|BR|
+Mark that a FSM-component is also rewritten. So the FSM-function is rewritten twice. Both by the same @FSM
+rewriter. That however, is an implementation detail. It may be clear that there is no loop -- above we already shown
+that rewriting a FSM-component result is “base code”.
+
+The only questions is: **why?** (and which one)
+|BR|
+As the FSM-function and the FSM-component result in the same element, which one should we select? Or should we allow
+both?
+
+In many modern languages it is possible to define code in two (or more) ways. For example in python we can define
+functions with the ‘def’ keyword (the usual way), or as a nameless “lambda”. The same aplies to “classes”, and is valid
+in many languages.
+|BR|
+Typically, there is a “standard way”, for typical use. And a “shortcut” for small, only uses once case.
+
+The same can be useful for Castle, as we can see in a  :ref:`CountingTurnstile` example.
+
+Eval (component-building function)
+----------------------------------
+
+It is possible use the function-syntax, when it results in a component-element. Although the syntax differs from the
+FSM-component (syntax), it has the same semantics.
+
+It have a certain beauty, but I’m not (yet) convinced that it has advantages to allow both syntaxes. And as the
+component one is closer to components (sic), the function variant is an option for now. Not more, not less.
+|BR|
+When I add it, there is no need to implement it in the “bootstrap” compilers.
 
 .. _FSM_class:
 
 FSM as (Data)Class
 ==================
+
+
+
+
 
 .. error:: Class? Of Data-Classes? Or Struct’s
 
@@ -173,6 +228,11 @@ Eval (Data/Class)
 ToDo
 
 
+FSM is not a statement
+=======================
+
+In the initial list of questions, I added the option “FSM as statement”. But in the analyse (above) it become clear that
+that doesn't is a valid option. Neither the syntax, nor the semantics are clear nor have any advantages.
 
 -------
 

@@ -32,8 +32,11 @@ This is part of the Congestion Avoidance concept.
 Rewriters (TODO)
 ================
 
-**Rewriters** are a bit like `@decorator` in python (before a class/function), and the @meta-functions in cpp2 (after
-the class). The act as compiler “plugins” (likje CPP2), as can be written by a normal user (like in Python).
+**Rewriters** are a bit like `@decorator` in python (before a class/function), and ``@meta-functions`` in *CPP2* (after
+the class). They take a function (or class/component/...) written in  “compact” CCastle-code, and *rewrite* it into more
+specific, general CCastle-Code.
+
+You can see them as “compiler plugins” (like in CPP2) --see: :ref:`Transformers`--, but can be developed by typical (CCastle) programmers.
 
 The “expand” (or “generate”) code) during compiling -- typically at AST (actually: :ref:`AIGR`) level
 
