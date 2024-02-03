@@ -53,7 +53,7 @@ RTD  RTfD-build RTfD RTFD RTfD-webhook:
 
 wc:
 	@echo "lines	words	file"
-	@wc -lw `find CCastle/ -iname \*rst`|sort -r | grep -v /index.rst | grep -v /zz.todo.rst
+	@wc -lw `find -L CCastle/ -iname \*rst`|sort -r | grep -v /index.rst | grep -v /zz.todo.rst
 
 sidebar:
 	@grep "include::" `find CCastle/ -type f -name \*.rst` /dev/null | grep sidebar| sort| sed 's/:../:\t\t ../'
