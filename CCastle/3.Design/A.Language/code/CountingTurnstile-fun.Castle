@@ -1,0 +1,29 @@
+implement CountingTurnstile {
+   sub fsm;
+   int number_of_coins=0;
+
+  @FSM
+  Turnstile(signals:Turnstile_inputs, act:Turnstile_actions, err:Gen_errors) {
+     state: Locked, Unlocked := Locked;
+
+     // State + event -> State, action();
+     Locked 	+ signal.coin	->  Unlocked,	act.unlock();
+     Locked 	+ signal.pass	->  	,	err.alarm();
+     Unlocked	+ signal.coin 	->  	,	act.thank_you();
+     Unlocked	+ signal.pass	->  Locked,	act.lock();
+  }
+
+init() {
+  // Build the local FSM, and connect all port to the sub
+  .fsm = Turnstile(signal=self.signal, ac=self.act, err=self.err)
+}
+
+get_coins() on .admin {
+   return self.number_of_coins;
+}
+// Overide "reconnect" only the signal we need
+Turnstile_signals.coin on .signal {
+   self.number_of_coins++;
+   .fsm.signal = coin
+}
+}} // end CountingTurnstile (fun style)

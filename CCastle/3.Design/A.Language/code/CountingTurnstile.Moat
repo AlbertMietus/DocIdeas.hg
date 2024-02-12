@@ -1,0 +1,6 @@
+from Turnstile_Component import Turnstile
+
+component CountingTurnstile: Turnstile {
+  port Getter<coins> admin;
+}
+
