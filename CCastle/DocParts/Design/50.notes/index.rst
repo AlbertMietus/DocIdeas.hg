@@ -1,5 +1,5 @@
-Some (LOCAL only) Design Notes
-==============================
+Design Notes (Partial)
+======================
 
 This are “quick and dirty” design diagrams. That where useful when created (see file-name), but may be less relevant
 later.

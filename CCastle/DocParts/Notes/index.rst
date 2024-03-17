@@ -1,5 +1,5 @@
-Some notes (LOCAL only)
-=======================
+Some notes (Partial)
+====================
 
 
 .. toctree::
