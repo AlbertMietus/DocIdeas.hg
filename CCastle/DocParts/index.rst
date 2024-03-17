@@ -1,5 +1,5 @@
-Partial Docs (LOCAL only)
-=========================
+Partial Docs
+============
 
 
 .. toctree::
