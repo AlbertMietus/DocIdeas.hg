@@ -1,5 +1,5 @@
-All kind of (LOCAL only) Designs
-=================================
+Partial Designs
+===============
 
 
 .. toctree::

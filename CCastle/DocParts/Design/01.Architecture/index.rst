@@ -1,5 +1,5 @@
-Top Level architecture (LOCAL only)
-===================================
+Top Level architecture (Partial)
+================================
 
 
 .. toctree::
