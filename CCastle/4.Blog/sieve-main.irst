@@ -28,7 +28,7 @@
       }
 
 
-   .. code-tab:: ReasonML try() on found
+   .. code-tab:: ReasonML try()
 
       // We have build the sievelist (and reconnect) on a newly found prime ..
       SimpleSieve.try(newPrime) on .generator.found
@@ -52,7 +52,7 @@
         }
 
         // And to the Finder, that is self
-        s.coprime = .finder.newPrime; 
+        s.coprime = .finder.newPrime;
       }
 
    .. code-tab:: ReasonML  powerOn() 
