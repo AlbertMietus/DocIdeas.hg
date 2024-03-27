@@ -1,3 +1,4 @@
+.. (C) 2023,2024 Albert Mietus. Part of CCastle project
 ==============================
 Blog on various CCastle topics
 ==============================

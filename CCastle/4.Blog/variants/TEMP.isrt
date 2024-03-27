@@ -1,0 +1,48 @@
+.. (C) 2023,2024 Albert Mietus. Part of CCastle project
+
+.. -*-rst-*-
+   These where used in a draft, overcomplicated version of “the Sieve” blog. And saved here when that blog was clean-up
+.. note: the code-tabs use ReasonML , but it Castle-code!!
+
+.. sidebar:: SAVED
+
+   .. tabs::
+
+      .. tab:: SlowStart(1)
+
+         This version has one main change: the SimpleSieve now inherits from **SlowStart**
+
+         .. code-block:: ReasonML
+
+            protocol StartSieve : Protocol {
+                 kind: event;
+                 runTo(int:max);
+            }
+
+            protocol SimpleSieve : SlowStart(1) {
+                 input(int:try);
+            }
+
+         Aside of that, the ``kind: event`` line is gone, as it *inherited* from ``SlowStart``
+
+      .. tab:: Demo of use
+
+         .. code-block:: ReasonML
+            :emphasize-lines: 6,10
+
+            SimpleSieve.try(newPrime) on self.generator.found
+            {
+               ...
+               // When ``Sieve(2)`` is made (alias: s)
+               self.generator.outlet = s2.try;
+               self.generator.outlet.queue.removeLimit();
+               ...
+               // Simular for other ``Sieve’s``
+               self.lastSieve.coprime = s.try;
+               self.lastSieve.coprime.queue.removeLimit();
+               ...
+            }
+
+      The Castle syntax isn’t fully stable, Here we use an old/provisionally version
+
+

@@ -1,0 +1,174 @@
+.. (C) 2023,2024 Albert Mietus. Part of CCastle project
+
+.. _Castle-TheSieve:
+
+=========================
+The Sieve (basic variant)
+=========================
+
+.. post:: 2024/03/25
+   :category: CastleBlogs, Demo
+   :tags: Castle
+
+
+   To show some features of CCastle, I use *‘the Sieve’*, short for the `Sieve of Eratosthenes
+   <https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes>`__. An old, well-known, algorithm to find prime numbers; with
+   implicit concurrency.
+
+   With an almost trivial implementation, many “CC concepts” can be shown; in only a handful of lines....
+
+Several variants of ‘the Sieve’ will be presented to introduce various concepts. This is the most basic one. As we will
+see, it does contain a :ref:`Heisenbug <Castle-Heisenbug>`, which will only be solved in another variant.
+|BR|
+Aside from demonstrating some CCastle concepts, ‘the Sieve’ (in all its variants) is used also to demo the compiler (see
+:ref:`Castle-WorkshopTools`).
+
+
+
+The design
+**********
+
+We only need three simple components as shown below, and a main component (not shown). We also use two protocols, which
+are given below.
+
+.. include:: ./sieve-design.irst
+
+The elements of the sieve
+=========================
+
+CCastle uses “components” [#not-package]_ as the main decomposition. Each kind of component can be instantiated multiple
+times; sometimes called an *element*, or also just a *component*. This is very alike the difference between *“classes”
+and “objects”* in OO [#active-class]_.
+
+Let’s introduce those components
+
+Generator
+---------
+
+This component generates just numbers, which will be tested for prime (see below). As primes are always integers bigger
+than one; the output is the stream stream of numbers: 2,3,4, …
+
+Sieve (on prime)
+----------------
+
+We use a (growing) chain of sieve elements. Each one is the same; except for the sieving constant --an already found
+prime. That number is set when instantiating the element.
+
+
+Each Sieve tries to divide each incoming number by its own, sieve-constant. When the modulo isn’t zero, we call it a
+*coprime* (relative to the already tested primes) and send it downstream. When it can be divided, the number is not
+prime and ignored.
+
+Finder
+------
+
+Each number that comes out of the chain of sieves is a prime (that is the algorithm; see Wikipedia for details). It is
+collected by the finder. For each found prime, an extra sieve (element) is created and added to the chain. This kind
+of shifts the finder to the right (aka downstream)
+
+In some implementations that is the responsibility of the finder (therefore sometimes called “head”). In a variant, the
+‘main’ component is carrying that load.
+
+Communication
+=============
+.. include:: ./sieve-protocols-sidebar.irst
+
+CCastle uses “protocols” to communicate between components. There are several kinds of protocols; we use the ‘event’ kind
+here. Two ports can be connected when both use the same protocol.
+
+Notice, that a *protocol* is not the same as an API in most languages; it is a fundamental concept of the :ref:`CC`
+concept of CCastle. And enforced the strict separation between “outside” and “inside” of a component. No implementation detail of a
+component can call the interface of another component -- it has to be routed by ports and protocols.
+
+StartSieve
+----------
+
+With the StartSieve protocol, the sieving (so generating numbers) is started. The passed parameter is the maximum number to check for
+“primeness”, and so forces a halt. In this (dumb) demo, there is no direct way to specify the number of primes to find.
+
+There is however an option to change that maximum number, with the ``newMax(int:max)`` event.
+|BR|
+In this demo, that event has no effect when the (old) max is already reached -- it is trivial to improve, but that is
+outside the scope of this demo.
+
+SimpleSieve
+-----------
+
+In this variant, we use an event-based protocol, that just holds one event (read: a message), that
+carries the integer to be tried.
+
+The ``input(int:try)`` event gives *input* to the (next) sieve, carrying the number to *try*.
+
+
+Heisenbug
+---------
+
+As we will see in :ref:`Castle-Heisenbug`, this design has a flaw. Depending on :ref:`TheMachinery`, the algorithm may
+work, or terminate early. To manage the (variability in) concurrent communication, the protocol(s) have to be enriched.
+|BR|
+As it does work with the simple (:ref:`Machinery-DirectCall`) machinery, and as it is just a “Hello World” demo, we
+prefer this imperfect version for the demo, as a kind of reference.
+
+.. attention:: Do not use this example in real (generic, production) code.
+
+   See the variant(s) for an improved version. For example: :ref:`SlowStart-Sieve` details.)
+
+The Code
+********
+
+Below, we show all Castle-code for the components. With some comments to explain some typical castle concepts.
+|BR|
+Some parts (like import-lines) are not shown. See the code examples for full examples.
+
+Moat (*interfaces*)
+===================
+
+“Moat files” are like the interfaces, or *contracts*, to the components. The above-shown protocols are also part of
+those *Moat files* -- but as they are already shown, we will not repeat them.
+
+
+.. include:: ./sieve-moat.irst
+
+Castle (*implementation*)
+=========================
+
+The “Castle files” contain the implementation of all components.
+
+.. include:: ./sieve-castle.irst
+
+Main
+====
+
+Components have to be created (statically or dynamically) into “elements”. This is typically done by a component that
+‘holds’ the “sub-components” -- look for the ``sub`` [#subalias]_ keyword. This applies to all levels.
+
+At the very top, there is one element --usually called “main” -- that holds the major elements. In this example, that are
+the `Generator`, the `Finder` and the `Sieve`\s themself.
+
+Note that “main” isn’t  special. Unlike in C/C++ there is no need for a (single) main. The name *main* is more of a
+convention (like in Python).
+|BR|
+Any component with a ``powerOn()`` method will act as (a) main component.
+
+
+.. include:: ./sieve-main.irst
+
+----------
+
+.. rubric:: Footnotes
+
+.. [#not-package]
+   A CCastle **component** is unrelated to a *UML component*. It is **not** a package, as many people use for the UML variant.
+
+.. [#active-class]
+   A (CCastle) **component** (or actually, an element) is sometimes described as an “active class (aka object)” -- a
+   class with a thread inside. This is not completely correct, but gives a good, first impression.
+   |BR|
+   Notice however there a no threads in CCastle -- just concurrency and parallelism.
+
+.. [#subalias]
+   You will encounter both ``sub`` and ``alias`` in this example. Both refer to a (sub)component inside the element,
+   with a small difference. A `sub` is part of the current element, whereas an `alias` is more a (temporally) reference to
+   *sub* -- for example, the last (most right) sieve element in the chain.
+
+..  LocalWords:  coprime Heisenbug

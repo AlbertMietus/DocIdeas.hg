@@ -1,27 +1,29 @@
-.. -*- rst -*-
-   included in  `a.Heisenbug.rst`
+.. -*- rst -*- (C) 2023,2024 Albert Mietus. Part of CCastle project
+   included in  `2.Heisenbug.rst`
 
-.. sidebar::
+.. Sidebar::
 
    .. tabs::
 
       .. tab:: Conceptual
 
-         This diagram shows the order of messages in a logical order. As we show only the integers that are tested for
-         (relative) prime, it looks simple and error-free.
+         This diagram shows the order of messages in a logical order. Hence, we show the “sieving sequence” per
+         integer. The following number starts only after finding a prime.
+         |BR|
+         It looks simple and error-free.
 
          .. uml:: ./sieve-Sequence-concept.puml
 
       .. tab::  One-by-One
 
-         But there is no guarantee for that the simple, conceptual order. For example, the Generator can be *“fast”* and
+         But there is no guarantee for that simple, conceptual order. For example, the Generator can be *“fast”* and
          produce the to-be-sieved integers faster than the Sieves handle.
 
          .. uml:: ./sieve-Sequence-1b1.puml
 
-      .. tab::  With Details
+      .. tab::  with Details
 
-         Adding components-creation (with reconnects) shows a lot more details. We added the event/port names, for
+         Adding components-creation (with reconnects) shows a lot more details. Also, we added the event/port names for 
          clarity. When studying carefully, we can already see there might be a problem when the order changes
 
          .. uml:: ./sieve-Sequence-details.puml

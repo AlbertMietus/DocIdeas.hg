@@ -1,0 +1,70 @@
+.. -*-rst-*- (C) 2023,2024 Albert Mietus. Part of CCastle project
+   included in  `1.TheSieve.rst`
+.. NOTE the code-tabs use ReasonML , but it is Castle-code!!
+
+.. tabs::
+   .. code-tab:: ReasonML Generator
+
+      implement Generator {
+        int maxValue;
+
+      StartSieve.newMax(max) on .controll
+      {
+        .maxValue := max;
+      }
+
+      StartSieve.runTo(max) on .controll
+      {
+        int i;
+
+        .maxValue := max;
+        i:=0;
+        while (i < .maxValue) {
+          .outlet.input(i);
+        }
+      }
+
+      } //@end Generator
+
+
+   .. code-tab:: ReasonML Sieve
+
+      implement Sieve {
+        int myPrime;
+
+      init(int:onPrime)  // `init` is (typically) part of the construction of a element.
+      {
+        super.init();    // `super` acts as port to the base-class
+        .myPrime := onPrime;
+      }
+
+      SimpleSieve.input(try) on .try
+      {
+        if ( (try % .myPrime) !=0 ) {
+          .coprime.input(try);
+        }
+      }
+
+      } //@end Sieve
+
+
+   .. code-tab:: ReasonML Finder
+
+      implement Finder {
+        int count;
+
+      SimpleSieve.input(foundPrime) on .newPrime
+      {
+        .found.input(foundPrime);         // Forward to “main”
+        report()
+      }
+
+      report() // This is a local function -- as it is not connected (to a port) it is “private”
+      {
+        printf("Finder: Found prime (no %s): %8i\n", .count, foundPrime);
+        .count +=1
+      }
+
+      } //@end Finder
+
+

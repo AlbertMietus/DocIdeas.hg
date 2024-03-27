@@ -1,0 +1,66 @@
+.. -*-rst-*-  (C) 2023,2024 Albert Mietus. Part of CCastle project
+   included in  `1.TheSieve.rst`
+.. NOTE the code-tabs use ReasonML , but it is Castle-code!!
+
+.. tabs::
+
+   .. code-tab:: ReasonML Main
+
+      implement Main {
+        sub generator;
+        sub finder;
+        alias lastSieve;         // The list of Sieve's grow dynamically!; keep track of the last one
+      ...
+
+
+   .. code-tab:: ReasonML init()
+
+      init()
+      {
+        super.init();
+
+        .generator := Generator();
+        .finder    := Finder();
+
+        // Initially, there aren't any Sieves, so ...
+        .generator.outlet = .finder.newPrime;     // ... connect the generator to the finder
+        .lastSieve := Ground;                     // Not needed (as default); but it clarifies the code below
+      }
+
+
+   .. code-tab:: ReasonML try() on found
+
+      // We have build the sievelist (and reconnect) on a newly found prime ..
+      SimpleSieve.try(newPrime) on .generator.found
+      {
+        alias s;
+
+        // Extent the sieve-list ...
+        s:= Sieve(newPrime);
+        insert_sieve(s);
+        .generator.collect.input(newPrime);   // forward the prime to the Generator
+      }
+
+
+      insert_sieve(alias:s)
+      {
+        // Connect s to the lastSieve, or the Generator
+        if (.lastSieve == Ground) {              // .lastSieve == Ground, so not connected, so we have the first Sieve to connect to .generator
+           .generator.outlet = s.try;
+         } else {
+           .lastSieve.coprime = s.try;
+        }
+
+        // And to the Finder, that is self
+        s.coprime = .finder.newPrime; 
+      }
+
+   .. code-tab:: ReasonML  powerOn() 
+
+      powerOn() // this kick-starts “every main”
+      {
+        int max := 10;
+
+        .generator.runTo(max);
+      }
+

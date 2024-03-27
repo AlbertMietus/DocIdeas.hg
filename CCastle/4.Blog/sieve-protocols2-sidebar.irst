@@ -1,0 +1,49 @@
+.. -*-rst-*- (C) 2023,2024 Albert Mietus. Part of CCastle project
+   included in  `b.TheSieve.rst`
+
+.. note The code-tabs use ReasonML , but it is Castle-code!!
+
+.. sidebar:: SimpleSieve Protocols
+
+   .. tabs::
+
+      .. tab:: Original
+
+         The original SimpleSieve protocol is (sic) simple ... too simple.
+
+         .. code-block:: ReasonML
+
+            protocol SimpleSieve : EventProtocol {
+               input(int:try);
+            }
+
+         As there is no flow control “co-primes” can be *queued*,  or arrive too soon.
+
+      .. tab:: SlowStart
+
+         In this version, SimpleSieve inherits from **SlowStart**
+
+         .. code-block:: ReasonML
+
+            protocol SimpleSieve : SlowStart(1) {
+               input(int:try);
+            }
+
+      .. tab:: Demo of use
+
+         .. code-block:: ReasonML
+            :emphasize-lines: 6,10
+
+            SimpleSieve.try(newPrime) on self.generator.found
+            {
+               ...
+               // When ``Sieve(2)`` is made (alias: s)
+               self.generator.outlet = s2.try;
+               self.generator.outlet.queue.removeLimit();
+               ...
+               // Simular for other ``Sieve’s``
+               self.lastSieve.coprime = s.try;
+               self.lastSieve.coprime.queue.removeLimit();
+               ...
+            }
+

@@ -1,55 +1,28 @@
-.. -*-rst-*-
+.. -*-rst-*- (C) 2023,2024 Albert Mietus. Part of CCastle project
    included in  `b.TheSieve.rst`
 
-.. note: the code-tabs use ReasonML , but it Castle-code!!
+.. note The code-tabs use ReasonML , but it is Castle-code!!
 
 .. sidebar:: Sieve Protocols
 
    .. tabs::
 
-      .. code-tab:: ReasonML Original
+      .. code-tab:: ReasonML StartSieve
 
-         protocol StartSieve : Protocol {
-              kind: event;
+         protocol StartSieve : EventProtocol {
               runTo(int:max);
+              newMax(int:max);
          }
 
-         protocol SimpleSieve : Protocol {
-              kind: event;
+      .. code-tab:: ReasonML SimpleSieve
+
+         protocol SimpleSieve : EventProtocol {
               input(int:try);
          }
 
-      .. tab:: Improved
+      .. tab:: Syntax notes
 
-         This version has one main change: the SimpleSieve now inherits from **SlowStart**
+         As the Castle syntax isn’t fully stable, a few notes:
 
-         .. code-block:: ReasonML
-
-            protocol StartSieve : Protocol {
-                 kind: event;
-                 runTo(int:max);
-            }
-
-            protocol SimpleSieve : SlowStart(1) {
-                 input(int:try);
-            }
-
-         Aside of that, the ``kind: event`` line is gone, as it *inherited* from ``SlowStart``
-
-      .. tab:: Demo of use
-
-         .. code-block:: ReasonML
-            :emphasize-lines: 6,10
-
-            SimpleSieve.try(newPrime) on self.generator.found
-            {
-               ...
-               // When ``Sieve(2)`` is made (alias: s)
-               self.generator.outlet = s2.try;
-               self.generator.outlet.queue.removeLimit();
-               ...
-               // Simular for other ``Sieve’s``
-               self.lastSieve.coprime = s.try;
-               self.lastSieve.coprime.queue.removeLimit();
-               ...
-            }
+         - Parmeters are in ``type:name`` order, which may change.
+         - The protocol-kind is inherited, not the (older) explicit ``kind: event`` variant.
