@@ -55,8 +55,8 @@
 
       SimpleSieve.input(foundPrime) on .newPrime
       {
-        .found.input(foundPrime);         // Forward to “main”
         report()
+        .found.input(foundPrime);         // Forward to “main”
       }
 
       report() // This is a local function -- as it is not connected (to a port) it is “private”

@@ -30,15 +30,14 @@
 
    .. code-tab:: ReasonML try()
 
-      // We have build the sievelist (and reconnect) on a newly found prime ..
-      SimpleSieve.try(newPrime) on .generator.found
+      // We have extend the sieve-list (and reconnect) on a newly found prime ..
+      SimpleSieve.try(newPrime) on .finder.found
       {
         alias s;
 
         // Extent the sieve-list ...
         s:= Sieve(newPrime);
         insert_sieve(s);
-        .generator.collect.input(newPrime);   // forward the prime to the Generator
       }
 
 
@@ -55,7 +54,7 @@
         s.coprime = .finder.newPrime;
       }
 
-   .. code-tab:: ReasonML  powerOn() 
+   .. code-tab:: ReasonML  powerOn()
 
       powerOn() // this kick-starts “every main”
       {

@@ -9,7 +9,6 @@
       component Generator : Component {
         port StartSieve<in>:controll;
         port SimpleSieve<out>:outlet;
-        port SimpleSieve<in>:collect;
       }
 
    .. code-tab:: ReasonML Sieve
