@@ -51,6 +51,11 @@ cleanest: cleaner; #nothing extra
 #	curl -X POST -d "branches=$${BRANCH}" -d "token=${TOKEN}" ${HOOK}
 #	@echo
 
+RTD:
+	-hg push github
+	@echo "push to github will trigger RTD"
+
+
 wc:
 	@echo "lines	words	file"
 	@wc -lw `find -L CCastle/ -iname \*rst`|sort -r | grep -v /index.rst | grep -v /zz.todo.rst
