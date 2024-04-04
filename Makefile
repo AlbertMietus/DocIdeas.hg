@@ -44,12 +44,12 @@ cleaner veryclean: clean
 
 cleanest: cleaner; #nothing extra
 
-include RTD-settings.mk
-RTD  RTfD-build RTfD RTFD RTfD-webhook:
-	-hg push
-	@BRANCH=$${BRANCH:-`hg branch`} ;\
-	curl -X POST -d "branches=$${BRANCH}" -d "token=${TOKEN}" ${HOOK}
-	@echo
+#include RTD-settings.mk
+#RTD  RTfD-build RTfD RTFD RTfD-webhook:
+#	-hg push
+#	@BRANCH=$${BRANCH:-`hg branch`} ;\
+#	curl -X POST -d "branches=$${BRANCH}" -d "token=${TOKEN}" ${HOOK}
+#	@echo
 
 wc:
 	@echo "lines	words	file"
