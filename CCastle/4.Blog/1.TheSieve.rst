@@ -40,7 +40,7 @@ CCastle uses “components” [#not-package]_ as the main decomposition. Each ki
 times; sometimes called an *element*, or also just a *component*. This is very alike the difference between *“classes”
 and “objects”* in OO [#active-class]_.
 
-Let’s introduce those components
+Let’s introduce those components.
 
 Generator
 ---------
