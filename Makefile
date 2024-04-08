@@ -52,7 +52,9 @@ cleanest: cleaner; #nothing extra
 #	@echo
 
 RTD:
-	-hg push github
+	hg push
+	hg bookmarks default
+	hg push github
 	@echo "push to github will trigger RTD"
 
 

@@ -1,50 +1,56 @@
 AIGR nodes for Machinery (240408)
 =================================
-
-
 .. uml::
 
-    @startuml
+   @startuml
 
-    class AIGR
+   class AIGR
 
-    package machinery {
+   package machinery {
 
-    class DispatchTable {
-      handlers: List
-    }
-    DispatchTable <|-- eDispatchTable
-    note right: Event DispatchTable
+   class DispatchTable {
+     handlers: List
+   }
+   DispatchTable <|-- eDispatchTable
+   note right: Event DispatchTable
 
-    class send_proto {
-      +outport
-      #reviever
-      #handlers: DispatchTable
-      -index:
-    }
-    send_proto  <|-- sendEvent
-    send_proto  <|-- sendData
-    send_proto  <|-- sendStream
+   abstract send_proto {
+     + outport
+     # receiver
+     # handlers: DispatchTable
+     - index:
+   }
+   send_proto  <|-- sendStream
+   send_proto  <|-- sendData
+   send_proto  <|-- sendEvent
 
-    send_proto -> DispatchTable
+   send_proto -> DispatchTable
 
-    class connection {
-      - out: <outport, component>
-      - in:    <inport,  component>
-      # protocol
-    }
+   class connection {
+     - out: <outport, component>
+     - in:    <inport,  component>
+     # protocol
+   }
 
-    }
-    AIGR <|--machinery
+   }
+   AIGR <|--machinery
 
-    class Port
-    class Protocol
-    class Component
+   class EventHandler
+   note left: A component-callable\n per event (in a Protocol),\n per port
+   Entity Port
+   protocol Protocol
+   metaclass Component
 
-    connection  *-> Port: out
-    connection  *-> Port: in
-    connection  ..  Protocol
-    Protocol .. Port
-    Port .* Component
+   connection  *->  Port: out
+   connection  *->  Port: in
+   connection  ..   Protocol : _indirect_
+   Protocol    ..   Port
+   Port "*" <-* Component
 
-    @enduml
+   eDispatchTable      ->    "*"  EventHandler
+   eDispatchTable  "1" <-*   "1"  Port
+   Component           *-->  "*" EventHandler
+
+   @enduml
+
+
