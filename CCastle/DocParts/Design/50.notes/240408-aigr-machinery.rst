@@ -38,7 +38,8 @@ AIGR nodes for Machinery (240408)
    class EventHandler
    note left: A component-callable\n per event (in a Protocol),\n per port
    Entity Port
-   protocol Protocol
+   ‘protocol  Protocol
+   class  Protocol
    metaclass Component
 
    connection  *->  Port: out
