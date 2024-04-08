@@ -45,7 +45,7 @@ AIGR nodes for Machinery (240408)
 
    connection  *->  Port: out
    connection  *->  Port: in
-   connection  ..   Protocol : _indirect_
+   connection  ..   Protocol : //indirect//
    Protocol    ..   Port
    Port "*" <-* Component
 
