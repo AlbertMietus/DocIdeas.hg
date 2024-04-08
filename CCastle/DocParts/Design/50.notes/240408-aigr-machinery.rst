@@ -40,7 +40,8 @@ AIGR nodes for Machinery (240408)
    Entity Port
    'protocol  Protocol
    class  Protocol
-   metaclass Component
+   'metaclass Component
+   class Component
 
    connection  *->  Port: out
    connection  *->  Port: in
