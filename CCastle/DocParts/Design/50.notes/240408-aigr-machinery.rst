@@ -18,47 +18,45 @@ AIGR nodes for Machinery (240408)
       (None when abstract)
    endnote
 
-
-   abstract DispatchTable {
-     handlers: List
-   }
-   DispatchTable <|-- eDispatchTable
-   note right: **E**vent DispatchTable
-
    abstract send_proto {
      + outport
-     # receiver
-     # handlers: DispatchTable
-     - index:
    }
-   note left #aqua
+   note top #aqua
       This represents a
       line-of-code to
       **send** event/data
       over a connection
    end note
+
    class sendStream <<ToDo>> {}
    class sendData  <<ToDo>> {}
-   class sendEvent {}
+   class sendEvent {
+     + event: Event
+     + arguments: ArgumentList
+   }
    send_proto  <|-- sendStream
    send_proto  <|-- sendData
    send_proto  <|-- sendEvent
 
+   abstract DispatchTable {
+     handlers: List
+   }
+   DispatchTable <|-- eDispatchTable
+
    send_proto -> DispatchTable
 
    class connection {
-     - out: <outport, component>
-     - in:    <inport,  component>
-     # protocol
+     + out: <outport, component>
+     + in:    <inport,  component>
+     # protocol <indirect>
    }
-   note right #aqua
+   note top #aqua
      This is the result of
      a line-of-code that
      connects two ports
    endnote
    M <|--- send_proto
    M <|--- connection
-   M <|--- send_proto
    M <|--- DispatchTable
 
    }
@@ -74,14 +72,24 @@ AIGR nodes for Machinery (240408)
 
    connection  o->  Port: out
    connection  o->  Port: in
-   connection  ..   Protocol : //indirect//
-   Protocol    ..   Port
+
+   'Port  <-* Protocol  : uses
    Port "*" <-* Component
 
    eDispatchTable      ->    "*"  EventHandler
    eDispatchTable  "1" <...  "1"  Port
    Component           *-->  "*" EventHandler
 
-   @enduml
+   Entity Event {
+     # name
+     # index:key
+   }
+   note left #aquamarine: Basically, a name in a Protocol (definition),\n and (also) the key (index/number) in a DispatchTable
+   sendEvent o--> Event
 
+   Event "1".. "*" EventHandler
+   Event .> Protocol: > part of
+   Protocol ... connection
+
+   @enduml
 
