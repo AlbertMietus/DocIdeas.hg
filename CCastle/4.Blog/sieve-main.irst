@@ -65,6 +65,9 @@
            expect := PRIMES[count]
            if expect != gotPrime {
               printf("ERROR: Prime no {count} should be {expect}, but got {gotPrime}”)
+           } else {
+              printf("Success, found {gotPrime}, prime no {count} (verified)")
+           }
 
            count += 1;
 
