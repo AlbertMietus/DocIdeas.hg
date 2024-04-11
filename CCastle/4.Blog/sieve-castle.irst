@@ -8,6 +8,12 @@
       implement Generator {
         int maxValue;
 
+      init()
+      {
+        .maxValue = -1;
+      }
+
+
       StartSieve.newMax(max) on .controll
       {
         .maxValue := max;
@@ -21,6 +27,7 @@
         i:=0;
         while (i < .maxValue) {
           .outlet.input(i);
+          i +=1;
         }
       }
 
@@ -52,6 +59,11 @@
 
       implement Finder {
         int count;
+
+      init()
+      {
+        .count = 0;
+      }
 
       SimpleSieve.input(foundPrime) on .newPrime
       {

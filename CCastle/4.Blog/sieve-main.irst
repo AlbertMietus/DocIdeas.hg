@@ -10,13 +10,11 @@
         sub generator;
         sub finder;
         alias lastSieve;         // The list of Sieve's grow dynamically!; keep track of the last one
-      ...
 
 
    .. code-tab:: ReasonML init()
 
-      init()
-      {
+      init() {
         super.init();
 
         .generator := Generator();
@@ -28,38 +26,53 @@
       }
 
 
-   .. code-tab:: ReasonML try()
+   .. code-tab:: ReasonML finder.found
 
-      // We have extend the sieve-list (and reconnect) on a newly found prime ..
-      SimpleSieve.try(newPrime) on .finder.found
+      // We have extend the sieve-list (and reconnect), for every newly found prime.
+      SimpleSieve.input(newPrime) on .finder.found
       {
         alias s;
 
         // Extent the sieve-list ...
         s:= Sieve(newPrime);
         insert_sieve(s);
+        verifyCorrectPrime(newPrime);
       }
 
+   .. code-tab:: ReasonML local functions
 
-      insert_sieve(alias:s)
-      {
-        // Connect s to the lastSieve, or the Generator
-        if (.lastSieve == Ground) {              // .lastSieve == Ground, so not connected, so we have the first Sieve to connect to .generator
+      insert_sieve(alias:s) {
+        // Connect the input of S to the lastSieve, or to the Generator
+        if (.lastSieve == Ground) {            // .lastSieve == Ground, so not connected, so we have the first Sieve to connect to .generator
            .generator.outlet = s.try;
          } else {
            .lastSieve.coprime = s.try;
         }
 
-        // And to the Finder, that is self
-        s.coprime = .finder.newPrime;
+        s.coprime = .finder.newPrime;          // Connect to output of S to the finder
+        .lastSieve := s                        // a new lastSieve
       }
+
+      verifyCorrectPrime(int:gotPrime) {
+           local int count:=0; ///Semantics: instance var, with function-local scope
+           cons PRIMES:= [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97];
+
+           if count >= len(PRIMES) {
+              print("Warning: Can only check {len(PRIMES)} primes, {gotPrime) is not verified")
+              return
+           }
+
+           expect := PRIMES[count]
+           if expect != gotPrime {
+              printf("ERROR: Prime no {count} should be {expect}, but got {gotPrime}”)
+
+           count += 1;
+
 
    .. code-tab:: ReasonML  powerOn()
 
-      powerOn() // this kick-starts “every main”
+      powerOn(int:max=10) // this kick-starts “every main”
       {
-        int max := 10;
-
         .generator.runTo(max);
       }
 

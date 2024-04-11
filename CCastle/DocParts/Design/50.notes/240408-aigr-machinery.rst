@@ -46,9 +46,8 @@ AIGR nodes for Machinery (240408)
    send_proto -> DispatchTable
 
    class connection {
-     + out: <outport, component>
-     + in:    <inport,  component>
-     # protocol <indirect>
+     + outport: <outport, component>
+     + inport:    <inport,  component>
    }
    note top #aqua
      This is the result of
@@ -89,7 +88,6 @@ AIGR nodes for Machinery (240408)
 
    Event "1".. "*" EventHandler
    Event .> Protocol: > part of
-   Protocol ... connection
 
    @enduml
 
