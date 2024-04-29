@@ -10,7 +10,13 @@ build:
   tools:
     python: "3.11"
   apt_packages:
-    - python3-sphinxcontrib.plantuml
+  # python3-sphinxcontrib.plantuml install an old one version.
+  # Better to replace it by pip, so the requerments-file, which is already done
+  #  - python3-sphinxcontrib.plantuml
+  jobs:
+    post_install:
+      - mkdir -p ${READTHEDOCS_VIRTUALENV_PATH}/libexec
+      - curl  -o ${READTHEDOCS_VIRTUALENV_PATH}/libexec/plantuml.jar  -L https://github.com/plantuml/plantuml/releases/download/v1.2024.4/plantuml-1.2024.4.jar
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:

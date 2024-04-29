@@ -72,13 +72,22 @@ autodoc_member_order='bysource'
 
 # plantUML
 #---------
+
 extensions.append('sphinxcontrib.plantuml')
 if on_rtd:
-    plantuml = 'java  -Djava.awt.headless=true  -jar /usr/share/plantuml/plantuml.jar'
+    if False: #old
+        plantuml = 'java  -Djava.awt.headless=true  -jar /usr/share/plantuml/plantuml.jar'
+    else:
+        #  in `.readthedocs.yaml`
+        #     post_install:
+        #      - curl -o ${READTHEDOCS_VIRTUALENV_PATH}/libexec/plantuml.jar -L https://github.com/plantuml/....
+        import os
+        _path=os.environ['READTHEDOCS_VIRTUALENV_PATH'] + '/libexec/'
+        plantuml = f'java  -Djava.awt.headless=true  -jar {_path}plantuml.jar'
 else:
 #    plantuml = 'java  -Djava.awt.headless=true  -jar /Users/albert/Apps/PlantUML/libexec/plantuml-RTfD.jar'  #plantuml.1.2020.2.jar
-    plantuml = 'plantuml'
-
+#    plantuml = 'plantuml'
+    plantuml = 'java  -Djava.awt.headless=true  -jar /Users/albert/Apps/PlantUML/libexec/plantuml-1.2024.4.jar' # NEW
 
 ##plantuml_output_format='svg_img'
 ## dito only can be png?
