@@ -74,7 +74,8 @@ autodoc_member_order='bysource'
 #---------
 
 extensions.append('sphinxcontrib.plantuml')
-if on_rtd:
+if True or on_rtd:
+    print('DEBUG: on_rtd')
     if False: #old
         plantuml = 'java  -Djava.awt.headless=true  -jar /usr/share/plantuml/plantuml.jar'
     else:
@@ -84,6 +85,7 @@ if on_rtd:
         import os
         _path=os.environ['READTHEDOCS_VIRTUALENV_PATH'] + '/libexec/'
         plantuml = f'java  -Djava.awt.headless=true  -jar {_path}plantuml.jar'
+        print(f'DEBUG: plantuml={plantuml}')
 else:
 #    plantuml = 'java  -Djava.awt.headless=true  -jar /Users/albert/Apps/PlantUML/libexec/plantuml-RTfD.jar'  #plantuml.1.2020.2.jar
 #    plantuml = 'plantuml'
