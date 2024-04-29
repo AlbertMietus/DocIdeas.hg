@@ -86,7 +86,7 @@ if True or on_rtd:
         _path=os.environ['READTHEDOCS_VIRTUALENV_PATH'] + '/libexec/'
         plantuml = f'java  -Djava.awt.headless=true  -jar {_path}plantuml.jar'
         print(f'DEBUG: plantuml={plantuml}')
-else:
+else: #local
 #    plantuml = 'java  -Djava.awt.headless=true  -jar /Users/albert/Apps/PlantUML/libexec/plantuml-RTfD.jar'  #plantuml.1.2020.2.jar
 #    plantuml = 'plantuml'
     plantuml = 'java  -Djava.awt.headless=true  -jar /Users/albert/Apps/PlantUML/libexec/plantuml-1.2024.4.jar' # NEW
