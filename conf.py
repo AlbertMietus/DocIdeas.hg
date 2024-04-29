@@ -74,22 +74,18 @@ autodoc_member_order='bysource'
 #---------
 
 extensions.append('sphinxcontrib.plantuml')
-if True or on_rtd:
-    print('DEBUG: on_rtd')
-    if False: #old
-        plantuml = 'java  -Djava.awt.headless=true  -jar /usr/share/plantuml/plantuml.jar'
-    else:
-        #  in `.readthedocs.yaml`
-        #     post_install:
-        #      - curl -o ${READTHEDOCS_VIRTUALENV_PATH}/libexec/plantuml.jar -L https://github.com/plantuml/....
-        import os
-        _path=os.environ['READTHEDOCS_VIRTUALENV_PATH'] + '/libexec/'
-        plantuml = f'java  -Djava.awt.headless=true  -jar {_path}plantuml.jar'
-        print(f'DEBUG: plantuml={plantuml}')
+if on_rtd:
+    #  in `.readthedocs.yaml`
+    #     post_install:
+    #      - curl -o ${READTHEDOCS_VIRTUALENV_PATH}/libexec/plantuml.jar -L https://github.com/plantuml/....
+    # Make use of that plantUML version
+    import os
+    _path=os.environ['READTHEDOCS_VIRTUALENV_PATH'] + '/libexec/'
+    plantuml = f'java  -Djava.awt.headless=true  -jar {_path}plantuml.jar'
+    #print(f'DEBUG: plantuml={plantuml}')
 else: #local
-#    plantuml = 'java  -Djava.awt.headless=true  -jar /Users/albert/Apps/PlantUML/libexec/plantuml-RTfD.jar'  #plantuml.1.2020.2.jar
-#    plantuml = 'plantuml'
     plantuml = 'java  -Djava.awt.headless=true  -jar /Users/albert/Apps/PlantUML/libexec/plantuml-1.2024.4.jar' # NEW
+
 
 ##plantuml_output_format='svg_img'
 ## dito only can be png?
