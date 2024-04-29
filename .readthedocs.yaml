@@ -10,10 +10,10 @@ build:
   tools:
   #  python: "3.11"
      python: "3.9"
-  #apt_packages:
+  apt_packages:
   # python3-sphinxcontrib.plantuml install an old one version.
   # Better to replace it by pip, so the requerments-file, which is already done
-  #  - python3-sphinxcontrib.plantuml
+    - python3-sphinxcontrib.plantuml
   jobs:
     post_install:
       - mkdir -p ${READTHEDOCS_VIRTUALENV_PATH}/libexec
