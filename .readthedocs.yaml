@@ -8,11 +8,12 @@ version: 2
 build:
   os: ubuntu-22.04
   tools:
-    python: "3.11"
-  apt_packages:
+  #  python: "3.11"
+     python: "3.9.4"
+  #apt_packages:
   # python3-sphinxcontrib.plantuml install an old one version.
   # Better to replace it by pip, so the requerments-file, which is already done
-    - python3-sphinxcontrib.plantuml
+  #  - python3-sphinxcontrib.plantuml
   jobs:
     post_install:
       - mkdir -p ${READTHEDOCS_VIRTUALENV_PATH}/libexec
