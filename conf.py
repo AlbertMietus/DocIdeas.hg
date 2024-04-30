@@ -72,30 +72,8 @@ autodoc_member_order='bysource'
 
 # plantUML
 #---------
+plantuml_output_format='png' ## dito only can be png?
 
-extensions.append('sphinxcontrib.plantuml')
-if on_rtd:
-    #  in `.readthedocs.yaml`
-    #     post_install:
-    #      - curl -o ${READTHEDOCS_VIRTUALENV_PATH}/libexec/plantuml.jar -L https://github.com/plantuml/....
-    # Make use of that plantUML version
-    import os
-    _path=os.environ['READTHEDOCS_VIRTUALENV_PATH'] + '/libexec/'
-    plantuml = f'java  -Djava.awt.headless=true  -jar {_path}plantuml.jar'
-    #print(f'DEBUG: plantuml={plantuml}')
-else: #local
-    plantuml = 'java  -Djava.awt.headless=true  -jar /Users/albert/Apps/PlantUML/libexec/plantuml-1.2024.4.jar' # NEW
-
-
-##plantuml_output_format='svg_img'
-## dito only can be png?
-plantuml_output_format='png'
-
-plantuml_syntax_error_image=True
-if True or DEBUG:
-    import subprocess
-    result = subprocess.run(plantuml.split() +['-version'], stdout=subprocess.PIPE)
-    print(f"Using plantuml -version: {result.stdout}")
 
 
 
