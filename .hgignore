@@ -5,7 +5,14 @@ __pycache__
 .cache
 RTD-settings.mk
 VENV
+_VENV-Py312Doc
+VENV-Py312Doc
 .*~
 CCastle/4.Blog/code-ref.Castle
 CCastle/HACK
 CCastle/3.Design/B.Workshop/rPY/code/LinkToOrg
+
+
+
+
+

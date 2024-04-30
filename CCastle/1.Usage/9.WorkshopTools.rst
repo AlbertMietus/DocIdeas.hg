@@ -77,9 +77,6 @@ TODO
 
 .. rubric:: Footnotes
 
-.. [#XXXX]
-   XXXX
-
 .. _Software_metric:		https://en.wikipedia.org/wiki/Software_metric
 .. _Fan-Out:			https://en.wikipedia.org/wiki/Fan-out_(software)
 .. _Cyclomatic-Complexity:	https://en.wikipedia.org/wiki/Cyclomatic_complexity
