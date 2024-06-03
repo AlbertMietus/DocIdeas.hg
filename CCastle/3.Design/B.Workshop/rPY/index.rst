@@ -54,6 +54,8 @@ And, when that extra step results in less development work, it sounds like an in
    :glob:
 
    *
+   */index
+
 
 .. seealso::
 

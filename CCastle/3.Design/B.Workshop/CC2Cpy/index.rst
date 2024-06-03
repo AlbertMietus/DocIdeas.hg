@@ -4,6 +4,15 @@
 CC2Cpy: CCastle to C compiler in Python
 =======================================
 
+.. warning:: For now, the CC2Cpy compiler is abandoned.
+
+   This ‘first attempt’ has led to the insight we need an ‘:ref:`AIGR`’
+
+   .. seealso:: The new, current “first compiler”
+
+      * :ref:`rPY`
+      * :ref:`AR_pipeline`
+
 The “CC2Cpy” compiler is used to boottrap the Workshop-Tools; as it is a “first compiler” in support a subset of the
 Castle language (see e.g. :need:`Tools_No_MultipleInheritance-in-1compiler`).
 
