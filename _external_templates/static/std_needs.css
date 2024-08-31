@@ -28,6 +28,8 @@
 .rst-content table.need.needs_type_verify:not(.field-list) tbody tr:not(.meta) td {background-color: #F6E27F;}
 .rst-content table.need.needs_type_risk:not(.field-list) tbody tr:not(.meta) td {background-color: #AA1234; color:white;}
 .rst-content table.need.needs_type_risk:not(.field-list) tbody tr:not(.meta) td p { color:white;}
+.rst-content table.need.needs_type_bug:not(.field-list) tbody tr:not(.meta) td {background-color: Yellow;}
+.rst-content table.need.needs_type_bug:not(.field-list) tbody tr:not(.meta) .needs_title {color: Red;}
 
 /* Fancy, icon-style need-type-name */
 table.need tr.head td .needs_type_name  {

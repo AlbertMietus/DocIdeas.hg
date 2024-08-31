@@ -5,6 +5,7 @@ needs_types = [
     dict(directive="impl",       title="Implementation", prefix="I_", color="#DF744A", style="artifact"),
     dict(directive="verify",     title="Verify",         prefix="V_", color="#F6E27F", style="folder"),
     dict(directive="risk",       title="Jeopardize",     prefix="J_", color="#AA1234", style="queue"),
+    dict(directive="bug",        title="Bug",            prefix="B_", color="#AA1234", style="queue"),
 ]
 
 needs_layouts = {
