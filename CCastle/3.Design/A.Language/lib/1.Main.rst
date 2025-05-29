@@ -1,0 +1,68 @@
+.. (C) 2025 Albert Mietus. Part of CCastle project
+
+.. _CastleLib-MainComponent:
+
+==================
+The Main Component
+==================
+
+.. sidebar:: Main
+
+   .. note The code-tabs use ReasonML , but it is Castle-code!!
+   .. tabs::
+
+      .. code-tab:: ReasonML Main
+
+         component Main : Component {
+            port std<bidir>:std; // Or spilt it?
+         }
+
+      .. code-tab:: ReasonML Protocols
+
+         protocol std : EventProtocol {
+            invoke();
+            stdin(line:txt);  //Todo
+            stdout(line:txt); //ToDo
+            stderr(line:txt); //ToDo
+         }
+
+      .. tab:: Syntax notes
+
+         As the Castle syntax isn't fully stable, a few notes:
+
+         - Parameters are in ``name:type`` order, which may change.
+
+
+The ``Main`` Component defines a simple Component, which has the *standard ports**\ [#std_ports]_ added. It is always used as base-component.
+|BR|
+In this way, “main components”[#mainComp]_ have the ``invoke`` event, known by the Command Pattern.
+
+Castle programmers can easily implement such a “main component”, by implementing that event-handler, and run it by calling ``invoke()`` on an elements. Using the
+the ``@impliciet`` rewriter makes it even more simple, as can be seen in the demo below.
+
+.. tabs::
+
+   .. code-tab:: ReasonML Demo Component
+
+      @impliciet(Main)                   ///GAM: This `rewriter` auto-generates the interface -- based on Main
+      implement Demo {
+
+      invoke() on self.std {
+         // ....
+      }
+
+   .. code-tab:: ReasonML Run it
+
+      Demo().std.invoke()
+
+
+
+----------
+
+.. rubric:: Footnotes
+
+.. [#std_ports]
+   For now, it is one **bidir** (bidirectional) port with a protocol that supports input (& control) and output. This might change to separate ports.
+
+.. [#mainComp]
+   Or, strictly speaking, components that inherit from ``Main``.
