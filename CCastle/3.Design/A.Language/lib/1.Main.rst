@@ -55,6 +55,13 @@ the ``@impliciet`` rewriter makes it even more simple, as can be seen in the dem
 
       Demo().std.invoke()
 
+----------
+
+.. caution::
+
+   At the moment there is no design for bidir-ports. The idea is that a ‘bidir (event) port’ is both an input and an output port combined.
+
+   So, the Castle programmer can (or must?) write an event-handler for every event in the protocol, and sent all event out over that port.
 
 
 ----------
