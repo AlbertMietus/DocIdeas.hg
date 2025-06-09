@@ -1,0 +1,38 @@
+==================
+Dispatching Events
+==================
+
+.. post:: 2025/06/9
+   :category: Castle, DesignStudy
+   :tags: Castle, WorkshopTools
+
+   To handle an (external) `Event`, that Event should be dispatched to the (internal) `Eventhandler`. In CastleCode that
+   mapping is made by the naming of of eventhandler.
+   |BR|
+   That is clear for the developer; but in the AIGR we need to make that specific.
+
+   .. tabs::
+
+      .. code-tab:: ReasonML CastleCode
+
+         std.invoke() on self.std {
+           ...
+          }
+      .. code-tab:: Python RPy-Mangled Name (example)
+
+         def CC_EH_std_invoke__std(): ...
+
+      .. code-tab:: jinja Template (jinja-example)
+
+         {{prefix.EH}}{{comp}}__{{protocol}}_{{event}}_{{port}}
+         {# prefix.EH : e.g. `CC_EH_` a simple prefix to prevent name-classes
+          # comp: name of both ComponentInterface as ComponentImplementation (must be equal). Or gone in a OO/namespace.
+          # others: ID of those entities #}
+
+      .. code-tab:: Python Register in `EventDispatchTable` DRAFT
+
+         class EventDispatchTable: # Builder for ...
+            def register_event(port, protocol, event, handler): ...
+         ...
+         dt.register_event("std", "std", "invoke", 'CC_EH_std_invoke__std') # The AIGR used ID’s not objects
+         # Or, let the Builder handle that ...

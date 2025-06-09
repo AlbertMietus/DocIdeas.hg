@@ -1,0 +1,60 @@
+@startuml
+title: Primary Classes
+
+class NamedNode #lightgray {
+   name :ID:str
+}
+
+class Protocol #lightgray{
+    based_on : Protocol
+}
+NamedNode <|--Protocol
+Protocol o... Protocol::based_on #Indigo
+
+class Event #AquaMarine {}
+NamedNode <|--Event
+
+class EventProtocol #lightBlue {
+   events : tuple[Events]
+}
+Protocol <--- EventProtocol
+Event "many" <-o EventProtocol
+
+class Port #lightBlue {
+   direction \t: PortDirection
+   type      \t: Protocol|<type>
+}
+NamedNode     <|-- Port
+Protocol       <-- Port::type
+EventProtocol  <.. Port::type #AquaMarine
+
+
+class ComponentInterface #lightGreen{
+    based_on \t: ComponentInterface
+    ports  \t\t: PTH.Sequence[Port]
+}
+NamedNode <|-- ComponentInterface
+Port "*" -*   ComponentInterface::ports
+ComponentInterface o... ComponentInterface::based_on  #Indigo
+
+package  INVISIBLE  <<Rectangle>> #AntiqueWhite-Gold {
+class ComponentImplementation #limeGreen{
+  interface   \t: ComponentInterface
+  parameters  \t: tuple[TypedParameter, ...]
+}
+NamedNode <|--ComponentImplementation
+ComponentInterface --* ComponentImplementation::interface
+
+object "proto.event on port'" as EV1 <<EventHandler>> #lightBlue {
+  proto \t: PTH.Optional[Protocol]
+  event \t: Event
+  port  \t: Protocol
+}
+EventProtocol "1" <.. EV1::proto
+Event         "1" <.. EV1::event
+Port          "1" <.. EV1::port
+
+
+
+}
+@enduml
