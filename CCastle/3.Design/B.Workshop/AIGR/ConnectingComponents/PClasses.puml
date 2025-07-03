@@ -1,14 +1,14 @@
 @startuml
 title: Primary Classes
 
-class NamedNode #lightgray {
+abstract NamedNode #lightgray {
    name :ID:str
 }
 
-class Protocol #lightgray{
+abstract Protocol #lightgray{
     based_on : Protocol
 }
-NamedNode <|--Protocol
+NamedNode <|-- Protocol
 Protocol o... Protocol::based_on #Indigo
 
 class Event #AquaMarine {}
@@ -17,12 +17,13 @@ NamedNode <|--Event
 class EventProtocol #lightBlue {
    events : tuple[Events]
 }
-Protocol <--- EventProtocol
-Event "many" <-o EventProtocol
+Protocol <|- EventProtocol
+
+EventProtocol o-> "many" Event
 
 class Port #lightBlue {
    direction \t: PortDirection
-   type      \t: Protocol|<type>
+   type \t\t: Protocol | <type>
 }
 NamedNode     <|-- Port
 Protocol       <-- Port::type
@@ -45,8 +46,8 @@ class ComponentImplementation #limeGreen{
 NamedNode <|--ComponentImplementation
 ComponentInterface --* ComponentImplementation::interface
 
-object "proto.event on port'" as EV1 <<EventHandler>> #lightBlue {
-  proto \t: PTH.Optional[Protocol]
+class "proto.event on port'" as EV1 <<EventHandler>> #lightBlue {
+  proto \t: Protocol
   event \t: Event
   port  \t: Protocol
 }
