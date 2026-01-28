@@ -54,6 +54,41 @@ again such that the receiving-component can handle it.
 Often multiple “machineries” are possible; they offer the same services, but with other cost (as delays etc). Or with
 other benefits; like the ability to “transfer over the wire”.
 
+Some (example) abstractions -- todo
+-----------------------------------
+* send; sending
+* received; receiving
+* trigger
+
+
+events over a connection
+~~~~~~~~~~~~~~~~~~~~~~~~
+.. code-block:: ReasonML
+
+   .my_outPort.an_Event(“a parameter”);
+
+Here, a component **send** an event. Which eventually is **received** by another component/instance; where it typically **triggers** an event-handler.
+
+
+local/sub components
+~~~~~~~~~~~~~~~~~~~~~
+.. code-block:: ReasonML
+
+   implement Outer: Component
+   {
+      sub inner; // Typically instanced in init()
+
+.. code-block:: ReasonML
+
+   .inner.that_port.an_Event(“data”)
+
+Here, a the component has a sub-component. That sub-component has ports (like always), which in “internally”
+connected. Now, the portname of that sub can be used to **send** the event, like above.
+
+Even ‘sub’ is within ‘outer’ the implementation of ‘sub’ is hidden. So, again, that event is **received** by sub, and will  **trigger** an event-handler of sub.
+
+
+
 Some example machineries
 ------------------------
 
@@ -83,3 +118,11 @@ DDS (study)
 
 It sounds like a great idea to use DDS as a machinery, to allow components to “talks” over the network. Details have tp
 be studied however.
+
+Machinery in aigr
+-----------------
+
+The Machinery (as abstraction) can be found in `castle/aigr/machinery/`
+
+* ``aigr.machinery.sendEvent`` . (And  ``aigr.machinery.sendData``, ``aigr.machinery.sendStream``)
+* ``aigr.machinery.connection``
