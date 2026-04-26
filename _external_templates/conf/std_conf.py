@@ -38,7 +38,8 @@ rst_prolog = """
 html_theme = 'sphinx_rtd_theme'
 html_theme_options = {
     'collapse_navigation': True,
-    'display_version': True,
+    #OLD'display_version': True,
+    #'version_selector': True by default, RTD only
     #    'style_external_links': False, # available in next release
     'prev_next_buttons_location': 'both',
 }

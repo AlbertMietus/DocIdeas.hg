@@ -1,4 +1,5 @@
 needs_types = [
+    dict(directive="adr",        title="ADR",          prefix="ADR.", color="#A2C2E1", style="node"), # NEW
     dict(directive="resolution", title="Resolution",     prefix="R_", color="#9DC5BB", style="boundary"),
     dict(directive="use",        title="UseCase",        prefix="U_", color="#C5EBC3", style="usecase"), #Note: usecase does not nest -- needed for :np:
     dict(directive="spec",       title="Specification",  prefix="S_", color="#FEDCD2", style="component"),
