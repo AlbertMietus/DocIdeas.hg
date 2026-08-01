@@ -90,3 +90,5 @@ if DEBUG:
     print("Debug: Outdates packages:")
     os.system("pip list --outdated")
     print("Done =====")
+
+print(extensions)

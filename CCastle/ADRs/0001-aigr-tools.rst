@@ -161,12 +161,10 @@ See :need:`ADR_0001` (above) for main resolution.
 Consequences
 ------------
 
-• Migration: castle.aigr_extra is deprecated; functionality moves to castle.aigr.tools.scaffolders.
-• Keep Scaffolders: in castle-aigr package, only change imports etc.
+* Migration: castle.aigr_extra is deprecated; functionality moves to castle.aigr.tools.scaffolders.
+* Keep Scaffolders: in castle-aigr package, only change imports etc.
 * Study: the scaffolders-methods, that are not strictly none only -- move to other tools is an option
-• Implement the Trawlers in a new aigr-<tools> package
-• Clear split: Scaffolders handle Node-local logic; Trawlers handle Tree-wide logic.
+* Implement the Trawlers in a new aigr-<tools> package
+* Clear split: Scaffolders handle Node-local logic; Trawlers handle Tree-wide logic.
 
 ..  LocalWords:  scaffolders
-
-

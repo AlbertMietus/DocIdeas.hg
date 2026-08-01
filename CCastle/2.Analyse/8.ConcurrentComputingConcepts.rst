@@ -9,6 +9,7 @@ Concurrent Computing Concepts
 .. post:: 2022/09/30
    :category: Castle, DesignStudy
    :tags: Castle, Concurrency
+   :excerpt: 2
 
    Sooner as we realize, even embedded systems will have piles & heaps of cores, as I described in
    “:ref:`BusyCores`”. Castle should make it easy to write code for all of them: not to keep them busy, but to maximize

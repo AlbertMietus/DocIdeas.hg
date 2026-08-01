@@ -11,11 +11,31 @@ div.wy-side-nav-search {
     border-bottom: 2px solid #c0c0c0;
 }
 
+/* STD
 h1,h2,h3 {
     background-color: #808080; color: #eeeeff;
     margin: 1ex -1em 1ex -1em;
     padding : 0 1em;
 }
+*/
+h1,h2,h3,h4,h5,h6 {
+    margin: 1ex -1em 1ex -1em;
+    padding : 0 1em;
+}
+
+/* Flag collors:
+NL:
+   Red: #C8102E; White: #FFFFFF; Blue: #003DA5 -- we use 000066 already for background-color
+EU:
+   Blue: #003399; Yellow: #FFCC00 (stars)
+*/
+h1 { background-color: #000066; color: #C8102E;}
+h2 { background-color: #000066; color: #FFFFFF;}
+h3 { background-color: #FFFFFF; color: #000066;} /* "Background-blue"*/
+h4 { background-color: #FFFFFF; color: #003DA5;} /* NL blue */
+h5 { background-color: #FFFFFF; color: #003399;}
+
+
 div.wy-nav-content {
     padding: 1em;
     padding-top: 0;

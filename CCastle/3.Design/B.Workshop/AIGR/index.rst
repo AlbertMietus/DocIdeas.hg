@@ -1,3 +1,5 @@
+.. (C) albert
+
 .. _AIGR:
 
 Abstract Intermediate Graph Representation
@@ -36,4 +38,3 @@ Any Castle program can be translated and represented with an abstract intermedia
    another, etc.
 
    So, to represent and analyse (optimize) a program, we need a graph ...
-

@@ -112,7 +112,7 @@ Castle Has build-in visitors
       Grammar-tules are just functions; so why not allow pseudo-rules, that act as inline-actions, but are just regular
       functions (with the same signature)
 
-.. Use::  Castle Grammars can use Visitors
+.. use::  Castle Grammars can use Visitors
    :ID: UG_GrammarVisitors
 
    To act on data, and to separate the data and the action, Castle will support Visitors that can act on Grammars; or
