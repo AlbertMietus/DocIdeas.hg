@@ -1,0 +1,32 @@
+.. Copyright (C) ALbert Mietus, 20256
+
+Global Details
+==============
+:Starting: Aug, 17 2026
+
+Any senior (embedded) software engineer knows (s)he should focus on details, as the devil is in
+those details. But what is a detail?
+|BR|
+Often, a client, as a user, will focus on the most important pieces and call everything else a
+detail: *“We hardly use that”*. But still assumes every part is bug-free.
+
+Something equivalent can be seen when we look at software from contrasting abstraction levels. To
+create maintainable, bug-free code, almost every line is a detail that should get the full attention
+of the software engineering team. But some details are globally important and should be supervised
+by the (software) architect.
+|BR|
+It's hard, however, to determine which details are globally important.
+
+Therefore, a simple analogy: a simple house.
+|BR|
+Typically, it has a kitchen at the base level, a toilet on every floor, and a bathroom on the second
+floor. Four details that have a commonality: water and a drain. Therefore, the “house architect”
+will align them vertically. Why? Simply, it reduces costs and makes building (“implementing”) a lot
+easier when there is one “column” (or corner) for all those pipes.
+
+Software is different, or not?  Ever used an API where every call had another concept? Did you *like*
+it, or would it make your life a lot easier when somebody aligned those details?
+|BR|
+When you love to mature into a great architect, please find those details and make it easy for your team.
+
+
