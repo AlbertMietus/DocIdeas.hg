@@ -7,7 +7,7 @@ Global Details
 Any senior (embedded) software engineer knows (s)he should focus on details, as the devil is in
 those details. But what is a detail?
 |BR|
-Often, a client, as a user, will focus on the most important pieces and call everything else a
+Often, a client ---as a user--- will focus on the most important pieces and call everything else a
 detail: *“We hardly use that”*. But still assumes every part is bug-free.
 
 Something equivalent can be seen when we look at software from contrasting abstraction levels. To
