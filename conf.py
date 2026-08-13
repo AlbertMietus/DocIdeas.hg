@@ -91,4 +91,17 @@ if DEBUG:
     os.system("pip list --outdated")
     print("Done =====")
 
-print(extensions)
+
+if True:
+    print("""Using a WORKAROUND for
+    /Users/albert/work/DocIdeas,hg/CCastle/2.Analyse/8.ConcurrentComputingConcepts.rst:14: WARNING: unknown node type: <NeedRef: <emphasis...>>
+    Theme error:
+    An error happened in rendering the page ABlog/author/albert-mietus.
+    Reason: NotImplementedError("<class 'sphinx.writers.html5.HTML5Translator'> departing unknown node type: NeedRef")
+""")
+    from sphinx.writers.html5 import HTML5Translator
+
+    if not hasattr(HTML5Translator, 'depart_NeedRef'):
+        HTML5Translator.depart_NeedRef = lambda self, node: None
+    if not hasattr(HTML5Translator, 'visit_NeedRef'):
+        HTML5Translator.visit_NeedRef = lambda self, node: None
