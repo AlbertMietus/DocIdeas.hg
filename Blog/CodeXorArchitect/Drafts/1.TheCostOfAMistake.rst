@@ -3,27 +3,29 @@
 The costs of a mistake
 ======================
 :Draft: Aug 2026
+:https://readminutes.com: 211 words, 53 sec
 
 
-A typical code bug takes between one hour and one week to solve. Annoying, but the costs are minor—a
+A typical code bug takes between one hour and one week to solve. Annoying, but the costs are minor --- a
 few thousand euros at most. Sure, a bug escaping your sprint is a bit more expensive. And once it
-hits production, it can increase seven-fold.
+hits production, it can increase sevenfold.
 
-But what about an architectural mistake? Let’s be honest: it is just as easy to make. Just a few
-lines in a thick document. But if it’s a real architectural error, it is fundamentally wrong! Let us
-take a trivial example: choosing the programming environment for a new, modern Embedded System. And
-yes, those mistakes have been made.
+But what about an architectural mistake? Let’s be honest: it is just as easy to make. Just a few lines in a 256-page
+document. But if it’s a real architectural error, it is fundamentally wrong! Let us take a trivial example: choosing the
+(wrong) programming environment for a new, modern Embedded System. That can be the OS, the language, or an open-source
+library.
+And yes, those mistakes have been made ...
 
-Here is an untold story: after 300 man-years of work, it simply didn't work!
+Here is an untold story: after 300 man-years of effort, it simply didn't work! It never will.
 |BR|
-The only solution was to adjust one single paragraph in the initial architecture; maybe an hour
-work. But it implied throwing everything away, crying it out, and starting all over again.
+The only solution was to adjust one single paragraph in the initial architecture; maybe an hour’s
+work. But it implied throwing everything away, mourning the loss, and starting all over again.
 Slightly more expensive!
 
 What does that teach us?
 |BR|
-Sometimes small details are really important. For the product you work on, and for your career!  
+Sometimes small details are really important. For the product you work on, and for your career!
 
-Surely, haste is never a great driver. I would’t welcome a delay of 100% in the first sprint, when
-I’m leading from the process-axis. But when I have to choose between 2 weeks and 300 man-years, it’s
-an easy choice.
+Surely, haste is never a great driver. I wouldn't welcome a delay of a few initial sprints when I’m leading from the
+process-axis. But when I have to choose between taking 2 extra weeks to get the architecture bug-free, and burning 300
+man-years, it’s an easy choice.
