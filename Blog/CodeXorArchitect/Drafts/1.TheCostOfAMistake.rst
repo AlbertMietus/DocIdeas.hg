@@ -2,8 +2,8 @@
 
 The costs of a mistake
 ======================
-:Draft: Aug 2026
-:https://readminutes.com: 211 words, 53 sec
+:Ready: Aug 2026
+:reading-time: 59 sec
 
 
 A typical code bug takes between one hour and one week to solve. Annoying, but the costs are minor --- a
