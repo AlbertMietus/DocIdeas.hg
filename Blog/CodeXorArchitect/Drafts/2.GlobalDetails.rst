@@ -3,6 +3,7 @@
 Global Details
 ==============
 :Starting: Aug, 17 2026
+:https://readminutes.com: 235 words, 59sec
 
 Any senior (embedded) software engineer knows (s)he should focus on details, as the devil is in
 those details. But what is a detail?
