@@ -1,4 +1,4 @@
-.. (C) albert
+.. (C) Albert
 
 .. _AIGR:
 
@@ -12,7 +12,6 @@ Any Castle program can be translated and represented with an abstract intermedia
    :titlesonly:
    :maxdepth: 2
    :glob:
-
 
    *
    */index

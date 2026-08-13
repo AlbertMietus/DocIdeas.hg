@@ -49,7 +49,7 @@ Why (Not)
 ==========
 
 When a Castle program defines (e.g.) an event, the *parameters* are given. The Castle-compiler should check the
-remainder of the program for consistency [#errorcheck]_ and so, TypedParameters are used at many places [#AIGR]_.
+remainder of the program for consistency [#errorcheck]_ and so, TypedParameters are used at many places.
 |BR|
 That is however another matter.
 
@@ -161,13 +161,10 @@ Given, many languages like it, we made some decisions; both for the long run, an
 .. [#noCC]
    Recall, the generated files “fill-in” some dataclass, that are part of the :file:``CC/buildin`` library, which isn’t
    developed yet. Only the ref:`Sieve_in_rPython` (as well as the *handCompiledC* C-version) versions are used reference.
-   
+
 .. [#errorcheck]
    By example, the (Castle) compiler should give a error when a programmer makes mistake in (e.g.) the order or number
    of parameters, or in the typing, or ...
-
-.. [#AIGR]
-   As the information is needed internally in the compiler, the :ref:`AIGR <AIGR>` contains it.
 
 .. [#introspection]
    This features is often called *introspection*, and for a language as Python it is really important. Other languages, as C
