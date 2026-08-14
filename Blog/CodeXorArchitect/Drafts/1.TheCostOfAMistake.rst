@@ -2,9 +2,9 @@
 
 The costs of a mistake
 ======================
-:Ready: Aug 2026
+:Ready: 13/Aug 2026
 :reading-time: 59 sec
-
+.. 236 words from here
 
 A typical code bug takes between one hour and one week to solve. Annoying, but the costs are minor --- a
 few thousand euros at most. Sure, a bug escaping your sprint is a bit more expensive. And once it

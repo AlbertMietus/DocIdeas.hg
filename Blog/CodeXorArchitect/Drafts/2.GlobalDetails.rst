@@ -1,15 +1,16 @@
-.. Copyright (C) ALbert Mietus, 20256
+.. Copyright (C) ALbert Mietus, 2026
 
 Global Details
 ==============
-:Starting: Aug, 17 2026
-:https://readminutes.com: 235 words, 59sec
+:Ready: 14/Aug 2026
+:reading-time: 1min5
+.. 258 words from here
 
 Any senior (embedded) software engineer knows (s)he should focus on details, as the devil is in
 those details. But what is a detail?
 |BR|
 Often, a client ---as a user--- will focus on the most important pieces and call everything else a
-detail: *“We hardly use that”*. But still assumes every part is bug-free.
+detail: *“We hardly use that”*. Yet they still assume every part is bug-free.
 
 Something equivalent can be seen when we look at software from contrasting abstraction levels. To
 create maintainable, bug-free code, almost every line is a detail that should get the full attention
@@ -25,9 +26,13 @@ floor. Four details that have a commonality: water and a drain. Therefore, the �
 will align them vertically. Why? Simply, it reduces costs and makes building (“implementing”) a lot
 easier when there is one “column” (or corner) for all those pipes.
 
-Software is different, or not?  Ever used an API where every call had another concept? Did you *like*
-it, or would it make your life a lot easier when somebody aligned those details?
+Is software any different? Ever used an API where every function used a different style? Do you like
+it, when you sometimes need to use `camel_case`, and sometimes `SnakeCase`? Or, when the order of
+parameters seems random, or at best alphabetical?
+
+Or would having the same convention, the same design, make your programming-life a lot easier?
 |BR|
-When you love to mature into a great architect, please find those details and make it easy for your team.
+If you aspire to mature into an architect, please fix those details. The compiler doesn't
+care, your team does!
 
-
+..  LocalWords:  SnakeCase
