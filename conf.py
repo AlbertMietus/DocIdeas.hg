@@ -1,4 +1,4 @@
-# Copyright (C) ALbert Mietus, SoftwareBeterMaken.nl; 2017- 2024
+# Copyright (C) ALbert Mietus, SoftwareBeterMaken.nl; 2017- 2026
 # -*- coding: utf-8 -*-
 
 DEBUG=False
@@ -11,7 +11,7 @@ from std_conf import *
 # General information about the project.
 #======================================
 project = 'DocIdeas'
-copyright = "ALbert Mietus, 2018 - 2024"
+copyright = "ALbert Mietus, 2018 - 2026"
 
 from datetime import datetime
 release = datetime.now().strftime("%Y%m%d.%H")
