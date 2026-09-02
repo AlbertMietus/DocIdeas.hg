@@ -1,5 +1,8 @@
 .. Copyright (C) ALbert Mietus, 2026
 
+.. image:: images/GlobalDetails.png
+   :width: 100%
+
 Global Details
 ==============
 :Ready: 14/Aug 2026

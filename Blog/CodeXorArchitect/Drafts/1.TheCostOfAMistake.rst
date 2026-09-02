@@ -1,5 +1,8 @@
 .. Copyright (C) ALbert Mietus, 2026
 
+.. image:: images/TheCostOfAMistake.png
+   :width: 100%
+
 The costs of a mistake
 ======================
 :Ready: 13/Aug 2026
