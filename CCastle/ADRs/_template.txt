@@ -1,0 +1,65 @@
+.. sidebar:: On this page
+   :class: localtoc
+
+   .. contents::
+      :depth: 6
+      :local:
+      :backlinks: none
+
+.. _ADR0002:
+
+================================================
+ADR_ABCD: Tile (or name)
+================================================
+
+.. adr:: Name Name Name
+   :ID: ADR_ABCD
+   :Status: Seed
+
+Context and Problem Statement
+=============================
+
+
+C/P1
+----
+
+
+C/P2
+----
+
+
+C/P3
+----
+
+Challenges
+==========
+
+
+Decision Drivers
+----------------
+
+
+Considered Options
+==================
+
+Opt 1
+---------------
+
+Opt 2
+---------------
+
+Opt 3
+---------------
+
+...
+
+Outcome
+=======
+
+See :need:`ADR_0002` (above) for main resolution.
+
+Consequences
+------------
+
+*
+*
