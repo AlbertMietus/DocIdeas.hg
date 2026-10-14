@@ -35,6 +35,8 @@ html_static_path.append ('_static/')
 html_favicon = '_static/Bulb.ico'
 
 exclude_patterns.append('**/LinkToOrg/**')
+exclude_patterns.append('**/dev-CASTLE-X/**')
+
 
 ## ABlog
 #-------
