@@ -1,5 +1,4 @@
-.. _ ADR0001:
-.. sidebar:: On this page
+.. .. sidebar:: On this page
    :class: localtoc
 
    .. contents::
@@ -7,6 +6,7 @@
       :local:
       :backlinks: none
 
+.. _ ADR0001:
 =========================================
 ADR_0001: AIGR-tools? (import & packages)
 =========================================

@@ -1,4 +1,4 @@
-.. sidebar:: On this page
+.. .. sidebar:: On this page
    :class: localtoc
 
    .. contents::
@@ -7,16 +7,19 @@
       :backlinks: none
 
 .. _ADR0002:
-
-=======================================================
-BUSY: ADR_0002: When to “Bundle”? (Calling Conventions)
-=======================================================
-
+================================================================
+ADR_0002: When to “Bundle”? (Calling Conventions) --WiP/Revision
+================================================================
 .. adr:: Calling Conventions & Bundling (RPY version)
    :ID: ADR_0002
-   :Status: WiP
+   :Status: WiP//Revision
 
    .. warning:: This is work in progress!
+
+      Currently, the :ref:`ADR0002-Gradual-flexibility` option look the best outcome.
+
+      Before that is selected, a bit of research/design/coding is needed to evaluate it. After that, this ADR will be
+      updated.
 
 Context and Problem Statement
 =============================
@@ -128,30 +131,45 @@ functions can be called by the “always bundle” convention.
 Connected Only
 --------------
 
-The need for “bundling” started for :class:`EventHandler` and other `*Handlers`; here the :class:
+The need for “bundling” started for :class:`EventHandler` and other `*Handlers`. Then an explicit `*DispatchTable` is
+needed, and so we run into the described RPython restrictions. The other (current) callables, “CC-Methods” and
+“CC-Functions” are compiled into rpython methods and functions, and so, rpython itself will do the dispatching -- and
+(our) “Bundling” is needed.
+
+Therefore we can use the :class:`Bundler` “Connected Only” -- and not for other callables.
+
+Selection
+~~~~~~~~~
+
+It looks like this kind of “calls” are easy to select, so implementing this option should be to hard.
+
+Gradual
+~~~~~~~
+
+A sub-option is to use a “Gradual alike” solution. For example, to let :class:`Renderer` (inside the compiler/writer)
+“ask” whether bundling is needed, and hard-code the answer: Yes for `*Handlers`, No otherwise.
+
+Flexible (delegation)
+---------------------
+
+As hinted above, there are variant of all options that bring flexibility. This option makes that the main preference.
+
+In this option, we take the *“use of not” decision* out of the :class:`Renderer` and delegate it to (e.g.) the
+:class:`Bundler`. Depending on the result, code with or without bundling is rendered.
+|BR|
+This gives a lot of flexibility for future extensions. And enables an (future) A|B-test on (execution) performance
+
+.. _ADR0002-Gradual-flexibility:
+Gradual flexibility
+~~~~~~~~~~~~~~~~~~~
+
+This gives an extra form of flexibility: we can create the boilerplate-code to render any variant, but only implement
+what is needed now.
+|BR|
+To minimize implementation effort, we can use an hard-coded delegate to effectively use  the “Connected Only”.  With a
+bit of boilerplate-checks to enable future alternatives. F.e. an ``assert`` on non expected delegation-results.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Opt 3
----------------
-
-...
 
 Outcome
 =======
@@ -161,6 +179,9 @@ See :need:`ADR_0002` (above) for main resolution.
 Consequences
 ------------
 
+.. todo:: :ref:`ADR0002-Gradual-flexibility`
+
+
 *
 *
 
@@ -168,27 +189,4 @@ Consequences
 
 
 
-The `machinery`
-----------------
-
-In CCastle, components can send event to other components via “connected ports.” To deal with that, the receiving
-component has many `EventHandler`(s).  In RPY, that is a Python-callable, that is called via an `*DispatchTable`. That is,
-basically, a mapping from (event-) names to methods.
-
-As RPython is *restricted*, all signatures of those “handler-methods” have to be similar. This implies the same number
-of parameters, with comparable types. Whereas the signatures of the Castle handler (aka ‘CC-handlers’) are not.
-|BR|
-So, the ‘machinery’ need to convent the CC-calling convention to a RPY-calling convention. This is managed by the (a)
-:class:`Bundler`.
-
-With the :class:`NativeBundler` all (positional) CC-parameters are “packed” into an `List` and each parameter is “boxed”
-into a :class:`CC_B_Value`. This is restricted enough for RPython. (For named parameter, it a bit more complicated, but
-similar --- for simplicity, we will focus on positional one only)
-
-
-Methods and classic functions
-------------------------------
-
-Inside a component, fun
-
-..  LocalWords:  callables ADR rpython RPY rpython unbundle
+..  LocalWords:  callables ADR rpython RPY rpython unbundle Renderer Bundler
