@@ -1,8 +1,12 @@
 sphinx==6.2.1
-ablog == 0.10.25
+ablog==0.10.25
 sphinxcontrib-plantuml
-sphinxcontrib-fulltoc
-sphinx-rtd-theme
-sphinx-tabs
-sphinx_needs==5.1.0
+sphinx_needs
+sphinx_rtd_theme
 setuptools>=60.0.0,<70.0.0
+
+#sphinxcontrib-fulltoc
+#sphinx-rtd-theme
+#sphinx-tabs
+#sphinx_needs==5.1.0
+
