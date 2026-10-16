@@ -5,8 +5,9 @@ sphinx_needs
 sphinx_rtd_theme
 setuptools>=60.0.0,<70.0.0
 
+sphinx-tabs
+
 #sphinxcontrib-fulltoc
 #sphinx-rtd-theme
-#sphinx-tabs
 #sphinx_needs==5.1.0
 
