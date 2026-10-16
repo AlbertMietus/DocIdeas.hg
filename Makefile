@@ -44,18 +44,17 @@ cleaner veryclean: clean
 
 cleanest: cleaner; #nothing extra
 
-#include RTD-settings.mk
-#RTD  RTfD-build RTfD RTFD RTfD-webhook:
-#	-hg push
-#	@BRANCH=$${BRANCH:-`hg branch`} ;\
-#	curl -X POST -d "branches=$${BRANCH}" -d "token=${TOKEN}" ${HOOK}
-#	@echo
+_sync-bookmarks:
+	for b in $$(hg branches | awk '{print $$1}'); do \
+	    hg bookmark -f -r "$$b" "_g_$$b"; \
+	done
 
-RTD:
+push-all: _sync-bookmarks
 	-hg push
-	-hg bookmarks default
-	-hg push github
-	@echo "push to github will trigger RTD"
+	-hg push --all SF
+	-hg push --all github
+
+RTD RTfD RTFD: push-all
 
 
 wc:

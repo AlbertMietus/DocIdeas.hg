@@ -4,5 +4,5 @@ sphinxcontrib-plantuml
 sphinxcontrib-fulltoc
 sphinx-rtd-theme
 sphinx-tabs
-sphinx_needs=5.1.0
+sphinx_needs==5.1.0
 setuptools>=60.0.0,<70.0.0
