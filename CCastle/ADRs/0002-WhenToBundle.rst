@@ -8,39 +8,171 @@
 
 .. _ADR0002:
 
-================================================
-ADR_0001: When To `Bundle` (Calling Conventions)
-================================================
+=======================================================
+BUSY: ADR_0002: When to “Bundle”? (Calling Conventions)
+=======================================================
 
 .. adr:: Calling Conventions & Bundling (RPY version)
    :ID: ADR_0002
-   :Status: Seed
+   :Status: WiP
+
+   .. warning:: This is work in progress!
 
 Context and Problem Statement
 =============================
 
-CCastle, has several kind of “callables”. Some behave more like normal methods and functions. But the “connected
-components” abstraction is new, and demands some extra care when implementing.
-|BR|
+CCastle has several kinds of `callables`. Some behave more like normal methods and functions. But the ‘connected
+components’ abstraction is new and demands some extra care when compiling. This ADR is about how to pass parameters
+from the caller into the callable -- how should the **generated code** look?
+
 In this ADR we  focus exclusively on the RPY-writer. But we expect other writers may have similar issues -- if so, that
 will be described in other ADRs.
+|BR|
+For simplicity, we focus on the :class:`EventHandler`. But it will be equally valid for other kinds of `*Handlers`
 
-For simplicity, we focus below on :class:`EventHandler`\s. But it will be equally valid for other kind of
-:class:`Handler`\s.
+As a quick introduction
+-----------------------
+
+Every incoming :class:`Event` is dispatched via an :class:`EventDispatchTable` to an :class:`EventHandler`. Such
+a dispatch table is basically an “array of functions”. The parameters pass opaque through that table.
+
+However, RPython has restrictions. For example, it can’t handle an array of functions with different
+signatures. Therefore, all parameters are “bundled” (boxed and packed) before calling, and unpacked/unboxed in the
+(generated) functions. Then the parameters are “similar enough” for the rpython-annotator.
+
+With this :class:`Bundler` functionality, parameters can always be passed into any callable. But it raises a new
+question:
+
+When should we use the :class:`Bundler`?
+----------------------------------------
+
+* Always?
+* Only for `*Handlers`?
+* How about Methods,  Classic functions?
+* What kind of `callables` are/will exist?
+
+And, as a side-question: What kind of burden will it put on the CCastle compiler (aka the RPY-writer)?
 |BR|
-Notice, that this ADR describes an implementation detail only.  Which is completely hidden inside the  `machinery of an
-`writer`. Still it architectural relevant: the generated code for calling a function and implementing it should
-match. Besides, as it is code that is (potentially) executed for every call, it will impact the executing speed.
-|BR|
-To make it even more intricate, the generated RPython code may be optimized by both the RPY-translator (who generated
-C-code), and the C-compiler. So, we only need to generate code, that can/will be optimized to perfect code.
+In an experimental version, we used the :class:`Bundler` by default, until we ran into an issue calling a
+build-in/native function... There, it was hardly an option to unpack and unbox.
+
+.. note::
+
+    This ADR describes an implementation detail only.  Which is completely hidden inside the :ref:`machinery` of a
+    :ref:`writer`.
+
+    Still it architectural relevant.
+    |BR|
+    The generated code for calling a function and for implementing it should match; both sides should always use the
+    same calling convention: function arguments are passed into the formal parameters.
+
+    Besides, that code is executed for every call, and so has a huge effect on execution speed.
+    |BR|
+    To make it even more intricate, the generated RPython code may be optimized by both the RPY-translator (generating
+    C-code), and the C-compiler.
+
+    So, we need to generate code that works, can be optimized, and ideally is almost gone at assembly code
+
+Challenges
+==========
+
+The main challenge is that the generated code should be acceptable for RPython. Next, it should not impose
+restrictions on the CCastle language. And last, the execution speed of the resulting binary should be high.
+
+When there are multiple options fulfilling the main challenges, the ease of implementing the RPY-writer is also
+relevant. Implementing the CCastle compiler is a lot of work, so a bit less does count.
+
+An **gradual solution**, where the “first compiler implementation” is easy/fast, but not optimal”, is *acceptable*, even
+*endorsed*. As long as it is possible to “upgrade” part of the compiler to reach the main (and secondary) challenges.
+
+Finally, the CCastle language isn't fully designed; therefore we need a solution that is flexible. Whatever new syntax
+or semantics ---especially around “calling conventions” and “kind of callables”--- is added, it should be possible to
+add to the RPY-writer.
+
+
+Considered Options
+==================
+
+Always bundle
+-------------
+
+When we “always bundle” --for every call/callable-- we have a simple implementation. And it will always work; we only
+need a small wrapper for  build-in/native functions (see below)
+
+Given that code generated by :class:`Bundle` should be quite optimal (read: most will/should not result in assembly
+instructions), using it “to often” shouldn't ham us.
+
+.. warning:: “Should be ...”
+
+   One of the challenges is to make bundling fast. Some research has shown that *should be* possible.
+   However, this is not proven, not measured. So “always bundling” is a risk.
+   |BR|
+
+   Even when it costs only a few nanoseconds, it’s a few nanoseconds **every** call.  When that overhead isn't needed,
+   the solution is not optimal.
+
+   One option is to have this option as “gradual solution” -- so we can simple remove the overhead when needed.
+
+   .. note:: Time spend, to make wrappers for build-in functions (see below) is wast when!
+
+Build-in/native functions
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Build-in/native functions, are RPython functions that we can call directly from generated code; like `print`.  As the
+are build-in, the use the default calling convention, and so, do not unbox/unpack.
+
+This is simple to fix. By adding build-in library layer, that will *“unbundle”* and call the native functions, those new
+functions can be called by the “always bundle” convention.
+
+
+Connected Only
+--------------
+
+The need for “bundling” started for :class:`EventHandler` and other `*Handlers`; here the :class:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Opt 3
+---------------
+
+...
+
+Outcome
+=======
+
+See :need:`ADR_0002` (above) for main resolution.
+
+Consequences
+------------
+
+*
+*
+
+----------------------------
+
 
 
 The `machinery`
 ----------------
 
 In CCastle, components can send event to other components via “connected ports.” To deal with that, the receiving
-component has ``EventHandlers``.  In RPY, that is a Python-callable, that is called via an `DispatchTable`. That is,
+component has many `EventHandler`(s).  In RPY, that is a Python-callable, that is called via an `*DispatchTable`. That is,
 basically, a mapping from (event-) names to methods.
 
 As RPython is *restricted*, all signatures of those “handler-methods” have to be similar. This implies the same number
@@ -59,48 +191,4 @@ Methods and classic functions
 
 Inside a component, fun
 
-C/P1
-----
-
-
-C/P2
-----
-
-
-C/P3
-----
-
-Challenges
-==========
-
-
-Decision Drivers
-----------------
-
-
-Considered Options
-==================
-
-Opt 1
----------------
-
-Opt 2
----------------
-
-Opt 3
----------------
-
-...
-
-Outcome
-=======
-
-See :need:`ADR_0002` (above) for main resolution.
-
-Consequences
-------------
-
-*
-*
-
-..  LocalWords:  callables ADR
+..  LocalWords:  callables ADR rpython RPY rpython unbundle
