@@ -53,6 +53,9 @@ Frequently used
 
 .. note:: A ``.. note::`` is just a generic note
 
+.. todo:: ``.. todo::`` is  a not really a admon ...
+
+   But it looks like it, and therefore added in the overview
 
 Hardly used
 ------------
